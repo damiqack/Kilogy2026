@@ -1,0 +1,16 @@
+name: kilogy2026
+
+services:
+  ai-engine:
+    build: ./services/ai-engine
+    ports:
+      - "4200:4200"
+
+  # api: enabled once services/api is complete
+  #   build: ./services/api
+  #   ports:
+  #     - "4100:4100"
+  #   environment:
+  #     AI_ENGINE_URL: http://ai-engine:4200
+  #   depends_on:
+  #     - ai-engine
