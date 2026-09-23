@@ -3,7 +3,10 @@ from __future__ import annotations
 
 from typing import Literal
 
+import os
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from . import decision, predictor, pricing
@@ -12,6 +15,14 @@ from .routing import optimize_routes
 
 app = FastAPI(title="KILOGY AI Engine", version="0.1.0")
 bandit = CarrierBandit(seed=42)
+
+# Allow the local web dashboard (apps/web) to call the engine during development.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:5173").split(","),
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 
 class Location(BaseModel):

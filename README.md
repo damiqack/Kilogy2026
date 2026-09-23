@@ -31,7 +31,8 @@ operations team (Team 1).
 | API Gateway (Layer 2) | Auth (API keys + JWT), tiered rate limiting | 🚧 In progress |
 | Microservices (Layer 3) | Shipments, quotes, carriers, documents, payments, tracking | 🚧 In progress |
 | Carrier Gateway | `ICarrierAdapter` + mock DHL / FedEx / UPS / Canada Post | 🚧 Interface done |
-| Clients (Layer 1) | `@kilogy/sdk`, UI/UX dashboard | ⬜ Not started |
+| Clients (Layer 1) | Web dashboard prototype (`apps/web`), 10 screens | ✅ Clickable, live AI quotes |
+| | `@kilogy/sdk`, mobile app | ⬜ Not started |
 | Data (Layer 5) | Postgres, Mongo, Redis, Kafka | ⬜ In-memory stand-ins for now |
 | DevOps | Docker Compose ✅ · GitHub Actions, Terraform, EKS ⬜ | |
 
@@ -40,6 +41,8 @@ operations team (Team 1).
 ```
 Kilogy2026/
 ├── docs/ARCHITECTURE.md    Kilogy's technical architecture v1.0
+├── apps/
+│   └── web/                React + TypeScript dashboard prototype (port 5173)
 ├── services/
 │   ├── ai-engine/          Python + FastAPI AI engine (port 4200)
 │   │   ├── app/
@@ -55,6 +58,19 @@ Kilogy2026/
 │   └── api/                Node + TypeScript API gateway & services (port 4100), in progress
 └── docker-compose.yml
 ```
+
+## Look through the UI
+
+Requires Node 20+.
+
+```bash
+cd apps/web
+npm install
+npm run dev        # open http://localhost:5173
+```
+
+It works on its own with sample data. Start the AI engine (below) as well, and quotes will come
+from the live Decision Engine. See [`apps/web/README.md`](apps/web/README.md) for the screen list.
 
 ## Run the AI engine
 

@@ -49,7 +49,9 @@ def decide(req: dict, bandit: CarrierBandit) -> dict:
         route = _match_route(routes, r.get("mode", "air"))
         price = pricing.optimize_price(r["cost_usd"], market_ref.get(r["service"]), r["service"]) if req.get("ai_optimize", True) \
             else {"price_usd": r["cost_usd"], "margin_pct": 0.0}
-        risk = predictor.predict(route or {"legs": [], "transit_days": r["transit_days"]}, origin["country"], dest["country"], req.get("ship_date"))
+        # Use the carrier's quoted transit time; the matched route supplies the legs and modes.
+        risk_input = {"legs": route["legs"] if route else [], "transit_days": r["transit_days"]}
+        risk = predictor.predict(risk_input, origin["country"], dest["country"], req.get("ship_date"))
         perf = bandit_rank.get(r["carrier_id"], {}).get("expected_success_rate", 0.8)
         reliability = perf * (1 - 0.5 * risk["risk_score"])
         options.append({
@@ -93,5 +95,8 @@ def decide(req: dict, bandit: CarrierBandit) -> dict:
 def _tag(options: list[dict]) -> None:
     options[0].setdefault("tags", []).append("recommended")
     for key, tag in (("price_usd", "cheapest"), ("transit_days", "fastest"), ("co2_kg", "greenest")):
+        vals = [o[key] for o in options if o[key] is not None]
+        if not vals or min(vals) == max(vals):
+            continue  # no meaningful winner when every option ties
         best = min(options, key=lambda o: (o[key] if o[key] is not None else float("inf")))
         best.setdefault("tags", []).append(tag)

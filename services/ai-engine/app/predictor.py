@@ -35,7 +35,7 @@ def weather_risk(country: str, month: int) -> float:
 MODE_BASE_RISK = {"air": 0.05, "road": 0.06, "rail": 0.08, "ocean": 0.15}
 
 # Logistic coefficients over the risk features.
-COEF = {"bias": -3.0, "customs": 3.2, "weather": 2.5, "handoffs": 0.35, "mode": 4.0, "peak": 0.6}
+COEF = {"bias": -4.2, "customs": 3.2, "weather": 2.5, "handoffs": 0.35, "mode": 4.0, "peak": 0.6}
 
 
 def _peak_season(d: date) -> bool:
