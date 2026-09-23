@@ -81,10 +81,11 @@ def _graph_for(origin: tuple[float, float, str], dest: tuple[float, float, str])
     return adj
 
 
-def dijkstra(adj, weight_fn, allowed_modes: set[str] | None = None) -> list[net.Lane] | None:
+def dijkstra(adj, weight_fn, allowed_modes: set[str] | None = None,
+             source: str = ORIGIN, target: str = DEST) -> list[net.Lane] | None:
     counter = itertools.count()
-    heap = [(0.0, next(counter), ORIGIN, None)]
-    best: dict[str, float] = {ORIGIN: 0.0}
+    heap = [(0.0, next(counter), source, None)]
+    best: dict[str, float] = {source: 0.0}
     prev: dict[str, net.Lane] = {}
     visited = set()
     while heap:
@@ -92,7 +93,7 @@ def dijkstra(adj, weight_fn, allowed_modes: set[str] | None = None) -> list[net.
         if node in visited:
             continue
         visited.add(node)
-        if node == DEST:
+        if node == target:
             break
         for lane in adj.get(node, []):
             if allowed_modes and lane.mode not in allowed_modes and lane.src != ORIGIN and lane.dst != DEST:
@@ -102,10 +103,10 @@ def dijkstra(adj, weight_fn, allowed_modes: set[str] | None = None) -> list[net.
                 best[lane.dst] = nd
                 prev[lane.dst] = lane
                 heapq.heappush(heap, (nd, next(counter), lane.dst, lane))
-    if DEST not in prev:
+    if target not in prev:
         return None
-    path, node = [], DEST
-    while node != ORIGIN:
+    path, node = [], target
+    while node != source:
         lane = prev[node]
         path.append(lane)
         node = lane.src
@@ -122,7 +123,7 @@ def _label(code: str, origin_label: str, dest_label: str) -> str:
 
 def optimize_routes(
     origin: dict, destination: dict, weight_kg: float, dimensions: dict | None = None,
-    preferences: dict | None = None, max_results: int = 5,
+    preferences: dict | None = None, max_results: int = 5, via: list[str] | None = None,
 ) -> dict:
     o = net.geocode(origin.get("country"), origin.get("city"))
     d = net.geocode(destination.get("country"), destination.get("city"))
@@ -159,6 +160,26 @@ def optimize_routes(
                 lane.mode, lane.distance_km, h, c, e,
             ))
         route = Route(legs, pname)
+        candidates.setdefault(route.signature, route)
+
+    # Carrier-specific gateways (e.g. Ethiopian Air Cargo routes through Addis Ababa, ADD).
+    for hub in via or []:
+        if hub not in net.HUBS:
+            continue
+        w = weight_fn_for(PROFILES["balanced"])
+        first = dijkstra(adj, w, source=ORIGIN, target=hub)
+        second = dijkstra(adj, w, source=hub, target=DEST)
+        if not first or not second:
+            continue
+        legs = []
+        for lane in first + second:
+            h, c, e = leg_metrics(lane.mode, lane.distance_km, chargeable, weight_kg)
+            legs.append(Leg(
+                _label(lane.src, origin.get("city") or origin["country"], destination.get("city") or destination["country"]),
+                _label(lane.dst, origin.get("city") or origin["country"], destination.get("city") or destination["country"]),
+                lane.mode, lane.distance_km, h, c, e,
+            ))
+        route = Route(legs, f"via-{hub}")
         candidates.setdefault(route.signature, route)
 
     routes = list(candidates.values())

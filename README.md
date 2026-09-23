@@ -7,7 +7,7 @@ operations team (Team 1).
 **Goal:** a working AI routing engine that ranks shipping options by cost, speed, reliability and
 **carbon emissions**, behind the API-first architecture Kilogy specified.
 
-📄 **Architecture spec:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+📄 **Architecture spec:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · 🎨 **Design system:** [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)
 
 ## Team
 

@@ -13,14 +13,14 @@ from datetime import date, datetime, timedelta
 # Customs complexity (0 = frictionless, 1 = very complex). Placeholder index.
 CUSTOMS_COMPLEXITY = {
     "CA": 0.15, "US": 0.25, "MX": 0.35, "GB": 0.3, "FR": 0.2, "DE": 0.2, "NL": 0.15, "TR": 0.4,
-    "NG": 0.75, "GH": 0.55, "KE": 0.55, "ZA": 0.4, "EG": 0.6, "ET": 0.6, "AE": 0.25,
+    "NG": 0.75, "GH": 0.55, "SN": 0.5, "KE": 0.55, "ZA": 0.4, "EG": 0.6, "ET": 0.6, "AE": 0.25,
     "IN": 0.5, "CN": 0.4, "HK": 0.1, "SG": 0.1, "JP": 0.2, "AU": 0.3, "BR": 0.65,
 }
 
 # Seasonal weather disruption by hemisphere/region and month (1-12).
 def weather_risk(country: str, month: int) -> float:
     northern_winter = {"CA": 0.5, "US": 0.3, "GB": 0.25, "DE": 0.3, "NL": 0.25, "FR": 0.2, "TR": 0.2, "JP": 0.25, "CN": 0.2}
-    west_africa_rain = {"NG", "GH"}
+    west_africa_rain = {"NG", "GH", "SN"}
     if country in northern_winter and month in (12, 1, 2):
         return northern_winter[country]
     if country in west_africa_rain and month in (6, 7, 8, 9):
@@ -75,7 +75,7 @@ def predict(route: dict, origin_country: str, dest_country: str, ship_date: str 
     expected_delay_days = p * (1.5 + 2.5 * customs + (3 if "ocean" in modes else 0))
     eta_start = d + timedelta(days=math.floor(transit_days))
     eta_end = d + timedelta(days=math.ceil(transit_days + expected_delay_days + 0.5))
-    level = "low" if p < 0.2 else "medium" if p < 0.45 else "high"
+    level = "low" if p < 0.25 else "medium" if p < 0.55 else "high"
 
     return {
         "risk_score": round(p, 3),

@@ -1,5 +1,7 @@
-import { Copy, Eye, EyeOff, KeyRound } from "lucide-react";
+import { Copy, Eye, EyeOff, KeyRound, Webhook } from "lucide-react";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { ArchitecturePanel } from "./SystemArchitecture";
 
 const ENDPOINTS: { group: string; items: [string, string, string][] }[] = [
   { group: "Shipment Management", items: [
@@ -47,71 +49,120 @@ const CURL = `curl -X POST https://api.kilogy.co/v1/quotes \\
     "ai_optimize": true
   }'`;
 
+const TABS = [["keys", "API keys"], ["webhooks", "Webhooks"], ["explorer", "API explorer"], ["architecture", "Architecture"]] as const;
+type TabId = (typeof TABS)[number][0];
+
 export function Developers() {
-  const [show, setShow] = useState(false);
-  const [tab, setTab] = useState<"sdk" | "curl">("sdk");
-  const key = "kg_test_dev_key_123";
-  const used = 3412, limit = 10000;
+  const [params, setParams] = useSearchParams();
+  const tab = (TABS.find(([id]) => id === params.get("tab"))?.[0] ?? "keys") as TabId;
 
   return (
     <>
       <div className="page-head">
-        <div><h1>Developer portal</h1><p>API keys, usage and reference for the KILOGY REST API. Full docs will live at docs.kilogy.co.</p></div>
+        <div><h1>Dev / API</h1><p className="sub">API keys, webhooks and reference for the KILOGY REST API. Full docs will live at docs.kilogy.co.</p></div>
       </div>
+      <div className="card">
+        <div className="tabs" role="tablist" aria-label="Developer sections">
+          {TABS.map(([id, label]) => (
+            <button key={id} role="tab" id={`tab-${id}`} aria-controls={`panel-${id}`} aria-selected={tab === id} className="tab"
+              onClick={() => setParams(id === "keys" ? {} : { tab: id }, { replace: true })}>{label}</button>
+          ))}
+        </div>
+      </div>
+      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="stack" style={{ gap: 20 }}>
+        {tab === "keys" && <KeysPanel />}
+        {tab === "webhooks" && <WebhooksPanel />}
+        {tab === "explorer" && <ExplorerPanel />}
+        {tab === "architecture" && <ArchitecturePanel />}
+      </div>
+    </>
+  );
+}
 
-      <div className="grid g-2">
-        <div className="card">
-          <div className="card-head"><h2 className="row"><KeyRound size={16} /> API keys</h2><button className="btn btn-sm">Create key</button></div>
-          <div className="card-pad stack" style={{ gap: 12 }}>
-            <div className="row-between">
-              <div>
-                <div style={{ fontWeight: 600 }}>Development key <span className="badge b-blue">test</span></div>
-                <div className="mono small muted">{show ? key : "kg_test_••••••••••••"}</div>
-              </div>
-              <div className="row">
-                <button className="btn btn-sm" onClick={() => setShow(!show)} aria-label="Toggle key">{show ? <EyeOff size={13} /> : <Eye size={13} />}</button>
-                <button className="btn btn-sm" onClick={() => navigator.clipboard?.writeText(key)} aria-label="Copy key"><Copy size={13} /></button>
-              </div>
+function KeysPanel() {
+  const [show, setShow] = useState(false);
+  const key = "kg_test_dev_key_123";
+  const used = 3412, limit = 10000;
+  return (
+    <div className="grid g-2">
+      <section className="card" aria-labelledby="k-h">
+        <div className="card-head"><h2 id="k-h" className="row"><KeyRound size={18} aria-hidden /> Key manager</h2><button className="btn btn-sm">Create key</button></div>
+        <div className="card-pad stack" style={{ gap: 12 }}>
+          <div className="row-between">
+            <div className="stack" style={{ gap: 4 }}>
+              <div className="row"><span className="strong">Development key</span> <span className="badge plain b-accent">test</span></div>
+              <span className="mono muted">{show ? key : "kg_test_••••••••••••"}</span>
             </div>
-            <div className="small faint">Keys are hashed with bcrypt before storage. Exchange a key for a 15-minute JWT at <code>POST /api/v1/auth/token</code>.</div>
+            <div className="row">
+              <button className="icon-btn" onClick={() => setShow(!show)} aria-label={show ? "Hide key" : "Reveal key"} aria-pressed={show}>{show ? <EyeOff size={16} /> : <Eye size={16} />}</button>
+              <button className="icon-btn" onClick={() => navigator.clipboard?.writeText(key)} aria-label="Copy key"><Copy size={16} /></button>
+            </div>
           </div>
+          <p className="caption" style={{ margin: 0 }}>Keys are hashed with bcrypt before storage. Exchange a key for a 15-minute JWT at <code>POST /api/v1/auth/token</code>.</p>
         </div>
+      </section>
+      <section className="card" aria-labelledby="u-h">
+        <div className="card-head"><h2 id="u-h">Usage this hour</h2><span className="badge plain b-accent">Pro tier</span></div>
+        <div className="card-pad stack" style={{ gap: 12 }}>
+          <div className="row-between"><span className="kpi-value" style={{ marginTop: 0 }}>{used.toLocaleString()}</span><span className="muted">of {limit.toLocaleString()} requests</span></div>
+          <div className="meter" style={{ height: 8 }} role="meter" aria-label="Rate limit used" aria-valuenow={used} aria-valuemin={0} aria-valuemax={limit}><span style={{ width: `${(used / limit) * 100}%` }} /></div>
+          <table className="table">
+            <thead><tr><th scope="col">Tier</th><th scope="col">Limit</th></tr></thead>
+            <tbody><tr><td>Free</td><td>100 req/hr</td></tr><tr><td>Pro</td><td>10,000 req/hr</td></tr><tr><td>Enterprise</td><td>Custom</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  );
+}
 
-        <div className="card">
-          <div className="card-head"><h2>Usage this hour</h2><span className="badge b-teal">Pro tier</span></div>
-          <div className="card-pad stack" style={{ gap: 12 }}>
-            <div className="row-between"><span className="kpi-value">{used.toLocaleString()}</span><span className="muted">of {limit.toLocaleString()} requests</span></div>
-            <div className="bar" style={{ height: 8 }}><span style={{ width: `${(used / limit) * 100}%` }} /></div>
-            <table className="table small">
-              <thead><tr><th>Tier</th><th>Limit</th></tr></thead>
-              <tbody>
-                <tr><td>Free</td><td>100 req/hr</td></tr>
-                <tr><td>Pro</td><td>10,000 req/hr</td></tr>
-                <tr><td>Enterprise</td><td>Custom</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+function WebhooksPanel() {
+  const hooks = [
+    { url: "https://example-shipper.ca/hooks/kilogy", events: ["shipment.booked", "tracking.event", "shipment.delivered"], ok: true },
+    { url: "https://erp.example.com/kilogy/payments", events: ["payment.succeeded", "payment.failed"], ok: false },
+  ];
+  return (
+    <section className="card" aria-labelledby="wh-h">
+      <div className="card-head"><h2 id="wh-h" className="row"><Webhook size={18} aria-hidden /> Webhook endpoints</h2><button className="btn btn-sm">Add endpoint</button></div>
+      <div className="table-wrap">
+        <table className="table">
+          <thead><tr><th scope="col">Endpoint</th><th scope="col">Events</th><th scope="col">Last delivery</th></tr></thead>
+          <tbody>
+            {hooks.map((h) => (
+              <tr key={h.url}>
+                <td className="mono">{h.url}</td>
+                <td><div className="row wrap" style={{ gap: 4 }}>{h.events.map((e) => <code key={e} className="leg-chip">{e}</code>)}</div></td>
+                <td><span className={`badge ${h.ok ? "b-success" : "b-error"}`}>{h.ok ? "200 OK" : "Failed · retrying"}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+    </section>
+  );
+}
 
-      <div className="card">
-        <div className="tabs">
-          <button className={`tab${tab === "sdk" ? " active" : ""}`} onClick={() => setTab("sdk")}>Node.js SDK</button>
-          <button className={`tab${tab === "curl" ? " active" : ""}`} onClick={() => setTab("curl")}>cURL</button>
+function ExplorerPanel() {
+  const [tab, setTab] = useState<"sdk" | "curl">("sdk");
+  return (
+    <>
+      <section className="card">
+        <div className="tabs" role="tablist" aria-label="Code sample language">
+          <button role="tab" aria-selected={tab === "sdk"} className="tab" onClick={() => setTab("sdk")}>Node.js SDK</button>
+          <button role="tab" aria-selected={tab === "curl"} className="tab" onClick={() => setTab("curl")}>cURL</button>
         </div>
-        <div className="card-pad"><pre className="code">{tab === "sdk" ? SDK : CURL}</pre></div>
-      </div>
-
-      <div className="card">
-        <div className="card-head"><h2>Endpoints · v1</h2><span className="small faint">REST · GraphQL (analytics) · WebSocket (tracking)</span></div>
+        <div className="card-pad"><pre className="code" tabIndex={0} aria-label="Code sample">{tab === "sdk" ? SDK : CURL}</pre></div>
+      </section>
+      <section className="card" aria-labelledby="ep-h">
+        <div className="card-head"><h2 id="ep-h">Endpoints · v1</h2><span className="caption">REST · GraphQL (analytics) · WebSocket (tracking)</span></div>
         {ENDPOINTS.map((g) => (
           <div key={g.group}>
-            <div className="section-title" style={{ padding: "12px 16px 4px" }}>{g.group}</div>
+            <h3 className="info-label" style={{ padding: "14px 20px 6px" }}>{g.group}</h3>
             <table className="table">
               <tbody>
                 {g.items.map(([m, path, desc]) => (
                   <tr key={m + path}>
-                    <td style={{ width: 90 }}><span className={`method m-${m}`}>{m}</span></td>
+                    <td style={{ width: 96 }}><span className={`method m-${m}`}>{m}</span></td>
                     <td className="mono" style={{ width: "45%" }}>{path}</td>
                     <td className="muted">{desc}</td>
                   </tr>
@@ -120,7 +171,7 @@ export function Developers() {
             </table>
           </div>
         ))}
-      </div>
+      </section>
     </>
   );
 }

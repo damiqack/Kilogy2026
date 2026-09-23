@@ -47,6 +47,7 @@ export interface RankedOption {
   carrier_id: string;
   carrier_name: string;
   service: ServiceLevel;
+  service_name?: string; // carrier's product name, e.g. "International Express"
   price_usd: number;
   transit_days: number;
   co2_kg: number | null;
@@ -70,26 +71,32 @@ export interface Quote {
 
 export type ShipmentStatus =
   | "created" | "booked" | "picked_up" | "in_transit" | "customs"
-  | "out_for_delivery" | "delivered" | "exception" | "cancelled";
+  | "out_for_delivery" | "delivered" | "delayed" | "exception" | "cancelled";
 
-export interface TrackingEvent {
-  status: ShipmentStatus;
-  description: string;
+/** One row of the tracking timeline (spec 3.4). Upcoming steps carry an estimated time. */
+export interface TimelineStep {
+  title: string;
   location: string;
-  timestamp: string;
+  time: string;
+  state: "done" | "current" | "upcoming" | "issue";
 }
 
 export interface Shipment {
   id: string;
-  reference: string;
+  /** KILOGY tracking ID, format KLG-YYYYMMDD-NNN */
+  trackingId: string;
   createdAt: string;
   status: ShipmentStatus;
   origin: Location;
   destination: Location;
   package: PackageSpec;
   selected: RankedOption;
-  trackingNumber: string;
-  events: TrackingEvent[];
+  /** The carrier's own tracking number */
+  carrierTracking: string;
+  timeline: TimelineStep[];
+  deliveredAt?: string;
+  street?: { origin?: string; destination?: string };
+  commodity?: string;
 }
 
 export interface Carrier {
@@ -101,6 +108,16 @@ export interface Carrier {
   onTime: number;
   avgCo2PerKg: number;
   status: "connected" | "sandbox" | "planned";
+  apiLatencyMs?: number;
+}
+
+export interface AiAlert {
+  id: string;
+  severity: "warning" | "critical" | "info";
+  title: string;
+  detail: string;
+  recommendation?: string;
+  cta?: { label: string; to: string };
 }
 
 export interface DocumentRecord {
