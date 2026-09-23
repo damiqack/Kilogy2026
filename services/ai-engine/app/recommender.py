@@ -15,7 +15,7 @@ import numpy as np
 REGIONS = {
     "CA": "NA", "US": "NA", "MX": "NA",
     "GB": "EU", "FR": "EU", "DE": "EU", "NL": "EU", "TR": "EU",
-    "NG": "AF", "GH": "AF", "KE": "AF", "ZA": "AF", "EG": "AF", "ET": "AF",
+    "NG": "AF", "GH": "AF", "SN": "AF", "KE": "AF", "ZA": "AF", "EG": "AF", "ET": "AF",
     "AE": "ME", "IN": "AS", "CN": "AS", "HK": "AS", "SG": "AS", "JP": "AS",
     "AU": "OC", "BR": "SA",
 }
@@ -27,6 +27,7 @@ PRIORS: dict[str, dict[str, tuple[float, float]]] = {
     "fedex": {"NA": (22, 3), "EU": (16, 4), "AF": (11, 5), "*": (15, 4)},
     "ups": {"NA": (21, 3), "EU": (17, 4), "AF": (10, 6), "*": (14, 5)},
     "canadapost": {"NA": (14, 5), "*": (8, 6)},
+    "ethiopian": {"AF": (17, 4), "ME": (14, 4), "*": (9, 5)},
 }
 
 

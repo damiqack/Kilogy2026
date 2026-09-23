@@ -1,132 +1,137 @@
-import { AlertTriangle, ArrowRight, Boxes, Clock, Leaf, PackagePlus, Sparkles, Wallet } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Leaf, Package, PackagePlus, Plane, ShieldAlert, Sparkles, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { RiskBadge, StatusBadge } from "../components/Badges";
-import { ModeIcon } from "../components/RouteLegs";
-import { EMISSION_FACTORS } from "../data/carriers";
+import { StatusBadge } from "../components/Badges";
 import { useStore } from "../data/store";
-import type { Mode } from "../data/types";
-import { date, kg, place, usd } from "../lib/format";
+import type { AiAlert, Shipment } from "../data/types";
+import { date, kg, place } from "../lib/format";
 
-const ACTIVE = new Set(["booked", "picked_up", "in_transit", "customs", "out_for_delivery", "exception"]);
+const IN_TRANSIT = new Set(["picked_up", "in_transit", "customs", "out_for_delivery", "delayed"]);
+const ACTIVE = new Set([...IN_TRANSIT, "booked", "exception"]);
+
+const sameDay = (iso: string | undefined, offset = 0) => {
+  if (!iso) return false;
+  const d = new Date(); d.setDate(d.getDate() + offset);
+  return new Date(iso).toDateString() === d.toDateString();
+};
 
 export function Dashboard() {
-  const { shipments } = useStore();
-  const live = shipments.filter((s) => s.status !== "cancelled");
-  const active = live.filter((s) => ACTIVE.has(s.status));
-  const delivered = live.filter((s) => s.status === "delivered");
-  const exceptions = live.filter((s) => s.status === "exception");
-  const spend = live.reduce((a, s) => a + s.selected.price_usd, 0);
-  const co2 = live.reduce((a, s) => a + (s.selected.co2_kg ?? 0), 0);
-  // Baseline: the same shipments sent as all-air express.
-  const airBaseline = live.reduce((a, s) => {
-    const dist = s.selected.route?.legs.reduce((d, l) => d + l.distance_km, 0) ?? 9000;
-    return a + (EMISSION_FACTORS.air * (s.package.weight_kg / 1000) * dist) / 1000;
-  }, 0);
-  const saved = Math.max(0, airBaseline - co2);
-
-  const byMode = live.reduce<Record<string, { n: number; co2: number }>>((m, s) => {
-    const k = s.selected.route?.primary_mode ?? "air";
-    m[k] = { n: (m[k]?.n ?? 0) + 1, co2: (m[k]?.co2 ?? 0) + (s.selected.co2_kg ?? 0) };
-    return m;
-  }, {});
-  const maxCo2 = Math.max(...Object.values(byMode).map((v) => v.co2), 1);
+  const { shipments, alerts, dismissAlert } = useStore();
+  const active = shipments.filter((s) => ACTIVE.has(s.status));
+  const inTransit = shipments.filter((s) => IN_TRANSIT.has(s.status));
+  const onTrack = inTransit.filter((s) => s.status !== "delayed").length;
+  const deliveredToday = shipments.filter((s) => s.status === "delivered" && sameDay(s.deliveredAt)).length;
+  const deliveredYesterday = shipments.filter((s) => s.status === "delivered" && sameDay(s.deliveredAt, -1)).length;
+  const incidents = shipments.filter((s) => s.status === "exception" || s.status === "delayed");
+  const openIncidents = incidents.filter((s) => s.status === "exception").length;
+  const co2 = shipments.reduce((a, s) => a + (s.selected.co2_kg ?? 0), 0);
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const [primary, ...otherAlerts] = alerts;
 
   return (
     <>
       <div className="page-head">
         <div>
-          <h1>Good morning, Damian</h1>
-          <p>Here's how your shipments are moving today.</p>
+          <h1>Overview Dashboard <span className="title-meta"><span className="hide-sm">| </span>{today}</span></h1>
         </div>
-        <Link to="/quotes/new" className="btn btn-primary"><PackagePlus size={16} /> New AI quote</Link>
+        <Link to="/shipments/new" className="btn btn-primary"><PackagePlus size={17} aria-hidden /> New Shipment</Link>
       </div>
 
-      <div className="grid g-4">
-        <Kpi icon={<Boxes size={15} />} label="Active shipments" value={String(active.length)} delta={`${live.length} total`} />
-        <Kpi icon={<Clock size={15} />} label="On-time delivery" value="94%" delta="▲ 3 pts vs last month" up />
-        <Kpi icon={<Leaf size={15} />} label="CO₂ saved vs all-air" value={kg(saved)} delta={`${airBaseline ? Math.round((saved / airBaseline) * 100) : 0}% lower emissions`} up />
-        <Kpi icon={<Wallet size={15} />} label="Shipping spend" value={usd(spend)} delta="This month" />
-      </div>
+      <section className="grid g-4 kpis" aria-label="Key metrics">
+        <Kpi icon={<Package size={17} />} label="Active Shipments" value={active.length} delta={`+${shipments.filter((s) => Date.now() - +new Date(s.createdAt) < 7 * 864e5).length} this week`} tone="up" />
+        <Kpi icon={<CheckCircle2 size={17} />} label="Delivered Today" value={deliveredToday} delta={`${deliveredToday - deliveredYesterday >= 0 ? "+" : ""}${deliveredToday - deliveredYesterday} vs yesterday`} tone="up" />
+        <Kpi icon={<Plane size={17} />} label="In Transit" value={inTransit.length} delta={`On track: ${inTransit.length ? Math.round((onTrack / inTransit.length) * 100) : 100}%`} />
+        <Kpi icon={<ShieldAlert size={17} />} label="Incidents" value={incidents.length} delta={`${incidents.length - openIncidents} delayed, ${openIncidents} open`} tone={openIncidents ? "bad" : undefined} />
+      </section>
+
+      {primary && <AlertBanner alert={primary} onDismiss={() => dismissAlert(primary.id)} />}
 
       <div className="grid g-main">
-        <div className="card">
+        <section className="card" aria-labelledby="recent-h">
           <div className="card-head">
-            <h2>Recent shipments</h2>
-            <Link to="/shipments" className="small row">View all <ArrowRight size={13} /></Link>
+            <h2 id="recent-h">Recent Shipments</h2>
+            <Link to="/shipments" className="row small">View all <ArrowRight size={14} aria-hidden /></Link>
           </div>
-          <div className="table-wrap">
-            <table className="table">
-              <thead><tr><th>Reference</th><th>Lane</th><th>Carrier</th><th>Status</th><th>ETA</th></tr></thead>
-              <tbody>
-                {live.slice(0, 6).map((s) => (
-                  <tr key={s.id}>
-                    <td><Link to={`/shipments/${s.id}`} className="mono">{s.reference}</Link></td>
-                    <td>{place(s.origin)} → {place(s.destination)}</td>
-                    <td><span className="row"><ModeIcon mode={s.selected.route?.primary_mode ?? "air"} /> {s.selected.carrier_name}</span></td>
-                    <td><StatusBadge status={s.status} /></td>
-                    <td className="muted">{s.status === "delivered" ? "Delivered" : date(s.selected.risk.eta.latest)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <RecentTable rows={shipments.slice(0, 6)} />
+        </section>
 
-        <div className="stack" style={{ gap: 16 }}>
-          <div className="card">
-            <div className="card-head"><h2 className="row"><Sparkles size={16} color="var(--primary)" /> AI insights</h2></div>
+        <div className="stack" style={{ gap: 20 }}>
+          <section className="card" aria-labelledby="ai-h">
+            <div className="card-head"><h2 id="ai-h" className="row"><Sparkles size={18} color="var(--accent)" aria-hidden /> AI Insights</h2></div>
             <div className="card-pad stack" style={{ gap: 12 }}>
-              {exceptions.map((s) => (
-                <div key={s.id} className="row" style={{ alignItems: "flex-start", gap: 10 }}>
-                  <AlertTriangle size={16} color="var(--red)" style={{ marginTop: 2 }} />
-                  <div>
-                    <div><Link to={`/shipments/${s.id}`} className="mono">{s.reference}</Link> is on customs hold in {s.destination.city}.</div>
-                    <div className="small muted">Upload a commercial invoice to release it. Predicted delay: 2–3 days.</div>
+              {otherAlerts.map((a) => (
+                <div key={a.id} className="ai-tip" style={a.severity === "critical" ? { borderLeftColor: "var(--error)", background: "var(--error-soft)" } : undefined}>
+                  {a.severity === "critical" ? <AlertTriangle size={18} className="ai-icon" color="var(--error)" aria-hidden /> : <Leaf size={18} className="ai-icon" aria-hidden />}
+                  <div className="stack" style={{ gap: 4 }}>
+                    <strong>{a.title}</strong>
+                    <span className="small muted">{a.detail}</span>
+                    {a.cta && <Link to={a.cta.to} className="small">{a.cta.label} →</Link>}
                   </div>
                 </div>
               ))}
-              <div className="row" style={{ alignItems: "flex-start", gap: 10 }}>
-                <Leaf size={16} color="var(--green)" style={{ marginTop: 2 }} />
-                <div>
-                  <div>Switch non-urgent Canada → Ghana freight to ocean via Halifax → Tema.</div>
-                  <div className="small muted">About 95% less CO₂ and 40% cheaper, with 3 extra weeks of transit.</div>
-                </div>
-              </div>
-              <div className="row" style={{ alignItems: "flex-start", gap: 10 }}>
-                <RiskBadge level="medium" />
-                <div className="small muted">West Africa rainy season lifts delay risk on Lagos routes through September.</div>
-              </div>
+              {!otherAlerts.length && <span className="muted">No other insights right now.</span>}
             </div>
-          </div>
-
-          <div className="card">
-            <div className="card-head"><h2>Emissions by mode</h2><span className="small faint">kg CO₂e</span></div>
-            <div className="card-pad stack" style={{ gap: 12 }}>
-              {(Object.entries(byMode) as [Mode, { n: number; co2: number }][]).map(([mode, v]) => (
-                <div key={mode} className="stack" style={{ gap: 4 }}>
-                  <div className="row-between small">
-                    <span className="row" style={{ textTransform: "capitalize" }}><ModeIcon mode={mode} /> {mode} · {v.n} shipments</span>
-                    <span className="num">{kg(v.co2)}</span>
-                  </div>
-                  <div className="bar"><span style={{ width: `${(v.co2 / maxCo2) * 100}%`, background: mode === "ocean" ? "var(--green)" : undefined }} /></div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </section>
+          <section className="card card-pad stack" aria-label="Emissions">
+            <div className="kpi-label"><span className="kpi-icon" style={{ color: "var(--success)" }}><Leaf size={17} aria-hidden /></span> CO₂e this period</div>
+            <div className="kpi-value">{kg(co2)}</div>
+            <Link to="/analytics" className="small">See emissions by lane →</Link>
+          </section>
         </div>
       </div>
-
-      <div className="small faint">Delivered this period: {delivered.length}. KPI definitions are placeholders until the Fanshawe operations team finalizes them.</div>
     </>
   );
 }
 
-function Kpi({ icon, label, value, delta, up }: { icon: React.ReactNode; label: string; value: string; delta: string; up?: boolean }) {
+function AlertBanner({ alert, onDismiss }: { alert: AiAlert; onDismiss: () => void }) {
+  return (
+    <div className="ai-alert" role="alert">
+      <AlertTriangle size={22} className="ai-icon" aria-hidden />
+      <div className="ai-alert-body">
+        <strong>AI Alert:</strong> {alert.title} {alert.recommendation && <span className="strong">{alert.recommendation}</span>}
+      </div>
+      {alert.cta && <Link to={alert.cta.to} className="btn btn-sm">{alert.cta.label}</Link>}
+      <button className="expand-btn" onClick={onDismiss} aria-label="Dismiss alert"><X size={16} /></button>
+    </div>
+  );
+}
+
+export function RecentTable({ rows }: { rows: Shipment[] }) {
+  return (
+    <div className="table-wrap">
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">Tracking #</th>
+            <th scope="col">Origin</th>
+            <th scope="col">Destination</th>
+            <th scope="col" className="hide-sm">Carrier</th>
+            <th scope="col">Status</th>
+            <th scope="col">ETA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((s) => (
+            <tr key={s.id}>
+              <td><Link to={`/shipments/${s.id}`} className="track-id">{s.trackingId}</Link></td>
+              <td>{place(s.origin)}</td>
+              <td>{place(s.destination)}</td>
+              <td className="hide-sm">{s.selected.carrier_name.replace(" International", "").replace(" Worldwide", "").replace(" Express", "")}</td>
+              <td><StatusBadge status={s.status} /></td>
+              <td className="num">{date(s.status === "delivered" && s.deliveredAt ? s.deliveredAt : s.selected.risk.eta.latest)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Kpi({ icon, label, value, delta, tone }: { icon: React.ReactNode; label: string; value: number; delta: string; tone?: "up" | "bad" }) {
   return (
     <div className="card kpi">
-      <div className="kpi-label">{icon} {label}</div>
-      <div className="kpi-value">{value}</div>
-      <div className={`kpi-delta ${up ? "up" : "faint"}`}>{delta}</div>
+      <div className="kpi-label"><span className="kpi-icon" aria-hidden>{icon}</span>{label}</div>
+      <div className="kpi-value">{value.toLocaleString()}</div>
+      <div className={`kpi-delta ${tone ?? ""}`}>{delta}</div>
     </div>
   );
 }

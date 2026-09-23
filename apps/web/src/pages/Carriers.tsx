@@ -3,7 +3,7 @@ import { ModeIcon } from "../components/RouteLegs";
 import { CARRIERS } from "../data/carriers";
 import { pct, titleCase } from "../lib/format";
 
-const STATUS_CLASS = { connected: "b-green", sandbox: "b-blue", planned: "" } as const;
+const STATUS_CLASS = { connected: "b-success", sandbox: "b-accent", planned: "b-neutral" } as const;
 
 export function Carriers() {
   return (
@@ -11,34 +11,44 @@ export function Carriers() {
       <div className="page-head">
         <div>
           <h1>Carriers</h1>
-          <p>Every carrier connects through the Carrier Gateway using the standard <code>ICarrierAdapter</code> interface.</p>
+          <p className="sub">Integrated carriers and their API status. Each connects through the Carrier Gateway's <code>ICarrierAdapter</code>.</p>
         </div>
-        <button className="btn"><Plug size={15} /> Request integration</button>
+        <button className="btn"><Plug size={16} aria-hidden /> Request integration</button>
       </div>
-      <div className="grid g-3">
-        {CARRIERS.map((c) => (
-          <div key={c.id} className="card card-pad stack" style={{ gap: 12 }}>
-            <div className="row-between">
-              <div className="row">
-                <div className="avatar" style={{ borderRadius: 8, background: "var(--primary-soft)", color: "var(--primary)" }}>{c.name.slice(0, 2).toUpperCase()}</div>
-                <div><h3>{c.name}</h3><div className="small faint">{c.coverage}</div></div>
-              </div>
-              <span className={`badge ${STATUS_CLASS[c.status]}`}>{titleCase(c.status)}</span>
-            </div>
-            <div className="row" style={{ flexWrap: "wrap", gap: 6 }}>
-              {c.services.map((s) => <span key={s} className="badge" style={{ textTransform: "capitalize" }}>{s}</span>)}
-            </div>
-            <div className="row small muted" style={{ gap: 10 }}>
-              {c.modes.map((m) => <span key={m} className="row" style={{ gap: 4, textTransform: "capitalize" }}><ModeIcon mode={m} /> {m}</span>)}
-            </div>
-            <div className="grid g-2" style={{ gap: 8 }}>
-              <div><div className="small faint">On-time rate</div><div className="num" style={{ fontWeight: 600 }}>{pct(c.onTime)}</div></div>
-              <div><div className="small faint">Avg CO₂e / kg</div><div className="num" style={{ fontWeight: 600 }}>{c.avgCo2PerKg} kg</div></div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="small faint">Sandbox = mock adapter in the prototype. Planned = identified for integration, adapter not written yet.</div>
+      <section className="card">
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr><th scope="col">Carrier</th><th scope="col">Services</th><th scope="col">Modes</th><th scope="col" className="hide-sm">Coverage</th>
+                <th scope="col" className="right">On-time</th><th scope="col" className="right hide-sm">CO₂e / kg</th><th scope="col">API status</th></tr>
+            </thead>
+            <tbody>
+              {CARRIERS.map((c) => (
+                <tr key={c.id}>
+                  <td>
+                    <div className="row" style={{ gap: 10 }}>
+                      <span className="kpi-icon strong" aria-hidden>{c.name.slice(0, 2).toUpperCase()}</span>
+                      <span className="strong">{c.name}</span>
+                    </div>
+                  </td>
+                  <td><div className="row wrap" style={{ gap: 4 }}>{c.services.map((s) => <span key={s} className="badge plain b-neutral" style={{ textTransform: "capitalize" }}>{s}</span>)}</div></td>
+                  <td><span className="row muted" style={{ gap: 8 }}>{c.modes.map((m) => <span key={m} title={m}><ModeIcon mode={m} /><span className="sr-only">{m}</span></span>)}</span></td>
+                  <td className="muted hide-sm">{c.coverage}</td>
+                  <td className="num right">{pct(c.onTime)}</td>
+                  <td className="num right hide-sm">{c.avgCo2PerKg} kg</td>
+                  <td>
+                    <div className="stack" style={{ gap: 2 }}>
+                      <span className={`badge ${STATUS_CLASS[c.status]}`}>{titleCase(c.status)}</span>
+                      {c.apiLatencyMs && <span className="caption">p50 {c.apiLatencyMs} ms</span>}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <p className="caption">Sandbox = mock adapter in the prototype. Planned = identified for integration, adapter not written yet.</p>
     </>
   );
 }

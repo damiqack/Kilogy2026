@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 import { StoreProvider } from "./data/store";
+import "@fontsource-variable/inter";
+import "@fontsource/roboto-mono/400.css";
+import "@fontsource/roboto-mono/500.css";
 import "./styles.css";
 
 createRoot(document.getElementById("root")!).render(

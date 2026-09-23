@@ -88,3 +88,22 @@ def test_api_decide_ranks_options():
 def test_api_rejects_unknown_location():
     res = client.post("/v1/route-optimize", json={"origin": {"country": "ZZ"}, "destination": LAGOS, "package": {"weight_kg": 1}})
     assert res.status_code == 422
+
+
+def test_decide_routes_carrier_through_its_hub():
+    body = {
+        "origin": MTL, "destination": LAGOS, "package": {"weight_kg": 10},
+        "carrier_rates": [
+            {"carrier_id": "ethiopian", "service": "standard", "service_name": "Air Freight", "cost_usd": 120, "transit_days": 5, "mode": "air", "via": "ADD"},
+            {"carrier_id": "dhl", "service": "express", "cost_usd": 180, "transit_days": 3, "mode": "air"},
+        ],
+    }
+    opts = client.post("/v1/decide", json=body).json()["options"]
+    eth = next(o for o in opts if o["carrier_id"] == "ethiopian")
+    assert eth["service_name"] == "Air Freight"
+    assert any(l["to"] == "ADD" for l in eth["route"]["legs"])
+
+
+def test_dakar_is_routable():
+    r = optimize_routes({"country": "CA", "city": "Ottawa"}, {"country": "SN", "city": "Dakar"}, 5)
+    assert r["routes"]

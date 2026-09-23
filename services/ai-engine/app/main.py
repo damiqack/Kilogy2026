@@ -95,9 +95,11 @@ class CarrierRate(BaseModel):
     carrier_id: str
     carrier_name: str | None = None
     service: str
+    service_name: str | None = None
     cost_usd: float
     transit_days: float
     mode: str = "air"
+    via: str | None = None  # hub code the carrier routes through
 
 
 class DecideRequest(BaseModel):

@@ -23,18 +23,22 @@ Decision Engine (`POST /v1/decide`) instead of the built-in mock.
 
 ## Screens
 
-| Route | Screen | Architecture piece |
+Navigation follows the UI/UX spec's information architecture. Styling follows the KILOGY design
+system; see [`docs/DESIGN_SYSTEM.md`](../../docs/DESIGN_SYSTEM.md).
+
+| Route | Screen | Spec |
 |---|---|---|
-| `/` | Dashboard: KPIs, CO₂ saved, AI insights | Analytics Service |
-| `/quotes/new` | Quote form + AI-ranked carrier options, **Book** | Pricing, Routing, Decision Engine |
-| `/shipments` | Shipment list with status filters | Shipment Service |
-| `/shipments/:id` | Route legs, tracking timeline, AI risk prediction, docs | Tracking, Incident Predictor |
-| `/carriers` | Integrated carriers | Carrier Gateway (`ICarrierAdapter`) |
-| `/analytics` | Volume, carrier mix, lane performance | Analytics Service |
-| `/documents` | Labels, customs, invoices | Document Service |
-| `/payments` | Charges and status | Payment Service |
-| `/developers` | API keys, rate-limit tiers, SDK, endpoint reference | Developer portal |
-| `/system` | The 5 layers with build status, model registry, decision flow | Whole architecture |
+| `/` | Overview Dashboard: KPIs, AI Alert, recent shipments, AI insights | 3.1 |
+| `/shipments/new` | New Shipment: 4 steps (addresses → package + inline AI suggestion → AI quote comparison → review & book) | 3.2, 3.3 |
+| `/shipments/:id` | Shipment Tracking: AI predicted ETA, risk score, timeline | 3.4 |
+| `/shipments` | Shipment history with filters | 4 |
+| `/quotes`, `/quotes/:id` | Past quote requests and their comparison tables | 4 |
+| `/carriers` | Carrier list and API status | 4 |
+| `/analytics` | Spend, CO₂ and lane performance | 4 |
+| `/documents` | Document generator and archive | 4 |
+| `/payments` | Payment ledger | 4 |
+| `/settings` | Organization and notifications | 3.1 nav |
+| `/developers` | Dev / API: key manager, webhooks, API explorer, architecture status | 4 |
 
 ## Code map
 
@@ -46,7 +50,9 @@ src/
 │   ├── ai.ts         calls the AI engine, falls back to a local mock
 │   ├── store.tsx     client-side stand-in for the Shipment, Document and Payment services
 │   └── seed.ts       sample shipments (fictional)
-├── components/       layout, badges, score bars, route legs
+├── components/       layout (sidebar / rail / bottom tabs), QuoteTable, badges, score bars
+├── design/tokens.json  design tokens (Figma Tokens format)
+├── lib/money.ts      USD → CAD display
 ├── pages/            one file per screen
 └── styles.css        design tokens (light + dark) and components
 ```

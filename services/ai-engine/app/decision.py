@@ -14,7 +14,11 @@ from .routing import optimize_routes
 from .scoring import normalize_preferences
 
 
-def _match_route(routes: list[dict], mode: str) -> dict | None:
+def _match_route(routes: list[dict], mode: str, via: str | None = None) -> dict | None:
+    if via:
+        for r in routes:
+            if any(l["from"] == via or l["to"] == via for l in r["legs"]):
+                return r
     for r in routes:
         if r["primary_mode"] == mode:
             return r
@@ -24,10 +28,11 @@ def _match_route(routes: list[dict], mode: str) -> dict | None:
 def decide(req: dict, bandit: CarrierBandit) -> dict:
     origin, dest, pkg = req["origin"], req["destination"], req["package"]
     prefs = normalize_preferences(req.get("preferences") or {})
-    route_result = optimize_routes(origin, dest, pkg["weight_kg"], pkg.get("dimensions"), prefs, max_results=8)
+    rates = req.get("carrier_rates", [])
+    vias = sorted({r["via"] for r in rates if r.get("via")})
+    route_result = optimize_routes(origin, dest, pkg["weight_kg"], pkg.get("dimensions"), prefs, max_results=12, via=vias)
     routes = route_result["routes"]
 
-    rates = req.get("carrier_rates", [])
     services = set(req.get("service_type") or [])
     if services:
         rates = [r for r in rates if r["service"] in services]
@@ -46,7 +51,7 @@ def decide(req: dict, bandit: CarrierBandit) -> dict:
 
     options = []
     for r in rates:
-        route = _match_route(routes, r.get("mode", "air"))
+        route = _match_route(routes, r.get("mode", "air"), r.get("via"))
         price = pricing.optimize_price(r["cost_usd"], market_ref.get(r["service"]), r["service"]) if req.get("ai_optimize", True) \
             else {"price_usd": r["cost_usd"], "margin_pct": 0.0}
         # Use the carrier's quoted transit time; the matched route supplies the legs and modes.
@@ -58,6 +63,7 @@ def decide(req: dict, bandit: CarrierBandit) -> dict:
             "carrier_id": r["carrier_id"],
             "carrier_name": r.get("carrier_name", r["carrier_id"]),
             "service": r["service"],
+            "service_name": r.get("service_name"),
             "price_usd": price["price_usd"],
             "currency": "USD",
             "transit_days": r["transit_days"],
