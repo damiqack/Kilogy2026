@@ -45,7 +45,7 @@ export function AppLayout() {
     <Layout style={{ minHeight: "100vh" }}>
       <ConfigProvider theme={headerTheme}>
         <Header className="topbar">
-          <Link to="/" className="wordmark" aria-label="Kilogy home">
+          <Link to="/dashboard" className="wordmark" aria-label="Kilogy dashboard">
             KILOGY<span>Logistics OS</span>
           </Link>
 
@@ -63,7 +63,7 @@ export function AppLayout() {
                 style={{ flex: 1, minWidth: 0 }}
               />
               {search}
-              <Link to="/" className="topbar-link">Alerts <b>{alerts.length}</b></Link>
+              <Link to="/dashboard" className="topbar-link">Alerts <b>{alerts.length}</b></Link>
               {NAV_ITEMS.filter((n) => n.group === "utility").map((n) => (
                 <Link key={n.path} to={n.path} className={`topbar-link${active === n.path ? " is-active" : ""}`}>{n.label}</Link>
               ))}

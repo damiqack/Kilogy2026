@@ -5,6 +5,7 @@ import { CarriersPage } from "../pages/Carriers";
 import { DashboardPage } from "../pages/Dashboard";
 import { DevelopersPage } from "../pages/Developers";
 import { DocumentsPage } from "../pages/Documents";
+import { LandingPage } from "../pages/landing/Landing";
 import { NewShipmentPage } from "../pages/NewShipment";
 import { NotFoundPage } from "../pages/NotFound";
 import { PaymentsPage } from "../pages/Payments";
@@ -17,8 +18,12 @@ import { ShipmentsPage } from "../pages/Shipments";
 export function AppRoutes() {
   return (
     <Routes>
+      {/* Public homepage (no app shell) */}
+      <Route index element={<LandingPage />} />
+
+      {/* Signed-in app */}
       <Route element={<AppLayout />}>
-        <Route index element={<DashboardPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
         <Route path="shipments" element={<ShipmentsPage />} />
         <Route path="shipments/new" element={<NewShipmentPage />} />
         <Route path="shipments/:id" element={<ShipmentDetailPage />} />

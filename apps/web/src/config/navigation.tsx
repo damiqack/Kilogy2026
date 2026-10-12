@@ -7,7 +7,7 @@ export interface NavItem {
 
 /** Top navigation (Kilogy UI/UX spec, section 4). Add a page here and in app/routes.tsx. */
 export const NAV_ITEMS: NavItem[] = [
-  { path: "/", label: "Overview", group: "main" },
+  { path: "/dashboard", label: "Overview", group: "main" },
   { path: "/shipments", label: "Shipments", group: "main" },
   { path: "/quotes", label: "Quotes", group: "main" },
   { path: "/carriers", label: "Carriers", group: "main" },
@@ -18,9 +18,9 @@ export const NAV_ITEMS: NavItem[] = [
   { path: "/settings", label: "Settings", group: "utility" },
 ];
 
-/** The nav item a URL belongs to, e.g. /shipments/123 → /shipments. */
+/** The nav item a URL belongs to, e.g. /shipments/123 → /shipments. The public homepage (/) is not in the app nav. */
 export function activeNavPath(pathname: string): string {
-  const match = NAV_ITEMS.filter((n) => n.path !== "/" && pathname.startsWith(n.path))
+  const match = NAV_ITEMS.filter((n) => pathname.startsWith(n.path))
     .sort((a, b) => b.path.length - a.path.length)[0];
-  return match?.path ?? "/";
+  return match?.path ?? "/dashboard";
 }

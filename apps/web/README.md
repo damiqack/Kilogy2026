@@ -45,6 +45,7 @@ src/
 │   ├── RouteText.tsx        "Montreal › JFK › Lagos" route string
 │   └── QuoteTable.tsx       Ranked carrier quote table (used in two pages)
 ├── pages/                   One file per screen
+│   └── landing/             Public homepage at / (content.ts, LaneMap.tsx, landing.css)
 ├── data/
 │   ├── types.ts             Shared types (Shipment, Quote, RankedOption, …)
 │   ├── store.tsx            In-memory app state + actions (useStore hook)
@@ -57,7 +58,22 @@ src/
     └── money.ts             USD → CAD display
 ```
 
+## URLs
+
+| Path | What it is |
+|---|---|
+| `/` | Public homepage (no app shell) |
+| `/dashboard` | Signed-in overview |
+| `/shipments`, `/quotes`, `/carriers`, … | App screens inside the top-bar shell |
+
 ## Common changes
+
+### Edit the homepage
+
+All homepage text, the quote-box city lists and the sample quote are in
+`src/pages/landing/content.ts`. The lane diagram's cities and routes are the lists at the top of
+`LaneMap.tsx`. Styles are in `landing.css` (every class starts with `lp-`). The quote box sends
+people to `/shipments/new?from=CA:Montreal&to=NG:Lagos`, which pre-fills the shipment form.
 
 ### Add a page
 
