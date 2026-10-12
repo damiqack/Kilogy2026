@@ -1,64 +1,97 @@
-# @kilogy/web — dashboard prototype
+# @kilogy/web
 
-The Layer 1 client (web app) for KILOGY: a clickable UI prototype for the team and Kilogy to
-review.
+The Kilogy web dashboard (Layer 1: Client Interface). It is built with React 19, TypeScript, Vite,
+React Router and [Ant Design 6](https://ant.design/components/overview).
+
+The UI uses stock Ant Design components with a small theme layer. If you know Ant Design, you can
+change any screen without learning a custom component library.
+
+## Run it
+
+Requires Node 20+.
 
 ```bash
-cd apps/web
 npm install
 npm run dev          # http://localhost:5173
+npm run build        # type-check + production build into dist/
+npm run typecheck
 ```
 
-It runs standalone with sample data. To get **live AI results**, also start the AI engine in a
-second terminal:
+The app runs on its own with sample data. If the AI engine is running (`services/ai-engine`, port
+4200), quotes come from it live. Otherwise the app falls back to local mock rates, and the footer
+shows "Routing engine: offline". Point at a different engine with `VITE_AI_ENGINE_URL`.
 
-```bash
-cd services/ai-engine
-source .venv/bin/activate
-uvicorn app.main:app --port 4200
-```
-
-The sidebar footer shows `AI engine: live` once it connects. Quotes then come from the real
-Decision Engine (`POST /v1/decide`) instead of the built-in mock.
-
-## Screens
-
-Navigation follows the UI/UX spec's information architecture. Styling follows the KILOGY design
-system; see [`docs/DESIGN_SYSTEM.md`](../../docs/DESIGN_SYSTEM.md).
-
-| Route | Screen | Spec |
-|---|---|---|
-| `/` | Overview Dashboard: KPIs, AI Alert, recent shipments, AI insights | 3.1 |
-| `/shipments/new` | New Shipment: 4 steps (addresses → package + inline AI suggestion → AI quote comparison → review & book) | 3.2, 3.3 |
-| `/shipments/:id` | Shipment Tracking: AI predicted ETA, risk score, timeline | 3.4 |
-| `/shipments` | Shipment history with filters | 4 |
-| `/quotes`, `/quotes/:id` | Past quote requests and their comparison tables | 4 |
-| `/carriers` | Carrier list and API status | 4 |
-| `/analytics` | Spend, CO₂ and lane performance | 4 |
-| `/documents` | Document generator and archive | 4 |
-| `/payments` | Payment ledger | 4 |
-| `/settings` | Organization and notifications | 3.1 nav |
-| `/developers` | Dev / API: key manager, webhooks, API explorer, architecture status | 4 |
-
-## Code map
+## Folder structure
 
 ```
 src/
+├── main.tsx                 Entry point
+├── global.css               Resets, .mono font, tone colors for ToneTag
+├── app/
+│   ├── providers.tsx        ConfigProvider (theme), antd App, data store, router
+│   └── routes.tsx           Every URL → page component
+├── theme/
+│   ├── tokens.json          Brand colors and type (Figma Tokens Studio format)
+│   └── theme.ts             Maps tokens.json → Ant Design theme tokens (light + dark)
+├── config/
+│   ├── navigation.tsx       Sidebar items (label, path, icon)
+│   └── reference.ts         Country and commodity lists for forms
+├── layouts/
+│   └── AppLayout.tsx        Sidebar, header, search, footer, mobile drawer
+├── components/              Small shared pieces built on antd
+│   ├── PageHeader.tsx       Breadcrumb + title + action buttons
+│   ├── ToneTag.tsx          Colored Tag that passes WCAG AA contrast
+│   ├── StatusTag.tsx        Shipment status / delay-risk tags
+│   ├── RouteText.tsx        "Montreal › JFK › Lagos" route string
+│   └── QuoteTable.tsx       Ranked carrier quote table (used in two pages)
+├── pages/                   One file per screen
 ├── data/
-│   ├── types.ts      shapes that mirror the /api/v1 contract
-│   ├── carriers.ts   carrier list + mock Carrier Gateway rates
-│   ├── ai.ts         calls the AI engine, falls back to a local mock
-│   ├── store.tsx     client-side stand-in for the Shipment, Document and Payment services
-│   └── seed.ts       sample shipments (fictional)
-├── components/       layout (sidebar / rail / bottom tabs), QuoteTable, badges, score bars
-├── design/tokens.json  design tokens (Figma Tokens format)
-├── lib/money.ts      USD → CAD display
-├── pages/            one file per screen
-└── styles.css        design tokens (light + dark) and components
+│   ├── types.ts             Shared types (Shipment, Quote, RankedOption, …)
+│   ├── store.tsx            In-memory app state + actions (useStore hook)
+│   ├── ai.ts                Calls the AI engine; mock fallback
+│   ├── carriers.ts          Carrier list, mock rate generator
+│   ├── seed.ts              Sample shipments, quotes, alerts
+│   └── useEngineStatus.ts   Polls AI engine health
+└── lib/
+    ├── format.ts            Dates, kg, places
+    └── money.ts             USD → CAD display
 ```
 
-Bookings you make are saved in the browser's localStorage. Clear site data to reset to the
-sample data.
+## Common changes
 
-When `services/api` is ready, replace the functions in `data/ai.ts` and `data/store.tsx` with
-calls to `/api/v1/...`. The pages won't need to change.
+### Add a page
+
+1. Create `src/pages/MyPage.tsx`. Start with `<PageHeader title="…" />`, then put content in
+   `<Card size="small">`.
+2. Add a `<Route>` in `src/app/routes.tsx`.
+3. To show it in the sidebar, add an entry to `NAV_ITEMS` in `src/config/navigation.tsx`.
+
+### Change colors or fonts
+
+Edit `src/theme/tokens.json`. `src/theme/theme.ts` maps those values onto Ant Design's
+[design tokens](https://ant.design/docs/react/customize-theme) (`colorPrimary`, `borderRadius`,
+component overrides for Layout, Menu and Table). Dark mode follows the operating system and uses
+the same file.
+
+### Status colors
+
+Use `<ToneTag tone="success | warning | error | info | neutral">`, not antd's preset
+`<Tag color="…">`. The preset colors fail WCAG AA contrast at small sizes. The tone colors live in
+`global.css`. Map shipment statuses to tones in `components/StatusTag.tsx`.
+
+### Connect the real backend
+
+Pages only read and write data through `useStore()` (`src/data/store.tsx`), and quotes only through
+`requestQuote()` (`src/data/ai.ts`). To move to the Node API in `services/api`:
+
+1. Replace the store's in-memory arrays with API calls (or React Query hooks) that return the same
+   types from `data/types.ts`.
+2. Delete `seed.ts` once real data is available.
+
+Pages do not need to change.
+
+### Accessibility
+
+Every form field has a visible label linked with `htmlFor`/`id`. Every icon-only control has an
+`aria-label`. We check each screen with axe-core (WCAG 2.1 A/AA) in light and dark mode. Keep new
+screens at zero violations.

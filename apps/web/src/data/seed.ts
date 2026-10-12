@@ -36,11 +36,29 @@ interface SeedSpec {
   timeline: [string, string, number, TimelineStep["state"]][]; // title, location, day offset, state
 }
 
+// Approximate airport / port coordinates, used to give sample legs believable distances.
+const HUB_COORDS: Record<string, [number, number]> = {
+  YUL: [45.47, -73.74], YYZ: [43.68, -79.63], YVR: [49.19, -123.18], HAL: [44.65, -63.57], JFK: [40.64, -73.78],
+  AMS: [52.31, 4.76], CDG: [49.01, 2.55], FRA: [50.04, 8.56], LHR: [51.47, -0.45], ADD: [8.98, 38.8],
+  LOS: [6.58, 3.32], ACC: [5.6, -0.17], TEM: [5.63, 0.0], DKR: [14.67, -17.07], NBO: [-1.32, 36.93], JNB: [-26.14, 28.24],
+};
+function hubKm(a: string, b: string) {
+  const p = HUB_COORDS[a], q = HUB_COORDS[b];
+  if (!p || !q) return 1000;
+  const r = (d: number) => (d * Math.PI) / 180;
+  const h = Math.sin(r(q[0] - p[0]) / 2) ** 2 + Math.cos(r(p[0])) * Math.cos(r(q[0])) * Math.sin(r(q[1] - p[1]) / 2) ** 2;
+  return Math.round(12742 * Math.asin(Math.sqrt(h)) * 1.05); // 5% routing overhead
+}
+
 function option(s: SeedSpec): RankedOption {
   const { origin: o, dest: d, hubs } = s;
   const legs = [
     { from: o.city!, to: hubs[0], mode: "road" as const, distance_km: 30, transit_hours: 2.5, co2_kg: 0.02 },
-    ...hubs.slice(1).map((h, i) => ({ from: hubs[i], to: h, mode: s.mode, distance_km: 5200, transit_hours: 9, co2_kg: +(s.co2 / (hubs.length - 1)).toFixed(2) })),
+    ...hubs.slice(1).map((h, i) => {
+      const km = hubKm(hubs[i], h);
+      const total = hubs.slice(1).reduce((a, x, j) => a + hubKm(hubs[j], x), 0);
+      return { from: hubs[i], to: h, mode: s.mode, distance_km: km, transit_hours: Math.max(1.5, +(km / (s.mode === "ocean" ? 30 : 750)).toFixed(1)), co2_kg: +((s.co2 * km) / total).toFixed(1) };
+    }),
     { from: hubs[hubs.length - 1], to: d.city!, mode: "road" as const, distance_km: 25, transit_hours: 3, co2_kg: 0.02 },
   ];
   const level = s.risk < 0.25 ? "low" : s.risk < 0.55 ? "medium" : "high";

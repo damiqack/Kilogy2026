@@ -1,72 +1,79 @@
-import { PackagePlus } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { StatusBadge } from "../components/Badges";
-import { ModeIcon } from "../components/RouteLegs";
+import { Typography, Button, Card, Flex, Input, Segmented, Table, type TableColumnsType } from "antd";
+import { useMemo, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { PageHeader } from "../components/PageHeader";
+import { modeLabel } from "../components/RouteText";
+import { statusLabel, StatusTag } from "../components/StatusTag";
 import { useStore } from "../data/store";
-import type { ShipmentStatus } from "../data/types";
-import { date, days, kg, place } from "../lib/format";
+import type { Shipment, ShipmentStatus } from "../data/types";
+import { date, place } from "../lib/format";
 import { cad } from "../lib/money";
 
-const FILTERS: { label: string; match: (s: ShipmentStatus) => boolean }[] = [
-  { label: "All", match: () => true },
-  { label: "In transit", match: (s) => ["booked", "picked_up", "in_transit", "customs", "out_for_delivery"].includes(s) },
-  { label: "Incidents", match: (s) => s === "exception" || s === "delayed" },
-  { label: "Delivered", match: (s) => s === "delivered" },
-  { label: "Cancelled", match: (s) => s === "cancelled" },
-];
+const VIEWS: Record<string, (s: ShipmentStatus) => boolean> = {
+  All: () => true,
+  Active: (s) => ["booked", "picked_up", "in_transit", "customs", "out_for_delivery"].includes(s),
+  Exceptions: (s) => s === "exception" || s === "delayed",
+  Delivered: (s) => s === "delivered",
+  Cancelled: (s) => s === "cancelled",
+};
 
-export function Shipments() {
+export function ShipmentsPage() {
   const { shipments } = useStore();
-  const [filter, setFilter] = useState(0);
-  const rows = shipments.filter((s) => FILTERS[filter].match(s.status));
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const [view, setView] = useState("All");
+  const q = (params.get("q") ?? "").toLowerCase();
+
+  const rows = useMemo(() => shipments.filter((s) => VIEWS[view](s.status) && (!q || [
+    s.trackingId, s.carrierTracking, s.origin.city, s.destination.city, s.selected.carrier_name,
+  ].some((v) => v?.toLowerCase().includes(q)))), [shipments, view, q]);
+
+  const carriers = [...new Set(shipments.map((s) => s.selected.carrier_name))];
+
+  const columns: TableColumnsType<Shipment> = [
+    { title: "Tracking #", dataIndex: "trackingId", fixed: "left", width: 170, render: (v: string, s) => <Link to={`/shipments/${s.id}`} className="mono">{v}</Link> },
+    { title: "Origin", key: "o", render: (_, s) => place(s.origin) },
+    { title: "Destination", key: "d", render: (_, s) => place(s.destination) },
+    {
+      title: "Carrier / service", key: "c", width: 210,
+      render: (_, s) => (
+        <>
+          {s.selected.carrier_name}
+          <br />
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>{s.selected.service_name ?? s.selected.service}</Typography.Text>
+        </>
+      ),
+      filters: carriers.map((c) => ({ text: c, value: c })), onFilter: (v, s) => s.selected.carrier_name === v,
+    },
+    { title: "Mode", key: "mode", render: (_, s) => modeLabel(s.selected.route?.primary_mode ?? "air") },
+    { title: "Days", key: "t", align: "right", render: (_, s) => Math.round(s.selected.transit_days) },
+    { title: "CO₂e (kg)", key: "co2", align: "right", render: (_, s) => s.selected.co2_kg?.toFixed(1) ?? "–" },
+    { title: "Price (CAD)", key: "p", align: "right", sorter: (a, b) => a.selected.price_usd - b.selected.price_usd, render: (_, s) => cad(s.selected.price_usd) },
+    {
+      title: "Status", dataIndex: "status", width: 130, render: (v) => <StatusTag status={v} />,
+      filters: (Object.keys({ booked: 1, picked_up: 1, in_transit: 1, customs: 1, out_for_delivery: 1, delivered: 1, delayed: 1, exception: 1, cancelled: 1 }) as ShipmentStatus[]).map((s) => ({ text: statusLabel(s), value: s })),
+      onFilter: (v, s) => s.status === v,
+    },
+    { title: "ETA", key: "eta", sorter: (a, b) => +new Date(a.selected.risk.eta.latest) - +new Date(b.selected.risk.eta.latest), render: (_, s) => date(s.deliveredAt ?? s.selected.risk.eta.latest) },
+    { title: "Created", dataIndex: "createdAt", defaultSortOrder: "descend", sorter: (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt), render: (v: string) => date(v) },
+  ];
 
   return (
     <>
-      <div className="page-head">
-        <div>
-          <h1>Shipments</h1>
-          <p className="sub">Create, track and manage every shipment.</p>
-        </div>
-        <Link to="/shipments/new" className="btn btn-primary"><PackagePlus size={17} aria-hidden /> New Shipment</Link>
-      </div>
-      <section className="card">
-        <div className="tabs" role="tablist" aria-label="Filter shipments">
-          {FILTERS.map((f, i) => (
-            <button key={f.label} role="tab" aria-selected={i === filter} className="tab" onClick={() => setFilter(i)}>
-              {f.label} <span className="faint">({shipments.filter((s) => f.match(s.status)).length})</span>
-            </button>
-          ))}
-        </div>
-        <div className="table-wrap" role="tabpanel">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Tracking #</th><th scope="col">Origin</th><th scope="col">Destination</th><th scope="col">Carrier</th>
-                <th scope="col" className="hide-sm">Service</th><th scope="col" className="hide-sm">Transit</th><th scope="col" className="hide-sm">CO₂e</th>
-                <th scope="col" className="right">Price (CAD)</th><th scope="col">Status</th><th scope="col">ETA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((s) => (
-                <tr key={s.id}>
-                  <td><Link to={`/shipments/${s.id}`} className="track-id">{s.trackingId}</Link></td>
-                  <td>{place(s.origin)}</td>
-                  <td>{place(s.destination)}</td>
-                  <td><span className="row" style={{ gap: 6 }}><ModeIcon mode={s.selected.route?.primary_mode ?? "air"} size={14} /> {s.selected.carrier_name}</span></td>
-                  <td className="hide-sm">{s.selected.service_name ?? s.selected.service}</td>
-                  <td className="num hide-sm">{days(Math.round(s.selected.transit_days))}</td>
-                  <td className="num hide-sm">{kg(s.selected.co2_kg)}</td>
-                  <td className="num right">{cad(s.selected.price_usd)}</td>
-                  <td><StatusBadge status={s.status} /></td>
-                  <td className="num">{date(s.deliveredAt ?? s.selected.risk.eta.latest)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {!rows.length && <div className="empty">No shipments in this view.</div>}
-        </div>
-      </section>
+      <PageHeader title="Shipments" extra={<Button type="primary" onClick={() => navigate("/shipments/new")}>New shipment</Button>} />
+      <Card size="small">
+        <Flex gap={12} wrap justify="space-between" style={{ marginBottom: 12 }}>
+          <Segmented options={Object.keys(VIEWS).map((v) => ({ value: v, label: `${v} (${shipments.filter((s) => VIEWS[v](s.status)).length})` }))} value={view} onChange={(v) => setView(String(v))} />
+          <Input.Search
+            allowClear
+            placeholder="Search tracking #, city, carrier"
+            defaultValue={params.get("q") ?? ""}
+            onSearch={(v) => setParams(v ? { q: v } : {})}
+            style={{ maxWidth: 320 }}
+          />
+        </Flex>
+        <Table<Shipment> rowKey="id" size="small" columns={columns} dataSource={rows} pagination={{ pageSize: 20, hideOnSinglePage: true }} scroll={{ x: 1320 }} />
+      </Card>
     </>
   );
 }

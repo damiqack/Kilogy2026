@@ -1,0 +1,20 @@
+/* Global resets only. Component styling comes from the Ant Design theme in src/theme. */
+html, body, #root { height: 100%; }
+body { margin: 0; }
+.mono { font-family: "SFMono-Regular", Menlo, Consolas, monospace; }
+a.mono, span.mono { white-space: nowrap; }
+
+/* Status tag tones (components/ToneTag.tsx). Text colors meet WCAG AA on their backgrounds. */
+.ant-tag.tone { border-width: 1px; }
+.tone-success { color: #0a6b41 !important; background: #e8f5ee !important; border-color: #b7dfc8 !important; }
+.tone-warning { color: #8a4b00 !important; background: #fff4e5 !important; border-color: #ffd8a8 !important; }
+.tone-error   { color: #b42318 !important; background: #fef3f2 !important; border-color: #fecdca !important; }
+.tone-info    { color: #175cd3 !important; background: #eff8ff !important; border-color: #b2ddff !important; }
+.tone-neutral { color: #475467 !important; background: #f2f4f7 !important; border-color: #d0d5dd !important; }
+@media (prefers-color-scheme: dark) {
+  .tone-success { color: #6ce9a6 !important; background: rgba(108,233,166,0.12) !important; border-color: rgba(108,233,166,0.35) !important; }
+  .tone-warning { color: #fdb022 !important; background: rgba(253,176,34,0.12) !important; border-color: rgba(253,176,34,0.35) !important; }
+  .tone-error   { color: #fda29b !important; background: rgba(253,162,155,0.12) !important; border-color: rgba(253,162,155,0.35) !important; }
+  .tone-info    { color: #84caff !important; background: rgba(132,202,255,0.12) !important; border-color: rgba(132,202,255,0.35) !important; }
+  .tone-neutral { color: #d0d5dd !important; background: rgba(208,213,221,0.1) !important; border-color: rgba(208,213,221,0.3) !important; }
+}
