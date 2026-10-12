@@ -42,22 +42,21 @@ export function DashboardPage() {
         extra={<Button type="primary" onClick={() => navigate("/shipments/new")}>New shipment</Button>}
       />
 
-      <Card size="small" style={{ marginBottom: 16 }}>
-        <Row gutter={[16, 16]}>
-          <Col xs={12} md={8} xl={4}><Statistic title="Active shipments" value={active.length} /></Col>
-          <Col xs={12} md={8} xl={4}><Statistic title="Delivered today" value={deliveredToday} /></Col>
-          <Col xs={12} md={8} xl={4}><Statistic title="In transit" value={inTransit.length} suffix={<Typography.Text type="secondary" style={{ fontSize: 13 }}>{onTime}% on time</Typography.Text>} /></Col>
-          <Col xs={12} md={8} xl={4}><Statistic title="Exceptions" value={exceptions.length} styles={{ content: exceptions.length ? { color: "var(--ant-color-error)" } : undefined }} /></Col>
-          <Col xs={12} md={8} xl={4}><Statistic title="Spend (CAD)" value={cad(spend)} /></Col>
-          <Col xs={12} md={8} xl={4}><Statistic title="CO₂e (kg)" value={Math.round(co2)} /></Col>
+      <Card size="small" className="kpi-strip" style={{ marginBottom: 12 }}>
+        <Row>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="Active shipments" value={active.length} /></Col>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="Delivered today" value={deliveredToday} /></Col>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="In transit" value={inTransit.length} suffix={<Typography.Text type="secondary" style={{ fontSize: 13 }}>{onTime}% on time</Typography.Text>} /></Col>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="Exceptions" value={exceptions.length} styles={{ content: exceptions.length ? { color: "var(--ant-color-error)" } : undefined }} /></Col>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="Spend (CAD)" value={cad(spend)} /></Col>
+          <Col className="kpi-cell" xs={12} md={8} xl={4}><Statistic title="CO₂e (kg)" value={Math.round(co2)} /></Col>
         </Row>
       </Card>
 
       {topAlert && (
         <Alert
           type="warning"
-          showIcon
-          style={{ marginBottom: 16 }}
+          style={{ marginBottom: 12 }}
           title={topAlert.title}
           description={
             <>
@@ -73,14 +72,14 @@ export function DashboardPage() {
         />
       )}
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[12, 12]}>
         <Col xs={24} xl={16}>
           <Card size="small" title="Recent shipments" extra={<Link to="/shipments">View all</Link>}>
             <Table<Shipment> rowKey="id" size="small" columns={columns} dataSource={shipments.slice(0, 8)} pagination={false} scroll={{ x: 600 }} />
           </Card>
         </Col>
         <Col xs={24} xl={8}>
-          <Card size="small" title={`Exceptions (${exceptions.length})`} style={{ marginBottom: 16 }}>
+          <Card size="small" title={`Exceptions (${exceptions.length})`} style={{ marginBottom: 12 }}>
             <List
               size="small"
               dataSource={exceptions}

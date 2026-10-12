@@ -28,15 +28,15 @@ export function AnalyticsPage() {
   return (
     <>
       <PageHeader title="Analytics" />
-      <Card size="small" style={{ marginBottom: 16 }}>
-        <Row gutter={16}>
-          <Col xs={12} md={6}><Statistic title="Shipments" value={shipments.length} /></Col>
-          <Col xs={12} md={6}><Statistic title="Spend (CAD)" value={cad(totalSpend)} /></Col>
-          <Col xs={12} md={6}><Statistic title="Avg cost / shipment" value={cad(totalSpend / Math.max(shipments.length, 1))} /></Col>
-          <Col xs={12} md={6}><Statistic title="CO₂e (kg)" value={Math.round(totalCo2)} /></Col>
+      <Card size="small" className="kpi-strip" style={{ marginBottom: 12 }}>
+        <Row>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Shipments" value={shipments.length} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Spend (CAD)" value={cad(totalSpend)} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Avg cost / shipment" value={cad(totalSpend / Math.max(shipments.length, 1))} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="CO₂e (kg)" value={Math.round(totalCo2)} /></Col>
         </Row>
       </Card>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[12, 12]}>
         <Col xs={24} lg={12}>
           <Card size="small" title="Monthly volume (sample)">
             <Table size="small" rowKey="month" pagination={false} dataSource={VOLUME}

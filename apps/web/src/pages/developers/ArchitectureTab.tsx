@@ -1,5 +1,5 @@
 import { Card, Table } from "antd";
-import { ToneTag, type Tone } from "../../components/ToneTag";
+import { Indicator, type Tone } from "../../components/Indicator";
 
 type Status = "built" | "in progress" | "planned";
 const TONE: Record<Status, Tone> = { built: "success", "in progress": "info", planned: "neutral" };
@@ -35,7 +35,7 @@ export function ArchitectureTab() {
           columns={[
             { title: "Layer", dataIndex: "layer", onCell: (r, i) => ({ rowSpan: i !== undefined && i > 0 && COMPONENTS[i - 1].layer === r.layer ? 0 : COMPONENTS.filter((c) => c.layer === r.layer).length }) },
             { title: "Component", dataIndex: "component" },
-            { title: "Status", dataIndex: "status", render: (s: Status) => <ToneTag tone={TONE[s]}>{s}</ToneTag> },
+            { title: "Status", dataIndex: "status", render: (s: Status) => <Indicator tone={TONE[s]}>{s}</Indicator> },
             { title: "Notes", dataIndex: "notes" },
           ]} />
       </Card>

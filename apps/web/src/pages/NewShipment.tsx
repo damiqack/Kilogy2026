@@ -1,5 +1,5 @@
 import { Alert, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form, Input, InputNumber, Row, Segmented, Select, Slider, Steps, Switch, Typography } from "antd";
-import { ToneTag } from "../components/ToneTag";
+import { Indicator } from "../components/Indicator";
 import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
@@ -142,7 +142,7 @@ export function NewShipmentPage() {
               </Col>
             </Row>
 
-            {notes.map((n) => <Alert key={n} type="info" showIcon title={n} style={{ marginBottom: 8 }} />)}
+            {notes.map((n) => <Alert key={n} type="info" title={n} style={{ marginBottom: 8 }} />)}
 
             <Collapse size="small" style={{ margin: "8px 0 16px" }} items={[{
               key: "w",
@@ -173,7 +173,7 @@ export function NewShipmentPage() {
         <Card
           size="small"
           title={`${quote.options.length} options · ${req.origin.city}, ${req.origin.country} → ${req.destination.city}, ${req.destination.country}`}
-          extra={<ToneTag tone={quote.source === "ai-engine" ? "success" : "neutral"}>{quote.source === "ai-engine" ? "Routing engine" : "Sample rates"}</ToneTag>}
+          extra={<Indicator tone={quote.source === "ai-engine" ? "success" : "neutral"}>{quote.source === "ai-engine" ? "Routing engine" : "Sample rates"}</Indicator>}
         >
           <QuoteTable options={quote.options} onBook={(o) => { setSelected(o); setStep(3); }} />
           <Flex justify="space-between" style={{ marginTop: 12 }}>

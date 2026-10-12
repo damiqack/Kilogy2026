@@ -1,5 +1,5 @@
 import type { ShipmentStatus } from "../data/types";
-import { ToneTag, type Tone } from "./ToneTag";
+import { Indicator, type Tone } from "./Indicator";
 
 const STATUS: Record<ShipmentStatus, { tone: Tone; label: string }> = {
   created: { tone: "neutral", label: "Created" },
@@ -17,10 +17,10 @@ const STATUS: Record<ShipmentStatus, { tone: Tone; label: string }> = {
 export const statusLabel = (s: ShipmentStatus) => STATUS[s].label;
 
 export function StatusTag({ status }: { status: ShipmentStatus }) {
-  return <ToneTag tone={STATUS[status].tone}>{STATUS[status].label}</ToneTag>;
+  return <Indicator tone={STATUS[status].tone}>{STATUS[status].label}</Indicator>;
 }
 
 export function RiskTag({ level, score }: { level: "low" | "medium" | "high"; score?: number }) {
   const tone: Tone = level === "low" ? "success" : level === "medium" ? "warning" : "error";
-  return <ToneTag tone={tone}>{level.charAt(0).toUpperCase() + level.slice(1)}{score != null ? ` ${Math.round(score * 100)}` : ""}</ToneTag>;
+  return <Indicator tone={tone}>{level.charAt(0).toUpperCase() + level.slice(1)}{score != null ? ` ${Math.round(score * 100)}` : ""}</Indicator>;
 }

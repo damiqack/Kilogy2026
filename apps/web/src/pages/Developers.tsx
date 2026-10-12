@@ -1,7 +1,7 @@
 import { Button, Card, Col, Input, Progress, Row, Table, Tabs, Typography } from "antd";
 import { useSearchParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
-import { ToneTag, type Tone } from "../components/ToneTag";
+import { Indicator, type Tone } from "../components/Indicator";
 import { ArchitectureTab } from "./developers/ArchitectureTab";
 import { ENDPOINTS, SDK_SAMPLE } from "./developers/reference";
 
@@ -10,14 +10,14 @@ const METHOD_TONE: Record<string, Tone> = { GET: "info", POST: "success", PUT: "
 function KeysTab() {
   const used = 3412, limit = 10000;
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[12, 12]}>
       <Col xs={24} lg={14}>
         <Card size="small" title="API keys" extra={<Button size="small">Create key</Button>}>
           <Table size="small" rowKey="name" pagination={false}
             dataSource={[{ name: "Development", env: "test", key: "kg_test_dev_key_123", created: "2026-09-22", lastUsed: "Today" }]}
             columns={[
               { title: "Name", dataIndex: "name" },
-              { title: "Environment", dataIndex: "env", render: (v: string) => <ToneTag tone="neutral">{v}</ToneTag> },
+              { title: "Environment", dataIndex: "env", render: (v: string) => <Indicator tone="neutral">{v}</Indicator> },
               { title: "Key", dataIndex: "key", render: (v: string) => <Input.Password value={v} readOnly size="small" style={{ maxWidth: 220 }} aria-label="API key" /> },
               { title: "Created", dataIndex: "created" },
               { title: "Last used", dataIndex: "lastUsed" },
@@ -28,7 +28,7 @@ function KeysTab() {
         </Card>
       </Col>
       <Col xs={24} lg={10}>
-        <Card size="small" title="Usage this hour" extra={<ToneTag tone="info">Pro</ToneTag>}>
+        <Card size="small" title="Usage this hour" extra={<Indicator tone="info">Pro</Indicator>}>
           <Progress aria-label="Requests used this hour" percent={Math.round((used / limit) * 100)} format={() => `${used.toLocaleString()} / ${limit.toLocaleString()}`} />
           <Table size="small" rowKey="tier" pagination={false} style={{ marginTop: 12 }}
             dataSource={[{ tier: "Free", limit: "100 / hour" }, { tier: "Pro", limit: "10,000 / hour" }, { tier: "Enterprise", limit: "Custom" }]}
@@ -49,8 +49,8 @@ function WebhooksTab() {
         ]}
         columns={[
           { title: "Endpoint", dataIndex: "url", render: (v: string) => <span className="mono">{v}</span> },
-          { title: "Events", dataIndex: "events", render: (v: string[]) => v.map((e) => <ToneTag key={e} tone="neutral">{e}</ToneTag>) },
-          { title: "Last delivery", dataIndex: "ok", render: (ok: boolean) => <ToneTag tone={ok ? "success" : "error"}>{ok ? "200 OK" : "Failed, retrying"}</ToneTag> },
+          { title: "Events", dataIndex: "events", render: (v: string[]) => v.map((e) => <Indicator key={e} tone="neutral">{e}</Indicator>) },
+          { title: "Last delivery", dataIndex: "ok", render: (ok: boolean) => <Indicator tone={ok ? "success" : "error"}>{ok ? "200 OK" : "Failed, retrying"}</Indicator> },
         ]} />
     </Card>
   );
@@ -58,13 +58,13 @@ function WebhooksTab() {
 
 function ReferenceTab() {
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[12, 12]}>
       <Col xs={24} xl={14}>
         <Card size="small" title="Endpoints (v1)">
           <Table size="small" rowKey={(r) => r.method + r.path} pagination={false} dataSource={ENDPOINTS} scroll={{ x: 600 }}
             columns={[
               { title: "Group", dataIndex: "group", onCell: (r, i) => ({ rowSpan: i !== undefined && i > 0 && ENDPOINTS[i - 1].group === r.group ? 0 : ENDPOINTS.filter((e) => e.group === r.group).length }) },
-              { title: "Method", dataIndex: "method", width: 90, render: (v: string) => <ToneTag tone={METHOD_TONE[v]}>{v}</ToneTag> },
+              { title: "Method", dataIndex: "method", width: 90, render: (v: string) => <Indicator tone={METHOD_TONE[v]}>{v}</Indicator> },
               { title: "Path", dataIndex: "path", render: (v: string) => <span className="mono">{v}</span> },
               { title: "Description", dataIndex: "description" },
             ]} />

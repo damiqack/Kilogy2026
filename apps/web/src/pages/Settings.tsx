@@ -9,7 +9,7 @@ export function SettingsPage() {
   return (
     <>
       <PageHeader title="Settings" />
-      <Row gutter={[16, 16]}>
+      <Row gutter={[12, 12]}>
         <Col xs={24} lg={12}>
           <Card size="small" title="Organization">
             <Form layout="vertical" initialValues={{ org: "Kilogy Demo Shipper Inc.", currency: "CAD" }} onFinish={() => message.success("Saved")}>

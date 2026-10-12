@@ -1,5 +1,5 @@
 import { Button, Card, Table } from "antd";
-import { ToneTag } from "../components/ToneTag";
+import { Indicator } from "../components/Indicator";
 import { PageHeader } from "../components/PageHeader";
 import { modeLabel } from "../components/RouteText";
 import { CARRIERS } from "../data/carriers";
@@ -27,7 +27,7 @@ export function CarriersPage() {
             { title: "On-time", dataIndex: "onTime", align: "right", sorter: (a, b) => a.onTime - b.onTime, render: pct },
             { title: "CO₂e / kg", dataIndex: "avgCo2PerKg", align: "right", sorter: (a, b) => a.avgCo2PerKg - b.avgCo2PerKg, render: (v: number) => `${v} kg` },
             { title: "API latency (p50)", dataIndex: "apiLatencyMs", align: "right", render: (v?: number) => (v ? `${v} ms` : "–") },
-            { title: "Integration", dataIndex: "status", render: (v: Carrier["status"]) => <ToneTag tone={STATUS_TONE[v]}>{titleCase(v)}</ToneTag> },
+            { title: "Integration", dataIndex: "status", render: (v: Carrier["status"]) => <Indicator tone={STATUS_TONE[v]}>{titleCase(v)}</Indicator> },
           ]}
         />
       </Card>

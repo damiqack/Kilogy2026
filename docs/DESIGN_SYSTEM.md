@@ -17,37 +17,40 @@ are mapped onto antd's theme in `apps/web/src/theme/theme.ts`.
 
 | Token | Value | Use |
 |---|---|---|
-| Primary Navy | `#0D2C6E` | Sidebar, brand mark |
-| Accent Blue | `#1A6DB5` | `colorPrimary`: buttons, links, active states |
-| Light BG | `#EBF2FB` | Tinted panels |
+| Primary Navy | `#0D2C6E` | Top bar, primary buttons (`colorPrimary`) |
+| Accent Blue | `#1A6DB5` | Links (`colorLink`), info indicators |
+| Light BG | `#EBF2FB` | Not used in the current theme |
 | Success Green | `#0A7B4A` | Delivered, success |
 | Warning Orange | `#E06400` | Delays, alerts |
 | Error Red | `#CC2200` | Incidents, critical alerts |
 | Dark Text | `#1A1A2E` | Body text |
-| Page BG | `#F4F8FF` | Page background (`colorBgLayout`) |
+| Page BG | `#F4F8FF` | Not used (neutral grey instead, see deviations) |
 
-Other settings: border radius 4 px, header height 56 px, sidebar width 220 px. The system font
-stack is used for text, and a monospace stack (`.mono`) for tracking numbers and file names.
+Other settings: border radius 0, top bar 44 px, base font 13 px, neutral grey page background
+(`#eef0f3`). IBM Plex Sans for text; IBM Plex Mono (`.mono`) for tracking numbers, codes and the
+status bar.
 
 ## Deviations (and why)
 
-1. **Status tags use darker text shades than the spec colors** (for example warning text `#8a4b00`
-   on `#fff4e5`). The spec orange on white is about 3.4:1 contrast, below the spec's own WCAG AA
-   requirement. See `ToneTag` and `global.css`.
-2. **Secondary text is darker than antd's default** for the same contrast reason (`theme.ts`).
-3. **Quotes open the New Shipment flow.** A quote request is steps 1–3 of the 4-step shipment
+1. **Status colors are used only on the indicator square, never on text.** The spec orange on
+   white is about 3.4:1 contrast, below the spec's own WCAG AA requirement, so status text stays in
+   the body color. See `Indicator` and `global.css`.
+2. **Page background is neutral grey instead of the spec's light blue,** and primary buttons use
+   Primary Navy; Accent Blue is kept for links.
+3. **Secondary text is darker than antd's default** for the same contrast reason (`theme.ts`).
+4. **Quotes open the New Shipment flow.** A quote request is steps 1–3 of the 4-step shipment
    form, so there is one form to maintain.
-4. **Dev / API includes an Architecture tab** that shows the build status of the five layers.
-5. **Prices are shown in CAD** at a fixed prototype rate (`src/lib/money.ts`). The AI engine
+5. **API includes an Architecture tab** that shows the build status of the five layers.
+6. **Prices are shown in CAD** at a fixed prototype rate (`src/lib/money.ts`). The AI engine
    prices in USD.
 
 ## Responsive behavior
 
 | Width | Navigation | Layout |
 |---|---|---|
-| ≥ 1200 px | Full sidebar | 6-up stats, two-column content |
-| 768–1199 px | Icon-only sidebar (toggle expands it) | 3-up stats, single column |
-| < 768 px | Menu drawer from the header button | 2-up stats, wide tables scroll inside their card |
+| ≥ 1200 px | Top bar menu + search + utility links | 6-up stat strip, two-column content |
+| 992–1199 px | Top bar menu (overflow items collapse into "…") | 3-up stat strip, single column |
+| < 992 px | Menu button opens a drawer with search and all links | 2-up stat strip, wide tables scroll inside their panel |
 
 Dark mode follows the system setting (`prefers-color-scheme`).
 
@@ -63,5 +66,5 @@ Dark mode follows the system setting (`prefers-color-scheme`).
 | Tool | Status |
 |---|---|
 | Figma | Import `src/theme/tokens.json` with the Tokens Studio plugin |
-| Storybook | Not set up. Candidates: `QuoteTable`, `StatusTag`, `ToneTag`, `PageHeader` |
+| Storybook | Not set up. Candidates: `QuoteTable`, `StatusTag`, `Indicator`, `PageHeader` |
 | Maze / UserTesting | Run against `npm run dev` or a deployed preview |

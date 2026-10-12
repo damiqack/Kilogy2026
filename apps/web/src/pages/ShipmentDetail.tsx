@@ -47,7 +47,7 @@ export function ShipmentDetailPage() {
         }
       />
 
-      <Card size="small" style={{ marginBottom: 16 }}>
+      <Card size="small" style={{ marginBottom: 12 }}>
         <Descriptions size="small" column={{ xs: 1, sm: 2, lg: 4 }}
           items={[
             { key: "st", label: "Status", children: <StatusTag status={s.status} /> },
@@ -62,7 +62,7 @@ export function ShipmentDetailPage() {
         />
       </Card>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[12, 12]}>
         <Col xs={24} lg={10}>
           <Card size="small" title="Tracking">
             <Timeline
@@ -83,7 +83,7 @@ export function ShipmentDetailPage() {
           </Card>
         </Col>
         <Col xs={24} lg={14}>
-          <Card size="small" title="Route" style={{ marginBottom: 16 }}>
+          <Card size="small" title="Route" style={{ marginBottom: 12 }}>
             <Table<RouteLeg>
               size="small"
               rowKey={(l) => `${l.from}-${l.to}-${l.mode}`}
@@ -101,13 +101,13 @@ export function ShipmentDetailPage() {
           </Card>
           <Row gutter={16}>
             <Col xs={24} md={12}>
-              <Card size="small" title="Risk factors" style={{ marginBottom: 16 }}>
+              <Card size="small" title="Risk factors" style={{ marginBottom: 12 }}>
                 <Descriptions size="small" column={1}
                   items={o.risk.factors.map((f) => ({ key: f.factor, label: titleCase(f.factor), children: `${Math.round(f.impact * 100)}%` }))} />
               </Card>
             </Col>
             <Col xs={24} md={12}>
-              <Card size="small" title="Score breakdown" style={{ marginBottom: 16 }}>
+              <Card size="small" title="Score breakdown" style={{ marginBottom: 12 }}>
                 <Descriptions size="small" column={1}
                   items={[
                     { key: "t", label: "AI score", children: <strong>{Math.round(o.ai_score)}</strong> },

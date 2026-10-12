@@ -4,7 +4,7 @@ import { date, kg } from "../lib/format";
 import { cad } from "../lib/money";
 import { modeLabel, RouteText } from "./RouteText";
 import { RiskTag } from "./StatusTag";
-import { ToneTag, type Tone } from "./ToneTag";
+import { Indicator, type Tone } from "./Indicator";
 
 interface Props {
   options: RankedOption[];
@@ -24,7 +24,7 @@ export function QuoteTable({ options, onBook }: Props) {
       render: (_, o) => (
         <>
           <div style={{ fontWeight: 600 }}>{o.carrier_name}</div>
-          {o.tags?.map((t) => <span key={t} style={{ display: "inline-block", marginTop: 4 }}><ToneTag tone={TAG_TONES[t] ?? "neutral"}>{TAG_LABELS[t] ?? t}</ToneTag></span>)}
+          {o.tags?.map((t) => <span key={t} style={{ display: "inline-block", marginTop: 4 }}><Indicator tone={TAG_TONES[t] ?? "neutral"}>{TAG_LABELS[t] ?? t}</Indicator></span>)}
         </>
       ),
     },

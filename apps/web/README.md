@@ -26,7 +26,7 @@ shows "Routing engine: offline". Point at a different engine with `VITE_AI_ENGIN
 ```
 src/
 ├── main.tsx                 Entry point
-├── global.css               Resets, .mono font, tone colors for ToneTag
+├── global.css               App shell, page header, status indicators, panel overrides
 ├── app/
 │   ├── providers.tsx        ConfigProvider (theme), antd App, data store, router
 │   └── routes.tsx           Every URL → page component
@@ -34,13 +34,13 @@ src/
 │   ├── tokens.json          Brand colors and type (Figma Tokens Studio format)
 │   └── theme.ts             Maps tokens.json → Ant Design theme tokens (light + dark)
 ├── config/
-│   ├── navigation.tsx       Sidebar items (label, path, icon)
+│   ├── navigation.tsx       Top-bar items (label, path, main/utility group)
 │   └── reference.ts         Country and commodity lists for forms
 ├── layouts/
-│   └── AppLayout.tsx        Sidebar, header, search, footer, mobile drawer
+│   └── AppLayout.tsx        Top bar, search, status bar, mobile drawer
 ├── components/              Small shared pieces built on antd
 │   ├── PageHeader.tsx       Breadcrumb + title + action buttons
-│   ├── ToneTag.tsx          Colored Tag that passes WCAG AA contrast
+│   ├── Indicator.tsx        Colored square + plain text status marker
 │   ├── StatusTag.tsx        Shipment status / delay-risk tags
 │   ├── RouteText.tsx        "Montreal › JFK › Lagos" route string
 │   └── QuoteTable.tsx       Ranked carrier quote table (used in two pages)
@@ -64,20 +64,22 @@ src/
 1. Create `src/pages/MyPage.tsx`. Start with `<PageHeader title="…" />`, then put content in
    `<Card size="small">`.
 2. Add a `<Route>` in `src/app/routes.tsx`.
-3. To show it in the sidebar, add an entry to `NAV_ITEMS` in `src/config/navigation.tsx`.
+3. To show it in the top bar, add an entry to `NAV_ITEMS` in `src/config/navigation.tsx`
+   (`group: "main"` for the menu, `"utility"` for the right-hand links).
 
 ### Change colors or fonts
 
-Edit `src/theme/tokens.json`. `src/theme/theme.ts` maps those values onto Ant Design's
-[design tokens](https://ant.design/docs/react/customize-theme) (`colorPrimary`, `borderRadius`,
-component overrides for Layout, Menu and Table). Dark mode follows the operating system and uses
-the same file.
+Brand colors live in `src/theme/tokens.json`. `src/theme/theme.ts` maps them onto Ant Design's
+[design tokens](https://ant.design/docs/react/customize-theme) and sets the rest of the look:
+IBM Plex Sans / Mono (self-hosted via `@fontsource`), square corners (`borderRadius: 0`), 13 px
+base size, flat panels and compact tables. Dark mode follows the operating system.
 
 ### Status colors
 
-Use `<ToneTag tone="success | warning | error | info | neutral">`, not antd's preset
-`<Tag color="…">`. The preset colors fail WCAG AA contrast at small sizes. The tone colors live in
-`global.css`. Map shipment statuses to tones in `components/StatusTag.tsx`.
+Use `<Indicator tone="success | warning | error | info | neutral">`: a small colored square
+followed by plain text. The text keeps the normal text color, so contrast never depends on the
+tone. Square colors live in `global.css` (`.ind-*`). Map shipment statuses to tones in
+`components/StatusTag.tsx`.
 
 ### Connect the real backend
 
