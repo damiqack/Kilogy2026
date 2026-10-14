@@ -1,27 +1,24 @@
-import { ArrowLeft } from "lucide-react";
+import { Card, Result } from "antd";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { PageHeader } from "../components/PageHeader";
 import { QuoteTable } from "../components/QuoteTable";
 import { useStore } from "../data/store";
 import { dateTime, place } from "../lib/format";
 
-export function QuoteDetail() {
+export function QuoteDetailPage() {
   const { id } = useParams();
   const { quotes, book } = useStore();
   const navigate = useNavigate();
   const q = quotes.find((x) => x.id === id);
-  if (!q) return <div className="card empty">Quote not found. <Link to="/quotes">Back to quotes</Link></div>;
+  if (!q) return <Result status="404" title="Quote not found" extra={<Link to="/quotes">Back to quotes</Link>} />;
   return (
     <>
-      <Link to="/quotes" className="small row" style={{ gap: 6 }}><ArrowLeft size={15} aria-hidden /> All quotes</Link>
-      <div className="page-head">
-        <div>
-          <h1>AI Quote Comparison</h1>
-          <p className="sub">{place(q.request.origin)} → {place(q.request.destination)} · {q.request.package.weight_kg} kg · requested {dateTime(q.createdAt)}</p>
-        </div>
-      </div>
-      <section className="card">
-        <QuoteTable options={q.options} onBook={(o) => navigate(`/shipments/${book(q, o).id}`)} />
-      </section>
+      <PageHeader
+        title="Quote comparison"
+        subtitle={`${place(q.request.origin)} → ${place(q.request.destination)} · ${q.request.package.weight_kg} kg · ${dateTime(q.createdAt)}`}
+        crumbs={[{ title: "Quotes", path: "/quotes" }]}
+      />
+      <Card size="small"><QuoteTable options={q.options} onBook={(o) => navigate(`/shipments/${book(q, o).id}`)} /></Card>
     </>
   );
 }

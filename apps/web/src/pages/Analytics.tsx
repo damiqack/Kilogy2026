@@ -1,74 +1,75 @@
-import { Leaf } from "lucide-react";
+import { Card, Col, Progress, Row, Statistic, Table } from "antd";
+import { PageHeader } from "../components/PageHeader";
 import { useStore } from "../data/store";
-import { kg } from "../lib/format";
 import { cad } from "../lib/money";
 
-// Analytics Service placeholder (production: GraphQL analytics layer over ClickHouse).
-export function Analytics() {
+interface LaneRow { lane: string; n: number; spend: number; co2: number; days: number }
+
+// Sample monthly volumes until the analytics service is connected.
+const VOLUME = [
+  { month: "Apr", n: 18 }, { month: "May", n: 22 }, { month: "Jun", n: 27 },
+  { month: "Jul", n: 31 }, { month: "Aug", n: 38 }, { month: "Sep", n: 44 },
+];
+
+export function AnalyticsPage() {
   const { shipments } = useStore();
-  const lanes = Object.entries(shipments.reduce<Record<string, { n: number; spend: number; co2: number; days: number }>>((m, s) => {
-    const k = `${s.origin.city} → ${s.destination.city}`;
-    const v = m[k] ?? { n: 0, spend: 0, co2: 0, days: 0 };
-    m[k] = { n: v.n + 1, spend: v.spend + s.selected.price_usd, co2: v.co2 + (s.selected.co2_kg ?? 0), days: v.days + s.selected.transit_days };
+  const lanes = Object.values(shipments.reduce<Record<string, LaneRow>>((m, s) => {
+    const lane = `${s.origin.city} → ${s.destination.city}`;
+    const r = m[lane] ?? { lane, n: 0, spend: 0, co2: 0, days: 0 };
+    m[lane] = { lane, n: r.n + 1, spend: r.spend + s.selected.price_usd, co2: r.co2 + (s.selected.co2_kg ?? 0), days: r.days + s.selected.transit_days };
     return m;
-  }, {})).sort((a, b) => b[1].spend - a[1].spend);
-  const carriers = Object.entries(shipments.reduce<Record<string, number>>((m, s) => ((m[s.selected.carrier_name] = (m[s.selected.carrier_name] ?? 0) + s.selected.price_usd), m), {})).sort((a, b) => b[1] - a[1]);
-  const maxC = Math.max(...carriers.map((c) => c[1]), 1);
-  const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep"];
-  const volume = [18, 22, 27, 31, 38, 44];
-  const vmax = Math.max(...volume);
+  }, {}));
+  const byCarrier = Object.entries(shipments.reduce<Record<string, number>>((m, s) => ((m[s.selected.carrier_name] = (m[s.selected.carrier_name] ?? 0) + s.selected.price_usd), m), {}))
+    .map(([carrier, spend]) => ({ carrier, spend })).sort((a, b) => b.spend - a.spend);
   const totalSpend = shipments.reduce((a, s) => a + s.selected.price_usd, 0);
   const totalCo2 = shipments.reduce((a, s) => a + (s.selected.co2_kg ?? 0), 0);
+  const maxVol = Math.max(...VOLUME.map((v) => v.n));
 
   return (
     <>
-      <div className="page-head"><div><h1>Analytics</h1><p className="sub">KPIs, cost analysis and CO₂ performance. The Demand Forecaster model will add a forecast here.</p></div></div>
-      <section className="grid g-3" aria-label="Totals">
-        <div className="card kpi"><div className="kpi-label">Shipping spend</div><div className="kpi-value">{cad(totalSpend)}</div><div className="kpi-delta">{shipments.length} shipments</div></div>
-        <div className="card kpi"><div className="kpi-label">Avg cost / shipment</div><div className="kpi-value">{cad(totalSpend / Math.max(shipments.length, 1))}</div><div className="kpi-delta up">▼ 6% vs last month</div></div>
-        <div className="card kpi"><div className="kpi-label"><Leaf size={15} color="var(--success)" aria-hidden /> Total CO₂e</div><div className="kpi-value">{kg(totalCo2)}</div><div className="kpi-delta up">{kg(totalCo2 / Math.max(shipments.length, 1))} per shipment</div></div>
-      </section>
-      <div className="grid g-2">
-        <section className="card" aria-labelledby="vol-h">
-          <div className="card-head"><h2 id="vol-h">Monthly volume</h2><span className="caption">shipments · sample data</span></div>
-          <div className="bar-chart" role="img" aria-label={`Monthly volume: ${months.map((m, i) => `${m} ${volume[i]}`).join(", ")}`}>
-            {volume.map((v, i) => (
-              <div key={i} className="bar-col">
-                <span className="small num faint">{v}</span>
-                <div className="bar-fill" style={{ height: `${(v / vmax) * 150}px` }} />
-                <span className="small muted">{months[i]}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section className="card" aria-labelledby="mix-h">
-          <div className="card-head"><h2 id="mix-h">Spend by carrier</h2><span className="caption">CAD</span></div>
-          <div className="card-pad stack" style={{ gap: 14 }}>
-            {carriers.map(([name, v]) => (
-              <div key={name} className="stack" style={{ gap: 5 }}>
-                <div className="row-between small"><span>{name}</span><span className="num strong">{cad(v)}</span></div>
-                <div className="meter"><span style={{ width: `${(v / maxC) * 100}%` }} /></div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-      <section className="card" aria-labelledby="lane-h">
-        <div className="card-head"><h2 id="lane-h">Lane performance</h2></div>
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th scope="col">Lane</th><th scope="col" className="right">Shipments</th><th scope="col" className="right">Spend (CAD)</th><th scope="col" className="right">Avg transit</th><th scope="col" className="right">CO₂e</th><th scope="col" className="right">CO₂e / shipment</th></tr></thead>
-            <tbody>
-              {lanes.map(([lane, v]) => (
-                <tr key={lane}>
-                  <td className="strong">{lane}</td><td className="num right">{v.n}</td><td className="num right">{cad(v.spend)}</td>
-                  <td className="num right">{(v.days / v.n).toFixed(1)} days</td><td className="num right">{kg(v.co2)}</td><td className="num right">{kg(v.co2 / v.n)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <PageHeader title="Analytics" />
+      <Card size="small" className="kpi-strip" style={{ marginBottom: 12 }}>
+        <Row>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Shipments" value={shipments.length} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Spend (CAD)" value={cad(totalSpend)} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="Avg cost / shipment" value={cad(totalSpend / Math.max(shipments.length, 1))} /></Col>
+          <Col className="kpi-cell" xs={12} md={6}><Statistic title="CO₂e (kg)" value={Math.round(totalCo2)} /></Col>
+        </Row>
+      </Card>
+      <Row gutter={[12, 12]}>
+        <Col xs={24} lg={12}>
+          <Card size="small" title="Monthly volume (sample)">
+            <Table size="small" rowKey="month" pagination={false} dataSource={VOLUME}
+              columns={[
+                { title: "Month", dataIndex: "month", width: 80 },
+                { title: "Shipments", dataIndex: "n", render: (v: number) => <Progress aria-label="Shipments" percent={(v / maxVol) * 100} format={() => v} size="small" /> },
+              ]} />
+          </Card>
+        </Col>
+        <Col xs={24} lg={12}>
+          <Card size="small" title="Spend by carrier">
+            <Table size="small" rowKey="carrier" pagination={false} dataSource={byCarrier}
+              columns={[
+                { title: "Carrier", dataIndex: "carrier" },
+                { title: "Spend (CAD)", dataIndex: "spend", align: "right", render: (v: number) => cad(v) },
+                { title: "Share", key: "share", width: 160, render: (_, r) => <Progress aria-label={`${r.carrier} share of spend`} percent={Math.round((r.spend / totalSpend) * 100)} size="small" /> },
+              ]} />
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card size="small" title="Lane performance">
+            <Table<LaneRow> size="small" rowKey="lane" pagination={false} dataSource={lanes} scroll={{ x: 700 }}
+              columns={[
+                { title: "Lane", dataIndex: "lane" },
+                { title: "Shipments", dataIndex: "n", align: "right", sorter: (a, b) => a.n - b.n },
+                { title: "Spend (CAD)", dataIndex: "spend", align: "right", defaultSortOrder: "descend", sorter: (a, b) => a.spend - b.spend, render: (v: number) => cad(v) },
+                { title: "Avg transit (days)", key: "t", align: "right", render: (_, r) => (r.days / r.n).toFixed(1) },
+                { title: "CO₂e (kg)", dataIndex: "co2", align: "right", sorter: (a, b) => a.co2 - b.co2, render: (v: number) => v.toFixed(1) },
+                { title: "CO₂e / shipment (kg)", key: "per", align: "right", render: (_, r) => (r.co2 / r.n).toFixed(1) },
+              ]} />
+          </Card>
+        </Col>
+      </Row>
     </>
   );
 }

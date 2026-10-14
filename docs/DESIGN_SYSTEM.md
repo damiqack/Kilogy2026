@@ -1,79 +1,70 @@
-# KILOGY Design System — implementation notes
+# KILOGY Design System: implementation notes
 
-Source: *KILOGY UI/UX Prototype Specification v1.0*. This file records how `apps/web` implements
-the spec and where it intentionally deviates.
+Source: *KILOGY UI/UX Prototype Specification v1.0*. This file records how `apps/web` applies
+the spec and where it deviates.
 
-## Principles → implementation
+## Approach
 
-| Principle | How the dashboard applies it |
-|---|---|
-| **Clarity** | KPI tiles, one status pill per shipment, tracking IDs in monospace, prices in CAD |
-| **Speed (≤ 2 clicks)** | "New Shipment" is on the dashboard and shipments list; alert CTAs deep-link to a pre-filled quote; every tracking # links to its tracking screen |
-| **Intelligence** | AI Alert banner on the dashboard, inline AI suggestions while filling in the package step, AI score and risk shown on every quote and shipment |
+The dashboard uses **Ant Design 6** components with a brand theme. There is no custom component
+library: tables, forms, tags, steps, timelines and layout are standard antd. Engineers who take
+over the code can use the [Ant Design docs](https://ant.design/components/overview) directly. The
+layout is dense and data-first: small cards, compact tables, and numbers before decoration.
 
 ## Tokens
 
-Defined as CSS custom properties in `apps/web/src/styles.css` and mirrored in
-`apps/web/src/design/tokens.json` (Tokens Studio format, so they can be imported into Figma).
+Defined in `apps/web/src/theme/tokens.json` (Tokens Studio format, importable into Figma). They
+are mapped onto antd's theme in `apps/web/src/theme/theme.ts`.
 
 | Token | Value | Use |
 |---|---|---|
-| Primary Navy | `#0D2C6E` | Brand, headings, sidebar |
-| Accent Blue | `#1A6DB5` | Buttons, links, highlights |
-| Light BG | `#EBF2FB` | Table headers, tinted panels, AI tips |
+| Primary Navy | `#0D2C6E` | Top bar, primary buttons (`colorPrimary`) |
+| Accent Blue | `#1A6DB5` | Links (`colorLink`), info indicators |
+| Light BG | `#EBF2FB` | Not used in the current theme |
 | Success Green | `#0A7B4A` | Delivered, success |
-| Warning Orange | `#E06400` | Delays, alerts (fills, borders, icons) |
+| Warning Orange | `#E06400` | Delays, alerts |
 | Error Red | `#CC2200` | Incidents, critical alerts |
 | Dark Text | `#1A1A2E` | Body text |
-| Page BG | `#F4F8FF` | Page background |
+| Page BG | `#F4F8FF` | Not used (neutral grey instead, see deviations) |
 
-Typography: Inter (self-hosted via `@fontsource-variable/inter`) with Arial / Arial Black
-fallbacks, and Roboto Mono (`@fontsource/roboto-mono`). Sizes: H1 28 px bold, H2 20 px
-semibold, body 14 px, mono 13 px, caption 11 px, CTA 14 px bold.
+Other settings: border radius 0, top bar 44 px, base font 13 px, neutral grey page background
+(`#eef0f3`). IBM Plex Sans for text; IBM Plex Mono (`.mono`) for tracking numbers, codes and the
+status bar.
 
 ## Deviations (and why)
 
-1. **Warning text uses `#A34800`, not `#E06400`.** Orange `#E06400` on white is about 3.4:1, below
-   the spec's own WCAG AA requirement of 4.5:1. The spec orange is still used for fills, borders
-   and icons; only text switches to the darker shade.
-2. **Cards are white, not Light BG.** White cards on the `#F4F8FF` page keep tables readable. Light
-   BG is used for table headers, tinted panels and AI tips.
-3. **Quotes open the New Shipment flow.** The quote request is steps 1–3 of the 4-step shipment
-   wizard, so there is a single form to maintain. The Quotes section lists past requests and
-   reopens their comparison table.
-4. **Dev / API includes an Architecture tab** that shows build status of the five layers (useful
-   for the team; not in the spec).
-5. **Prices are displayed in CAD** using a fixed prototype rate (`src/lib/money.ts`). The AI engine
+1. **Status colors are used only on the indicator square, never on text.** The spec orange on
+   white is about 3.4:1 contrast, below the spec's own WCAG AA requirement, so status text stays in
+   the body color. See `Indicator` and `global.css`.
+2. **Page background is neutral grey instead of the spec's light blue,** and primary buttons use
+   Primary Navy; Accent Blue is kept for links.
+3. **Secondary text is darker than antd's default** for the same contrast reason (`theme.ts`).
+4. **Quotes open the New Shipment flow.** A quote request is steps 1–3 of the 4-step shipment
+   form, so there is one form to maintain.
+5. **API includes an Architecture tab** that shows the build status of the five layers.
+6. **Prices are shown in CAD** at a fixed prototype rate (`src/lib/money.ts`). The AI engine
    prices in USD.
 
 ## Responsive behavior
 
-| Breakpoint | Navigation | Layout |
+| Width | Navigation | Layout |
 |---|---|---|
-| Desktop ≥ 1280 px (designed at 1440) | Persistent navy sidebar | 4-up KPIs, 2-column content |
-| Tablet 768–1279 px | Collapsible icon rail (☰ expands it) | 2-up KPIs, single column |
-| Mobile < 768 px (designed at 375) | Bottom tab bar: Dashboard, Shipments, Quotes, Carriers, More | Cards stack; wide tables scroll inside their card |
+| ≥ 1200 px | Top bar menu + search + utility links | 6-up stat strip, two-column content |
+| 992–1199 px | Top bar menu (overflow items collapse into "…") | 3-up stat strip, single column |
+| < 992 px | Menu button opens a drawer with search and all links | 2-up stat strip, wide tables scroll inside their panel |
 
-Dark mode follows the system setting (`prefers-color-scheme`) automatically.
+Dark mode follows the system setting (`prefers-color-scheme`).
 
-## Accessibility checklist
+## Accessibility
 
-- Automated check: axe-core (WCAG 2.0/2.1 A + AA rules) reports **0 violations** on every screen,
-  light and dark, as of this branch.
-- Skip link is the first focusable element; visible focus ring on every control.
-- All actions are buttons or links, so everything works from the keyboard; `Esc` closes the tablet
-  rail and the mobile "More" sheet.
-- ARIA: landmarks and labels on the sidebar, tab bar and search; `aria-current` on nav and on the
-  stepper; `aria-expanded` on expandable quote rows; `role="meter"` on score bars; timeline states
-  announced to screen readers.
-- Reduced motion respected (`prefers-reduced-motion`).
+- axe-core (WCAG 2.0/2.1 A + AA) reports 0 violations on every screen, in light and dark mode.
+- All form fields have linked labels. Icon-only buttons, sliders, switches and progress bars have
+  accessible names.
+- antd provides keyboard support for menus, tables, steps, drawers and modals.
 
-## Handoff tools (spec section 6)
+## Handoff tools
 
 | Tool | Status |
 |---|---|
-| Figma | Import `src/design/tokens.json` with the Tokens Studio plugin |
-| Storybook | Not set up yet. Candidates: `QuoteTable`, `StatusBadge`, `RiskBadge`, `ScoreBars`, `Layout` |
-| Zeroheight | Could publish this file and the tokens |
+| Figma | Import `src/theme/tokens.json` with the Tokens Studio plugin |
+| Storybook | Not set up. Candidates: `QuoteTable`, `StatusTag`, `Indicator`, `PageHeader` |
 | Maze / UserTesting | Run against `npm run dev` or a deployed preview |
-| Lottie | Not used yet; loading states use a CSS spinner |

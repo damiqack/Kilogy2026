@@ -31,7 +31,7 @@ operations team (Team 1).
 | API Gateway (Layer 2) | Auth (API keys + JWT), tiered rate limiting | 🚧 In progress |
 | Microservices (Layer 3) | Shipments, quotes, carriers, documents, payments, tracking | 🚧 In progress |
 | Carrier Gateway | `ICarrierAdapter` + mock DHL / FedEx / UPS / Canada Post | 🚧 Interface done |
-| Clients (Layer 1) | Web dashboard prototype (`apps/web`), 10 screens | ✅ Clickable, live AI quotes |
+| Clients (Layer 1) | Web dashboard (`apps/web`, Ant Design), 10 screens | ✅ Clickable, live AI quotes |
 | | `@kilogy/sdk`, mobile app | ⬜ Not started |
 | Data (Layer 5) | Postgres, Mongo, Redis, Kafka | ⬜ In-memory stand-ins for now |
 | DevOps | Docker Compose ✅ · GitHub Actions, Terraform, EKS ⬜ | |

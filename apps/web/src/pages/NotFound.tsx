@@ -1,5 +1,6 @@
+import { Result } from "antd";
 import { Link } from "react-router-dom";
 
-export function NotFound() {
-  return <div className="card empty">Page not found. <Link to="/">Back to dashboard</Link></div>;
+export function NotFoundPage() {
+  return <Result status="404" title="Page not found" extra={<Link to="/dashboard">Back to overview</Link>} />;
 }
