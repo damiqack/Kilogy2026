@@ -1,16 +1,30 @@
 name: kilogy2026
 
+# Backend stack: docker compose up --build
+# The web app (apps/web) still runs with npm run dev for fast reloads.
+
 services:
   ai-engine:
     build: ./services/ai-engine
     ports:
       - "4200:4200"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4200/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
-  # api: enabled once services/api is complete
-  #   build: ./services/api
-  #   ports:
-  #     - "4100:4100"
-  #   environment:
-  #     AI_ENGINE_URL: http://ai-engine:4200
-  #   depends_on:
-  #     - ai-engine
+  api:
+    build: ./services/api
+    ports:
+      - "4100:4100"
+    environment:
+      API_PORT: 4100
+      # Inside Docker the API reaches the engine by service name, not localhost.
+      AI_ENGINE_URL: http://ai-engine:4200
+      JWT_SECRET: ${JWT_SECRET:-change-me-kilogy2026-dev-only}
+      DEV_API_KEY: ${DEV_API_KEY:-kg_test_dev_key_123}
+    depends_on:
+      ai-engine:
+        condition: service_healthy

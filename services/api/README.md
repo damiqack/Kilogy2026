@@ -15,6 +15,18 @@ npm test         # unit tests (use a fake AI engine, so Python isn't needed)
 
 Set `AI_ENGINE_URL` or `API_PORT` in the repo's `.env` to change the defaults.
 
+### With Docker
+
+From the repo root, this starts the AI engine and the API together (the API waits until the
+engine is healthy):
+
+```bash
+docker compose up --build
+```
+
+Inside Docker the API reaches the engine at `http://ai-engine:4200` (set in `docker-compose.yml`).
+Both services are still published on `localhost:4200` and `localhost:4100` for testing.
+
 ## Endpoints
 
 | Method | Path | What it does |
