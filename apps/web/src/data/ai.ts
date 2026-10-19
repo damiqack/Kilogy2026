@@ -1,3 +1,4 @@
+import { apiHealthy, createQuote } from "./api";
 import { approxDistanceKm, chargeableKg, EMISSION_FACTORS, mockCarrierRates, type CarrierRate } from "./carriers";
 import type { Quote, QuoteRequest, RankedOption } from "./types";
 
@@ -22,7 +23,18 @@ const newId = (p: string) => `${p}_${Math.random().toString(36).slice(2, 10)}`;
  * Uses the live Python AI engine when it's running; otherwise a local mock that produces the
  * same response shape, so the UI works standalone.
  */
+
 export async function requestQuote(req: QuoteRequest): Promise<Quote> {
+  // Prefer the API gateway (carriers + AI ranking + persistence)
+  if (await apiHealthy()) {
+    try {
+      return await createQuote(req);
+    } catch {
+      /* fall through */
+    }
+  }
+
+  // Fallback: direct AI engine or local mock (existing behavior)
   const rates = mockCarrierRates(req.origin, req.destination, req.package);
   if (await aiEngineHealthy()) {
     try {
@@ -34,8 +46,12 @@ export async function requestQuote(req: QuoteRequest): Promise<Quote> {
       if (res.ok) {
         const body = await res.json();
         return {
-          id: newId("qt"), createdAt: new Date().toISOString(), request: req,
-          options: body.options, chargeable_weight_kg: body.chargeable_weight_kg, source: "ai-engine",
+          id: newId("qt"),
+          createdAt: new Date().toISOString(),
+          request: req,
+          options: body.options,
+          chargeable_weight_kg: body.chargeable_weight_kg,
+          source: "ai-engine",
         };
       }
     } catch {

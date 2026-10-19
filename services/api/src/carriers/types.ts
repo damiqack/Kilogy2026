@@ -11,9 +11,13 @@ export interface RateResponse {
   carrier_id: string;
   carrier_name: string;
   service: ServiceLevel;
+  /** Carrier's product name, e.g. "International Express". */
+  service_name?: string;
   cost_usd: number;
   transit_days: number;
   mode: "air" | "ocean" | "road" | "rail";
+  /** Hub the carrier routes through, e.g. "ADD" for Ethiopian via Addis Ababa. */
+  via?: string;
 }
 
 export interface BookingRequest {
