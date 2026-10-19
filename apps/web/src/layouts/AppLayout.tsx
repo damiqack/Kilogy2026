@@ -45,7 +45,7 @@ export function AppLayout() {
     <Layout style={{ minHeight: "100vh" }}>
       <ConfigProvider theme={headerTheme}>
         <Header className="topbar">
-          <Link to="/dashboard" className="wordmark" aria-label="Kilogy dashboard">
+          <Link to="/" className="wordmark" aria-label="Kilogy home page">
             KILOGY<span>Logistics OS</span>
           </Link>
 
