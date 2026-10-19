@@ -42,7 +42,7 @@ export function AnalyticsPage() {
             <Table size="small" rowKey="month" pagination={false} dataSource={VOLUME}
               columns={[
                 { title: "Month", dataIndex: "month", width: 80 },
-                { title: "Shipments", dataIndex: "n", render: (v: number) => <Progress aria-label="Shipments" percent={(v / maxVol) * 100} format={() => v} size="small" /> },
+                { title: "Shipments", dataIndex: "n", render: (v: number) => <Progress aria-label="Shipments" percent={(v / maxVol) * 100} status="normal" format={() => v} size="small" /> },
               ]} />
           </Card>
         </Col>
@@ -52,7 +52,7 @@ export function AnalyticsPage() {
               columns={[
                 { title: "Carrier", dataIndex: "carrier" },
                 { title: "Spend (CAD)", dataIndex: "spend", align: "right", render: (v: number) => cad(v) },
-                { title: "Share", key: "share", width: 160, render: (_, r) => <Progress aria-label={`${r.carrier} share of spend`} percent={Math.round((r.spend / totalSpend) * 100)} size="small" /> },
+                { title: "Share", key: "share", width: 160, render: (_, r) => <Progress aria-label={`${r.carrier} share of spend`} percent={Math.round((r.spend / totalSpend) * 100)} status="normal" size="small" /> },
               ]} />
           </Card>
         </Col>
