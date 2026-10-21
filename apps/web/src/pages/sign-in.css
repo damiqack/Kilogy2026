@@ -1,0 +1,114 @@
+/* Sign-in page — same tokens as landing (navy, IBM Plex, square corners) */
+.si {
+  --si-navy: #0d2c6e;
+  --si-blue: #1a6db5;
+  --si-ink: #1a1a2e;
+  --si-muted: #4a5263;
+  --si-line: #d9dde3;
+  --si-bg: #f3f4f6;
+  --si-card: #ffffff;
+  min-height: 100vh;
+  background: var(--si-bg);
+  color: var(--si-ink);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (prefers-color-scheme: dark) {
+  .si {
+    --si-ink: #e8eaee;
+    --si-muted: #a9b0bd;
+    --si-line: #2a303a;
+    --si-bg: #0e1116;
+    --si-card: #151a22;
+    --si-blue: #6aa9ff;
+  }
+}
+
+.si-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.si-nav {
+  background: var(--si-navy);
+  color: #fff;
+}
+
+.si-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.si-wordmark {
+  color: #fff !important;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  font-size: 17px;
+}
+
+.si-back {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 14px;
+}
+
+.si-back:hover {
+  color: #fff !important;
+}
+
+.si-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.si-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--si-card);
+  border: 1px solid var(--si-line);
+  padding: 36px 32px;
+}
+
+.si-eyebrow {
+  font: 500 12px "IBM Plex Mono", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--si-blue);
+  margin: 0 0 8px;
+}
+
+.si-title {
+  margin: 0 0 8px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+.si-lead {
+  margin-bottom: 24px !important;
+}
+
+.si-hint {
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: var(--si-muted);
+  text-align: center;
+}
+
+.si-footer-link {
+  margin: 16px 0 0;
+  font-size: 14px;
+  text-align: center;
+  color: var(--si-muted);
+}
+
+.si-footer-link a {
+  color: var(--si-blue);
+  font-weight: 500;
+}

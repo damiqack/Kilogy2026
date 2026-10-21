@@ -14,12 +14,14 @@ import { QuotesPage } from "../pages/Quotes";
 import { SettingsPage } from "../pages/Settings";
 import { ShipmentDetailPage } from "../pages/ShipmentDetail";
 import { ShipmentsPage } from "../pages/Shipments";
+import { SignInPage } from "../pages/SignIn";
 
 export function AppRoutes() {
   return (
     <Routes>
       {/* Public homepage (no app shell) */}
       <Route index element={<LandingPage />} />
+      <Route path="login" element={<SignInPage />} />
 
       {/* Signed-in app */}
       <Route element={<AppLayout />}>

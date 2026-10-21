@@ -24,7 +24,7 @@ export function LandingPage() {
             <a href="#developers">Developers</a>
           </nav>
           <div className="lp-nav-actions">
-            <Link to="/dashboard" className="lp-signin">Sign in</Link>
+            <Link to="/login" className="lp-signin">Sign in</Link>
             <Button type="primary" onClick={quote}>Get a quote</Button>
           </div>
         </div>
