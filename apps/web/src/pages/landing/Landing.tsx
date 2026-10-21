@@ -1,171 +1,167 @@
-import { Button, Select } from "antd";
+import {
+  ApiOutlined, AppstoreOutlined, ArrowRightOutlined, BulbOutlined, CalendarOutlined, DesktopOutlined, DownOutlined,
+  EnvironmentOutlined, EyeOutlined, GlobalOutlined, SafetyCertificateOutlined, SettingOutlined, StarFilled,
+} from "@ant-design/icons";
+import { Button, DatePicker, Input, Select } from "antd";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_SAMPLE, CAPABILITIES, HERO, QUICK_DESTINATIONS, QUICK_ORIGINS, SAMPLE_QUOTE, STEPS } from "./content";
-import { LaneMap } from "./LaneMap";
+import { KilogyLogo } from "../../components/KilogyLogo";
+import { ModeIcon } from "../../components/ModeIcon";
+import { WorldMap } from "../../components/WorldMap";
+import { COORDS } from "../../config/geo";
+import { isDelayed, isDelivered, isInTransit } from "../../data/insights";
+import { useStore } from "../../data/store";
+import { BAND, CARGO_TYPES, DESTINATIONS, FEATURES, HERO, NAV, ORIGINS, PARTNERS, RATE_SAMPLE } from "./content";
 import "./landing.css";
 
-/** Public homepage at "/". The signed-in app lives under /dashboard, /shipments, etc. */
+const FEATURE_ICONS = [<ModeIcon key="m" mode="ocean" size={26} />, <BulbOutlined key="b" />, <GlobalOutlined key="g" />, <EyeOutlined key="e" />, <SafetyCertificateOutlined key="s" />, <AppstoreOutlined key="a" />];
+const BAND_ICONS = [<ApiOutlined key="a" />, <BulbOutlined key="b" />, <DesktopOutlined key="d" />, <SettingOutlined key="s" />];
+
+// Bright arcs for the hero map: a web of major trade lanes.
+const HUBS = ["Montreal", "Toronto", "New York", "London", "Rotterdam", "Dubai", "Shanghai", "Lagos", "Kinshasa", "Johannesburg", "Nairobi", "Vancouver", "Istanbul"];
+const LANES: [string, string][] = [
+  ["Montreal", "Kinshasa"], ["Montreal", "Lagos"], ["Toronto", "London"], ["New York", "Rotterdam"], ["London", "Dubai"],
+  ["Dubai", "Shanghai"], ["Rotterdam", "Lagos"], ["Dubai", "Nairobi"], ["Shanghai", "Johannesburg"], ["Vancouver", "Shanghai"],
+  ["Istanbul", "Kinshasa"], ["New York", "Lagos"], ["London", "Johannesburg"],
+];
+
+/** Public homepage at "/", matched to Kilogy's homepage mockup. */
 export function LandingPage() {
   const navigate = useNavigate();
-  const [from, setFrom] = useState(QUICK_ORIGINS[0].value);
-  const [to, setTo] = useState(QUICK_DESTINATIONS[0].value);
-  const quote = () => navigate(`/shipments/new?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
+  const { shipments } = useStore();
+  const [from, setFrom] = useState(ORIGINS[0].value);
+  const [to, setTo] = useState(DESTINATIONS[0].value);
+  const [cargo, setCargo] = useState(CARGO_TYPES[0]);
+  const [weight, setWeight] = useState("500 kg / 3 m³");
+  const [when, setWhen] = useState(dayjs().add(3, "day"));
+  const findOptions = () => navigate(`/shipments/new?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
+
+  const active = shipments.filter((s) => !isDelivered(s) && s.status !== "cancelled");
+  const onTime = shipments.length ? (100 * shipments.filter((s) => !isDelayed(s)).length) / shipments.length : 100;
+  const tracked = shipments.find(isInTransit) ?? shipments[0];
 
   return (
     <div className="lp">
-      <header className="lp-nav">
-        <div className="lp-wrap lp-nav-inner">
-          <Link to="/" className="lp-wordmark">KILOGY</Link>
-          <nav className="lp-nav-links" aria-label="Homepage sections">
-            <a href="#how">How it works</a>
-            <a href="#lanes">Lanes</a>
-            <a href="#capabilities">Capabilities</a>
-            <a href="#developers">Developers</a>
+      <section className="lp-hero">
+        <div className="lp-hero-map" aria-hidden>
+          <WorldMap variant="glow" label="Trade lanes"
+            arcs={LANES.map(([a, b]) => ({ from: COORDS[a], to: COORDS[b] }))}
+            points={HUBS.map((h) => ({ at: COORDS[h], color: "#e0f2fe", r: 3 }))} />
+        </div>
+
+        <header className="lp-nav lp-wrap">
+          <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={46} /></Link>
+          <nav aria-label="Main">
+            {NAV.map((n, i) => (
+              <a key={n} href={n === "Platform" ? "#platform" : n === "Integrations" ? "#partners" : "#features"}>{n}{i < 5 && i !== 2 && i !== 5 ? <DownOutlined /> : null}</a>
+            ))}
           </nav>
           <div className="lp-nav-actions">
-            <Link to="/dashboard" className="lp-signin">Sign in</Link>
-            <Button type="primary" onClick={quote}>Get a quote</Button>
+            <Button ghost size="large" onClick={() => navigate("/dashboard")}>Login</Button>
+            <Button type="primary" size="large" onClick={() => navigate("/shipments/new")}>Get Started</Button>
           </div>
+        </header>
+
+        <div className="lp-wrap lp-hero-grid">
+          <div className="lp-hero-copy">
+            <h1>{HERO.title[0]}<br />{HERO.title[1]}<span>{HERO.title[2]}</span><br /><span>{HERO.title[3]}</span></h1>
+            <p>{HERO.body}</p>
+            <div className="lp-hero-ctas">
+              <Button type="primary" size="large" onClick={() => navigate("/shipments/new")}>Request a Demo <ArrowRightOutlined /></Button>
+              <Button ghost size="large" onClick={() => navigate("/dashboard")}>Explore Platform</Button>
+            </div>
+          </div>
+
+          <form className="lp-advisor" aria-label="AI Logistics Advisor" onSubmit={(e) => { e.preventDefault(); findOptions(); }}>
+            <h2><StarFilled /> AI Logistics Advisor</h2>
+            <p>Find the optimal logistics solution</p>
+            <label className="lp-field"><span>From</span><Select aria-label="From" value={from} onChange={setFrom} options={ORIGINS} variant="borderless" suffixIcon={<EnvironmentOutlined />} /></label>
+            <label className="lp-field"><span>To</span><Select aria-label="To" value={to} onChange={setTo} options={DESTINATIONS} variant="borderless" suffixIcon={<EnvironmentOutlined />} /></label>
+            <label className="lp-field"><span>Cargo Type</span><Select aria-label="Cargo type" value={cargo} onChange={setCargo} options={CARGO_TYPES.map((c) => ({ value: c, label: c }))} variant="borderless" /></label>
+            <label className="lp-field"><span>Weight / Volume</span><Input aria-label="Weight and volume" value={weight} onChange={(e) => setWeight(e.target.value)} variant="borderless" /></label>
+            <label className="lp-field"><span>Preferred Date</span><DatePicker aria-label="Preferred date" value={when} onChange={(d) => d && setWhen(d)} format="D MMM YYYY" variant="borderless" allowClear={false} suffixIcon={<CalendarOutlined />} /></label>
+            <Button type="primary" htmlType="submit" size="large" block>Find Best Options <ArrowRightOutlined /></Button>
+          </form>
         </div>
-      </header>
+      </section>
 
-      <main>
-        {/* Hero */}
-        <section className="lp-hero">
-          <div className="lp-wrap lp-hero-grid">
-            <div>
-              <p className="lp-eyebrow">{HERO.eyebrow}</p>
-              <h1 className="lp-h1">{HERO.title}</h1>
-              <p className="lp-lead">{HERO.body}</p>
+      <section className="lp-wrap lp-features" id="features" aria-label="Capabilities">
+        {FEATURES.map((f, i) => (
+          <div key={f.title}><span className="lp-fico">{FEATURE_ICONS[i]}</span><div><b>{f.title}</b><span>{f.body}</span></div></div>
+        ))}
+      </section>
 
-              <form className="lp-quick" onSubmit={(e) => { e.preventDefault(); quote(); }} aria-label="Start a quote">
-                <div className="lp-quick-field">
-                  <label htmlFor="lp-from">Ship from</label>
-                  <Select id="lp-from" value={from} onChange={setFrom} options={QUICK_ORIGINS} size="large" />
-                </div>
-                <div className="lp-quick-field">
-                  <label htmlFor="lp-to">Ship to</label>
-                  <Select id="lp-to" value={to} onChange={setTo} options={QUICK_DESTINATIONS} size="large" />
-                </div>
-                <Button type="primary" size="large" htmlType="submit" className="lp-quick-go">Compare carriers</Button>
-              </form>
-            </div>
-
-            <figure className="lp-sample" aria-label="Example quote">
-              <figcaption>
-                <span>Example quote</span>
-                <span className="lp-mono">{SAMPLE_QUOTE.route}</span>
-              </figcaption>
-              <table>
-                <thead>
-                  <tr><th>Carrier</th><th className="r">Days</th><th className="r">Price (CAD)</th><th className="r">CO₂e</th></tr>
-                </thead>
-                <tbody>
-                  {SAMPLE_QUOTE.rows.map((r) => (
-                    <tr key={r.carrier + r.service}>
-                      <td>
-                        <strong>{r.carrier}</strong>
-                        <span className="lp-sub">{r.service}</span>
-                        <span className="lp-pick">{r.pick}</span>
-                      </td>
-                      <td className="r">{r.days}</td>
-                      <td className="r">{r.price}</td>
-                      <td className="r">{r.co2}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p className="lp-sample-note">Ranked on cost, speed, carbon and reliability. Sample data.</p>
-            </figure>
+      <section className="lp-wrap lp-cards" id="platform">
+        <article className="lp-card lp-card-dark">
+          <div className="lp-card-head"><h3>Live Shipment Overview</h3><Link to="/tracking">View All</Link></div>
+          <div className="lp-stats">
+            <div><b>{shipments.length}</b><span>Total Shipments</span></div>
+            <div><b>{active.length}</b><span>In Transit</span></div>
+            <div><b>{shipments.filter(isDelayed).length}</b><span>Delayed</span></div>
+            <div><b>{onTime.toFixed(1)}%</b><span>On-Time Delivery</span></div>
           </div>
-        </section>
-
-        {/* Facts strip: product facts, not marketing numbers */}
-        <section className="lp-facts" aria-label="At a glance">
-          <div className="lp-wrap lp-facts-grid">
-            <div><b>5</b><span>carriers compared per quote</span></div>
-            <div><b>4</b><span>ranking factors you can weight</span></div>
-            <div><b>3</b><span>modes: air, ocean and road</span></div>
-            <div><b>1</b><span>screen to quote, book and track</span></div>
+          <div className="lp-minimap" aria-hidden>
+            <WorldMap variant="glow" label="Active shipment lanes"
+              arcs={LANES.slice(0, 8).map(([a, b]) => ({ from: COORDS[a], to: COORDS[b] }))}
+              points={HUBS.map((h) => ({ at: COORDS[h], color: "#e0f2fe", r: 3 }))} />
           </div>
-        </section>
+        </article>
 
-        {/* How it works */}
-        <section id="how" className="lp-section">
-          <div className="lp-wrap">
-            <h2 className="lp-h2">How it works</h2>
-            <ol className="lp-steps">
-              {STEPS.map((s) => (
-                <li key={s.n}>
-                  <span className="lp-step-n">{s.n}</span>
-                  <h3>{s.title}</h3>
-                  <p>{s.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <article className="lp-card">
+          <div className="lp-card-head"><h3>Smart Rate Comparison</h3><Link to="/shipments/new">View All</Link></div>
+          <ul className="lp-rates">
+            {RATE_SAMPLE.map((r) => (
+              <li key={r.name}>
+                <span className="lp-rate-ico">{r.modes.map((m) => <ModeIcon key={m} mode={m} size={20} />)}</span>
+                <div className="lp-rate-name"><b>{r.name}</b><small>Transit Time</small><span>{r.transit}</span></div>
+                <div><small>Price</small><span>{r.price}</span></div>
+                <div><small>Reliability</small><span>{r.reliability}</span></div>
+                <Button type="primary" size="small" onClick={() => navigate("/shipments/new")}>Select</Button>
+              </li>
+            ))}
+          </ul>
+          <Link to="/shipments/new" className="lp-more">Compare more providers <ArrowRightOutlined /></Link>
+        </article>
 
-        {/* Lanes */}
-        <section id="lanes" className="lp-section lp-section-alt">
-          <div className="lp-wrap">
-            <div className="lp-split-head">
-              <h2 className="lp-h2">Built for Canada–Africa lanes</h2>
-              <p>Direct options are scarce on these routes. Kilogy combines carriers through transit hubs, so a Montreal to Accra shipment can fly via Addis Ababa when that is cheaper and faster.</p>
-            </div>
-            <div className="lp-lanes-wrap" role="region" aria-label="Lane map" tabIndex={0}>
-              <LaneMap />
-            </div>
-          </div>
-        </section>
+        <article className="lp-card">
+          <div className="lp-card-head"><h3>Real-Time Tracking</h3><Link to="/shipments">View All</Link></div>
+          {tracked && (
+            <>
+              <ol className="lp-track">
+                {tracked.timeline.slice(0, 5).map((t) => (
+                  <li key={t.title + t.time} className={`is-${t.state}`}>
+                    <span className="dot" aria-hidden />
+                    <div><b>{t.location}</b><span>{t.title}</span></div>
+                    <time>{dayjs(t.time).format("MMM D, HH:mm")}</time>
+                  </li>
+                ))}
+              </ol>
+              <div className="lp-track-foot">
+                <span>Tracking ID: <Link to={`/shipments/${tracked.id}`} className="mono">{tracked.trackingId}</Link></span>
+                <Link to={`/shipments/${tracked.id}`}>View Details <ArrowRightOutlined /></Link>
+              </div>
+            </>
+          )}
+        </article>
+      </section>
 
-        {/* Capabilities */}
-        <section id="capabilities" className="lp-section">
-          <div className="lp-wrap">
-            <h2 className="lp-h2">What it handles</h2>
-            <div className="lp-caps">
-              {CAPABILITIES.map((c) => (
-                <article key={c.label}>
-                  <span className="lp-cap-label">{c.label}</span>
-                  <h3>{c.title}</h3>
-                  <p>{c.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+      <section className="lp-wrap lp-partners" id="partners" aria-label="Carrier network">
+        <span>Trusted by global leaders</span>
+        {PARTNERS.map((p) => <b key={p}>{p}</b>)}
+        <span>and more...</span>
+      </section>
 
-        {/* Developers */}
-        <section id="developers" className="lp-dev">
-          <div className="lp-wrap lp-dev-grid">
-            <div>
-              <h2 className="lp-h2">For developers</h2>
-              <p>Quotes, bookings, tracking and documents are all REST endpoints. Use an API key from the dashboard and subscribe to webhooks for status changes.</p>
-              <Link to="/developers?tab=reference" className="lp-dev-link">API reference →</Link>
-            </div>
-            <pre className="lp-code" aria-label="Example API request" tabIndex={0}><code>{API_SAMPLE}</code></pre>
-          </div>
-        </section>
+      <section className="lp-wrap lp-band">
+        {BAND.map((b, i) => (
+          <div key={b.title}><span className="lp-bico">{BAND_ICONS[i]}</span><div><b>{b.title}</b><span>{b.body}</span></div></div>
+        ))}
+      </section>
 
-        {/* Closing call to action */}
-        <section className="lp-cta">
-          <div className="lp-wrap lp-cta-inner">
-            <h2 className="lp-h2">Price your next shipment</h2>
-            <div className="lp-cta-actions">
-              <Button type="primary" size="large" onClick={quote}>Get a quote</Button>
-              <Link to="/dashboard" className="lp-signin">Open the dashboard</Link>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="lp-footer">
-        <div className="lp-wrap lp-footer-inner">
-          <span className="lp-wordmark small">KILOGY</span>
-          <span>Logistics OS · prototype v0.3</span>
-          <span>© 2026 Kilogy</span>
-        </div>
+      <footer className="lp-wrap lp-foot">
+        <KilogyLogo height={26} />
+        <span>One Platform. Every Carrier. Every Shipment.</span>
+        <span>© {new Date().getFullYear()} Kilogy · prototype</span>
       </footer>
     </div>
   );

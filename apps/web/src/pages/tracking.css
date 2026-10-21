@@ -1,0 +1,53 @@
+/* Tracking / Logistics Control Tower (pages/ControlTower.tsx), matched to Kilogy's mockup. */
+.ktower { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 20px; align-items: start; }
+.ktower-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.ktower-side { display: flex; flex-direction: column; gap: 20px; }
+.ktiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ktile { display: flex; flex-wrap: wrap; row-gap: 10px; gap: 14px; align-items: center; padding: 16px 18px; background: #fff; border: 1px solid var(--k-line); border-radius: 14px; box-shadow: var(--k-card-shadow); color: var(--k-ink); }
+.ktile:hover { border-color: #93c5fd; }
+.ktile-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-size: 20px; flex: none; }
+.ktile b { display: block; font-size: 15px; }
+.ktile > div { flex: 1 1 112px; min-width: 0; }
+.ktile div span { font-size: 13px; color: var(--k-muted); }
+.ktag-med.ant-tag { color: #9a3412; background: #ffedd5; border-color: #fdba74; font-weight: 600; }
+.ktag-high.ant-tag { color: #991b1b; background: #fee2e2; border-color: #fca5a5; font-weight: 600; }
+.ktower-title { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.ktower-title h1 { margin: 0; font-size: 24px; font-weight: 700; }
+.ktower-title p { margin: 4px 0 0; color: #475569; }
+.ktower-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.ktower-map { position: relative; height: 430px; padding: 0; overflow: hidden; }
+.ktower-map h2 { position: absolute; top: 18px; left: 20px; margin: 0; font-size: 16px; color: #fff; z-index: 1; }
+.ktower-legend { position: absolute; top: 52px; left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.88); z-index: 1; }
+.ktower-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; }
+.ktower-pop { position: absolute; left: 16px; bottom: 16px; width: 270px; background: #fff; border-radius: 12px; padding: 14px 16px; color: var(--k-ink); box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-size: 13px; z-index: 1; }
+.ktower-pop .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ktower-pop p { margin: 0 0 4px; color: #334155; }
+.ktower-full { position: absolute; right: 16px; bottom: 16px; z-index: 1; }
+.kreco { padding: 16px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; margin-bottom: 8px; }
+.kreco-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; color: #c2410c; font-weight: 600; font-size: 14px; }
+.kreco p { margin: 0 0 6px; font-size: 13.5px; color: #1e293b; line-height: 1.5; }
+.kproviders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kprovider { position: relative; display: grid; place-items: center; text-align: center; min-height: 58px; padding: 8px; border: 1px solid var(--k-line); border-radius: 10px; font-size: 13px; font-weight: 700; }
+.kprovider .on { position: absolute; right: 8px; bottom: 8px; width: 8px; height: 8px; border-radius: 50%; }
+.kweather { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kweather > div { padding: 12px; border-radius: 12px; background: #f6f8fc; font-size: 13px; }
+.kweather b { display: block; font-size: 22px; margin: 4px 0; }
+.kband { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) 1.3fr; gap: 20px; align-items: center; padding: 22px 26px; border-radius: 14px; color: #fff; background: linear-gradient(90deg, #0b1f4d, #13307a); }
+.kband > div { display: flex; gap: 12px; align-items: flex-start; }
+.kband .ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.1); font-size: 19px; flex: none; }
+.kband b { display: block; font-size: 14.5px; }
+.kband span { font-size: 12.5px; color: rgba(255,255,255,0.78); line-height: 1.45; }
+.kband-brand { flex-direction: column; align-items: flex-end !important; text-align: right; font-size: 13px; }
+@media (max-width: 1700px) { .kband { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1400px) {
+  .ktower { grid-template-columns: minmax(0, 1fr); }
+  .ktower-side { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kband { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .ktiles { grid-template-columns: 1fr 1fr; }
+  .ktower-side, .kband { grid-template-columns: minmax(0, 1fr); }
+  .kband-brand { align-items: flex-start !important; text-align: left; }
+  .ktower-map { height: 300px; }
+  .ktower-pop { display: none; }
+}

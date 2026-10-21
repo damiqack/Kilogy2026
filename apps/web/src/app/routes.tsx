@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "../layouts/AppLayout";
 import { AnalyticsPage } from "../pages/Analytics";
 import { CarriersPage } from "../pages/Carriers";
+import { ComingSoonPage } from "../pages/ComingSoon";
+import { ControlTowerPage } from "../pages/ControlTower";
 import { DashboardPage } from "../pages/Dashboard";
 import { DevelopersPage } from "../pages/Developers";
 import { DocumentsPage } from "../pages/Documents";
@@ -14,6 +16,7 @@ import { QuotesPage } from "../pages/Quotes";
 import { SettingsPage } from "../pages/Settings";
 import { ShipmentDetailPage } from "../pages/ShipmentDetail";
 import { ShipmentsPage } from "../pages/Shipments";
+import { COMING_SOON } from "../config/navigation";
 
 export function AppRoutes() {
   return (
@@ -31,6 +34,9 @@ export function AppRoutes() {
         <Route path="quotes/new" element={<Navigate to="/shipments/new" replace />} />
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
         <Route path="carriers" element={<CarriersPage />} />
+        <Route path="tracking" element={<ControlTowerPage />} />
+        {COMING_SOON.map((n) => <Route key={n.path} path={n.path.slice(1)} element={<ComingSoonPage />} />)}
+        <Route path="assistant" element={<ComingSoonPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="documents" element={<DocumentsPage />} />
         <Route path="payments" element={<PaymentsPage />} />

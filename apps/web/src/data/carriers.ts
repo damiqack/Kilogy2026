@@ -49,7 +49,7 @@ export interface CarrierRate {
 const CENTROIDS: Record<string, [number, number]> = {
   CA: [45.5, -73.6], US: [40.7, -74.0], MX: [19.4, -99.1], GB: [51.5, -0.1], FR: [48.9, 2.4],
   DE: [50.1, 8.7], NL: [52.4, 4.9], NG: [6.5, 3.4], GH: [5.6, -0.2], KE: [-1.3, 36.8],
-  ZA: [-26.2, 28.0], SN: [14.7, -17.5], ET: [9.0, 38.7], EG: [30.0, 31.2], AE: [25.2, 55.3], IN: [19.1, 72.9], CN: [31.2, 121.5],
+  ZA: [-26.2, 28.0], CD: [-4.4, 15.3], SN: [14.7, -17.5], ET: [9.0, 38.7], EG: [30.0, 31.2], AE: [25.2, 55.3], IN: [19.1, 72.9], CN: [31.2, 121.5],
   JP: [35.7, 139.7], AU: [-33.9, 151.2], BR: [-23.6, -46.6], SG: [1.35, 103.8], HK: [22.3, 114.2],
 };
 
@@ -83,7 +83,7 @@ export function mockCarrierRates(origin: Location, destination: Location, pkg: P
     ups: { mult: 1.0, speed: 1.05 }, canadapost: { mult: 0.82, speed: 1.35 },
     ethiopian: { mult: 0.72, speed: 1.0 },
   };
-  const AFRICA = new Set(["NG", "GH", "KE", "ZA", "EG", "ET", "SN"]);
+  const AFRICA = new Set(["NG", "GH", "KE", "ZA", "EG", "ET", "SN", "CD"]);
   for (const c of CARRIERS.filter((c) => c.status !== "planned")) {
     if (c.id === "canadapost" && origin.country !== "CA") continue;
     if (c.id === "ethiopian" && !AFRICA.has(destination.country)) continue;

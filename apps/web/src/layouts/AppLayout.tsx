@@ -1,20 +1,18 @@
-import { MenuOutlined } from "@ant-design/icons";
-import { Button, ConfigProvider, Drawer, Grid, Input, Layout, Menu, theme } from "antd";
+import {
+  BellOutlined, GlobalOutlined, MenuOutlined, QuestionCircleOutlined, SearchOutlined, StarFilled,
+} from "@ant-design/icons";
+import { Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Indicator } from "../components/Indicator";
-import { activeNavPath, NAV_ITEMS } from "../config/navigation";
+import { KilogyLogo } from "../components/KilogyLogo";
+import { activeNavPath, DEMO_USER, NAV_ITEMS } from "../config/navigation";
 import { useStore } from "../data/store";
-import { useEngineStatus } from "../data/useEngineStatus";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 
-/** Header controls render with the dark algorithm so they sit correctly on the navy bar. */
-const headerTheme = {
-  algorithm: theme.darkAlgorithm,
-  token: { colorTextBase: "#ffffff", colorText: "#ffffff", colorBgContainer: "#22407e", colorBorder: "rgba(255,255,255,0.3)", colorTextPlaceholder: "rgba(255,255,255,0.75)" },
-};
+const initials = (name: string) => name.split(" ").map((p) => p[0]).slice(0, 2).join("");
 
+/** App shell from Kilogy's dashboard mockup: navy sidebar, white header, grey canvas. */
 export function AppLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -22,80 +20,92 @@ export function AppLayout() {
   const compact = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { alerts } = useStore();
-  const engineLive = useEngineStatus();
-  const active = activeNavPath(pathname);
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
-  const toItems = (group: "main" | "utility") =>
-    NAV_ITEMS.filter((n) => n.group === group).map((n) => ({ key: n.path, label: n.label }));
-
-  const search = (
-    <Input.Search
-      size="small"
-      placeholder="Tracking #, city, carrier"
-      aria-label="Search shipments"
-      allowClear
-      style={{ width: compact ? "100%" : 240 }}
-      onSearch={(q) => navigate(`/shipments?q=${encodeURIComponent(q)}`)}
+  const menu = (
+    <Menu
+      className="kside-menu"
+      theme="dark"
+      mode="inline"
+      selectedKeys={[activeNavPath(pathname)]}
+      onClick={({ key }) => navigate(key)}
+      items={NAV_ITEMS.map((n) => ({
+        key: n.path,
+        icon: n.icon,
+        label: n.comingSoon ? <>{n.label}<span className="kside-soon">Soon</span></> : n.label,
+      }))}
     />
+  );
+
+  const sidebar = (
+    <>
+      <Link to="/" className="kside-logo" aria-label="Kilogy home page"><KilogyLogo onDark height={40} /></Link>
+      {menu}
+      <div className="kside-assist">
+        <h3><span className="ico"><StarFilled /></span>AI Logistics Assistant</h3>
+        <p>Ask anything about your shipments, rates, or logistics operations.</p>
+        <Button type="primary" onClick={() => navigate("/assistant")}>Open Assistant →</Button>
+      </div>
+      <div className="kside-tag">One platform. Every carrier.<br />Every shipment.</div>
+    </>
   );
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <ConfigProvider theme={headerTheme}>
-        <Header className="topbar">
-          <Link to="/dashboard" className="wordmark" aria-label="Kilogy dashboard">
-            KILOGY<span>Logistics OS</span>
-          </Link>
+      {compact ? (
+        <Drawer placement="left" open={drawerOpen} onClose={() => setDrawerOpen(false)} size={280}
+          styles={{ body: { padding: 0, background: "#0b1f4d", display: "flex", flexDirection: "column" }, header: { display: "none" } }}>
+          {sidebar}
+        </Drawer>
+      ) : (
+        <Sider width={272} className="kside">{sidebar}</Sider>
+      )}
 
-          {compact ? (
-            <Button type="text" icon={<MenuOutlined />} aria-label="Open navigation" onClick={() => setDrawerOpen(true)} style={{ marginLeft: "auto" }} />
-          ) : (
-            <>
-              <Menu
-                className="topnav"
-                theme="dark"
-                mode="horizontal"
-                selectedKeys={[active]}
-                items={toItems("main")}
-                onClick={({ key }) => navigate(key)}
-                style={{ flex: 1, minWidth: 0 }}
-              />
-              {search}
-              <Link to="/dashboard" className="topbar-link">Alerts <b>{alerts.length}</b></Link>
-              {NAV_ITEMS.filter((n) => n.group === "utility").map((n) => (
-                <Link key={n.path} to={n.path} className={`topbar-link${active === n.path ? " is-active" : ""}`}>{n.label}</Link>
-              ))}
-              <span className="initials" aria-label="Signed in as DA">DA</span>
-            </>
-          )}
+      <Layout>
+        <Header className="khead">
+          {compact && <Button type="text" icon={<MenuOutlined />} aria-label="Open navigation" onClick={() => setDrawerOpen(true)} />}
+          <Input.Search
+            className="khead-search"
+            prefix={<SearchOutlined />}
+            placeholder="Search by shipment ID, tracking number, or customer..."
+            aria-label="Search shipments"
+            allowClear
+            enterButton={false}
+            onSearch={(q) => navigate(`/shipments?q=${encodeURIComponent(q)}`)}
+          />
+          <div className="khead-actions">
+            <Badge count={alerts.length} size="small" offset={[-4, 4]}>
+              <Button type="text" shape="circle" size="large" icon={<BellOutlined />} aria-label={`Notifications (${alerts.length})`} onClick={() => navigate("/dashboard")} />
+            </Badge>
+            <Button type="text" shape="circle" size="large" icon={<GlobalOutlined />} aria-label="Language and region" />
+            <Button type="text" shape="circle" size="large" icon={<QuestionCircleOutlined />} aria-label="Help" onClick={() => navigate("/developers")} />
+            <Dropdown
+              trigger={["click"]}
+              menu={{
+                items: [
+                  { key: "/settings", label: "Settings" },
+                  { key: "/developers", label: "Developers & API" },
+                  { type: "divider" },
+                  { key: "/", label: "Sign out" },
+                ],
+                onClick: ({ key }) => navigate(key),
+              }}
+            >
+              <button type="button" className="khead-user" style={{ background: "none", border: 0, borderLeft: "1px solid var(--k-line)" }} aria-label="Account menu">
+                <Avatar size={40} style={{ background: "#1d4ed8", fontWeight: 600 }}>{initials(DEMO_USER.name)}</Avatar>
+                {!compact && <span style={{ textAlign: "left" }}><b>{DEMO_USER.name}</b><small>{DEMO_USER.role}</small></span>}
+              </button>
+            </Dropdown>
+          </div>
         </Header>
-      </ConfigProvider>
 
-      <Drawer placement="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} size={260} title="Menu">
-        <div style={{ marginBottom: 12 }}>{search}</div>
-        <Menu
-          mode="inline"
-          selectedKeys={[active]}
-          items={[...toItems("main"), { type: "divider" as const }, ...toItems("utility")]}
-          onClick={({ key }) => navigate(key)}
-          style={{ borderInlineEnd: 0 }}
-        />
-      </Drawer>
-
-      <Content style={{ padding: compact ? "12px 12px 0" : "16px 20px 0" }}>
-        <div style={{ maxWidth: 1600, margin: "0 auto" }}>
-          <Outlet />
-        </div>
-      </Content>
-
-      <Footer className="statusbar">
-        <span>KILOGY LOGISTICS OS v0.3</span>
-        <Indicator tone={engineLive ? "success" : engineLive == null ? "neutral" : "warning"}>
-          Routing engine {engineLive == null ? "checking" : engineLive ? "online" : "offline (sample results)"}
-        </Indicator>
-      </Footer>
+        <Content className="kcontent">
+          <div style={{ maxWidth: 1600, margin: "0 auto" }}>
+            <Outlet />
+          </div>
+        </Content>
+      </Layout>
     </Layout>
   );
 }
