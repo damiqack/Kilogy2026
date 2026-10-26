@@ -7,7 +7,7 @@ import { buildTheme } from "../theme/theme";
 
 /**
  * App-wide providers: theme, locale, data store and router.
- * Kilogy's mockups are light-only (navy sidebar, light content), so there is no dark mode.
+ * The app uses one light theme (navy sidebar, light content); there is no dark mode.
  */
 export function Providers({ children }: { children: ReactNode }) {
   const theme = useMemo(() => buildTheme(), []);

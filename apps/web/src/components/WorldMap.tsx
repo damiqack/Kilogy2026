@@ -4,7 +4,7 @@ import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
 
 /**
- * Dark world map drawn from Natural Earth land shapes (world-atlas), with route arcs and points.
+ * World map drawn from Natural Earth land shapes (world-atlas), with route arcs and points.
  * Coordinates are [longitude, latitude]. Used by the dashboard, tracking page and homepage.
  */
 export interface MapArc {
@@ -31,8 +31,8 @@ export function WorldMap({
 }: {
   arcs?: MapArc[];
   points?: MapPoint[];
-  /** dark = solid continents on navy; glow = dotted continents with bright lines (homepage) */
-  variant?: "dark" | "glow";
+  /** dark = solid continents on navy; light = pale continents on white; glow = dotted continents (homepage) */
+  variant?: "dark" | "light" | "glow";
   children?: (project: (c: [number, number]) => [number, number]) => ReactNode;
   label: string;
 }) {
@@ -54,6 +54,7 @@ export function WorldMap({
   };
 
   const glow = variant === "glow";
+  const light = variant === "light";
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} className="kmap" preserveAspectRatio="xMidYMid slice">
       <defs>
@@ -65,17 +66,17 @@ export function WorldMap({
           <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-      <path d={landPath} fill={glow ? "url(#kmap-dots)" : "#1b3363"} stroke={glow ? "none" : "#28467f"} strokeWidth="0.6" />
+      <path d={landPath} fill={glow ? "url(#kmap-dots)" : light ? "#e4eaf4" : "#1b3363"} stroke={glow ? "none" : light ? "#d3dceb" : "#28467f"} strokeWidth="0.6" />
       <g fill="none" strokeLinecap="round" filter={glow ? "url(#kmap-glow)" : undefined}>
         {arcs.map((a, i) => (
-          <path key={i} d={arcPath(a)} stroke={a.color ?? (glow ? "#bfdbfe" : "#60a5fa")} strokeWidth={a.width ?? (glow ? 1.4 : 1.6)}
+          <path key={i} d={arcPath(a)} stroke={a.color ?? (glow ? "#bfdbfe" : light ? "#2563eb" : "#60a5fa")} strokeWidth={a.width ?? (glow ? 1.4 : 1.6)}
             strokeDasharray={a.dashed ? "5 5" : undefined} opacity={glow ? 0.85 : 0.95} />
         ))}
       </g>
-      <g filter="url(#kmap-glow)">
+      <g filter={light ? undefined : "url(#kmap-glow)"}>
         {points.map((p, i) => {
           const [x, y] = project(p.at);
-          return <circle key={i} cx={x} cy={y} r={p.r ?? 3.5} fill={p.color ?? "#93c5fd"} stroke="#0b1f4d" strokeWidth="1" />;
+          return <circle key={i} cx={x} cy={y} r={p.r ?? 3.5} fill={p.color ?? "#93c5fd"} stroke={light ? "#fff" : "#0b1f4d"} strokeWidth={light ? 1.5 : 1} />;
         })}
       </g>
       {children?.(project)}

@@ -1,16 +1,19 @@
 /**
- * Homepage copy, taken from Kilogy's homepage mockup. Edit text here; layout lives in
- * Landing.tsx and landing.css.
- *
- * Marketing figures (countries, offices, partner names) come from Kilogy's mockup and must be
- * confirmed by Kilogy before the page is public.
+ * Homepage copy. Edit text here; layout lives in Landing.tsx and landing.css.
+ * Keep claims to what the prototype does today; add coverage or partner figures only once Kilogy confirms them.
  */
 
-export const NAV = ["Solutions", "Platform", "Integrations", "Resources", "Company", "Pricing"];
+export const NAV = [
+  { label: "How it works", href: "#how" },
+  { label: "Quotes", href: "#quotes" },
+  { label: "Tracking", href: "#tracking" },
+  { label: "Developers", href: "/developers" },
+];
 
 export const HERO = {
-  title: ["The AI-Powered", "Global ", "Logistics", "Operating System"],
-  body: "Connect. Orchestrate. Optimize. Every shipment, every carrier, every location — in one intelligent platform.",
+  eyebrow: "Logistics operating system",
+  title: "Ship across borders without juggling carriers.",
+  body: "Kilogy compares air, ocean and road options in one quote, books the one you pick, and keeps you posted until it lands.",
 };
 
 export const ORIGINS = [
@@ -28,29 +31,28 @@ export const DESTINATIONS = [
   { value: "SN:Dakar", label: "Dakar, Senegal" },
   { value: "ZA:Johannesburg", label: "Johannesburg, South Africa" },
 ];
-export const CARGO_TYPES = ["General Cargo", "Consumer Electronics", "Documents", "Apparel & Textiles", "Auto Parts", "Medical Supplies"];
+export const CARGO_TYPES = ["General cargo", "Electronics", "Documents", "Apparel", "Auto parts", "Medical supplies"];
 
-export const FEATURES = [
-  { title: "Multi-Modal Solutions", body: "Ocean, Air, Road & Last-Mile" },
-  { title: "AI Optimization", body: "Smart routing, pricing & risk" },
-  { title: "Global Coverage", body: "186+ countries, 2600+ offices" },
-  { title: "Real-Time Visibility", body: "Track every shipment live" },
-  { title: "Secure & Compliant", body: "Data security & global compliance" },
-  { title: "Unified Platform", body: "One system. All logistics." },
+export const STEPS = [
+  { title: "Quote", body: "Enter a lane and a package once. Kilogy asks every connected carrier and ranks the answers by price, speed and reliability." },
+  { title: "Book", body: "Pick an option and book it in one step. Labels, documents and payment stay attached to the shipment." },
+  { title: "Track", body: "Follow every leg on one timeline, with delay risk flagged before it turns into a missed delivery." },
 ];
 
-/** Sample rows for the "Smart Rate Comparison" card (illustrative, from the mockup). */
-export const RATE_SAMPLE: { name: string; modes: ("air" | "ocean")[]; transit: string; price: string; reliability: string }[] = [
-  { name: "DHL Express", modes: ["air"], transit: "5–7 days", price: "$1,245", reliability: "92%" },
-  { name: "Maersk Ocean", modes: ["ocean"], transit: "22–28 days", price: "$685", reliability: "95%" },
-  { name: "Air + Ocean", modes: ["air", "ocean"], transit: "12–15 days", price: "$950", reliability: "94%" },
+/** Sample rows for the quote preview (illustrative). */
+export const RATE_SAMPLE: { name: string; modes: ("air" | "ocean")[]; transit: string; price: string; reliability: string; tag?: string }[] = [
+  { name: "Express air", modes: ["air"], transit: "5–7 days", price: "$1,245", reliability: "92%", tag: "Fastest" },
+  { name: "Air + ocean", modes: ["air", "ocean"], transit: "12–15 days", price: "$950", reliability: "94%", tag: "Best value" },
+  { name: "Ocean LCL", modes: ["ocean"], transit: "22–28 days", price: "$685", reliability: "95%", tag: "Cheapest" },
 ];
 
-export const PARTNERS = ["DHL", "MAERSK", "Hapag-Lloyd", "ZIM", "FedEx", "UPS", "aramex"];
-
-export const BAND = [
-  { title: "API-Powered Integration", body: "Connect with 100+ logistics providers via our unified API hub." },
-  { title: "AI Decision Engine", body: "Get the best routes, rates & reliability with AI-powered insights." },
-  { title: "End-to-End Visibility", body: "From booking to delivery, see everything in real time." },
-  { title: "Automate & Scale", body: "Automate workflows, reduce costs, and scale globally." },
+export const QUOTE_POINTS = [
+  "Air, ocean and road options side by side",
+  "Each option shows price, transit time and on-time record",
+  "The AI engine explains why it ranked an option first",
+];
+export const TRACK_POINTS = [
+  "One timeline across every carrier on the route",
+  "Delay risk from weather, customs and carrier history",
+  "Alerts when a shipment needs a decision",
 ];

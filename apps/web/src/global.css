@@ -1,5 +1,5 @@
 /*
- * Global styles for the Kilogy app, matched to Kilogy's UI mockups.
+ * Global styles for the Kilogy app.
  * antd components are themed in src/theme/theme.ts; everything custom is here.
  */
 :root {
@@ -11,7 +11,7 @@
   --k-muted: #556377;
   --k-line: #e7ebf3;
   --k-canvas: #f4f6fb;
-  --k-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.05);
+  --k-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 html, body, #root { height: 100%; }
 body { margin: 0; background: var(--k-canvas); color: var(--k-ink); -webkit-font-smoothing: antialiased; }
@@ -19,29 +19,33 @@ body { margin: 0; background: var(--k-canvas); color: var(--k-ink); -webkit-font
 a.mono, span.mono { white-space: nowrap; }
 
 /* ---------- App shell: sidebar ---------- */
-.kside { position: sticky; top: 0; height: 100vh; overflow: auto; background: linear-gradient(180deg, #0b1f4d 0%, #0a1a40 100%) !important; }
+.kside { position: sticky; top: 0; height: 100vh; overflow: auto; background: var(--k-navy) !important; border-right: 1px solid rgba(255,255,255,0.06); }
 .kside .ant-layout-sider-children { display: flex; flex-direction: column; }
-.kside-logo { display: flex; align-items: center; height: 80px; padding: 0 24px; }
-.kside-menu.ant-menu { padding: 4px 12px; font-size: 14.5px; font-weight: 500; border: 0 !important; }
-.kside-menu .ant-menu-item-selected { box-shadow: 0 6px 16px rgba(29, 78, 216, 0.35); }
-.kside-menu .ant-menu-item-selected .kside-soon { color: #fff; background: rgba(15,23,42,0.35); }
-.kside-soon { font-size: 10px; font-weight: 600; color: #bfdbfe; background: rgba(147,197,253,0.16); border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
-.kside-assist { margin: 20px 16px 12px; padding: 18px; border-radius: 14px; background: linear-gradient(160deg, #13306f, #0d2559); border: 1px solid rgba(147,197,253,0.18); color: #fff; }
-.kside-assist h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 15px; font-weight: 600; color: #fff; }
-.kside-assist h3 .ico { width: 34px; height: 34px; border-radius: 50%; background: #2563eb; display: grid; place-items: center; font-size: 16px; flex: none; }
-.kside-assist p { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.78); }
-.kside-tag { margin-top: auto; padding: 20px 24px 28px; font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.72); }
+.kside-logo { display: flex; align-items: center; height: 72px; padding: 0 22px; }
+.kside-menu.ant-menu { padding: 0 10px; font-size: 14px; font-weight: 500; border: 0 !important; }
+.kside-menu .ant-menu-item-group-title { padding: 18px 14px 6px !important; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.kside-menu .ant-menu-item-selected { position: relative; }
+.kside-menu .ant-menu-item-selected::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--k-sky); }
+.kside-soon { font-size: 10px; font-weight: 600; color: #bfdbfe; border: 1px solid rgba(147,197,253,0.35); border-radius: 4px; padding: 0 5px; margin-left: 8px; }
+.kside-foot { margin-top: auto; padding: 16px 0 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+.kside-ask { display: flex; gap: 12px; align-items: center; width: calc(100% - 28px); margin: 0 14px 10px; padding: 12px 14px; border-radius: 10px; border: 1px dashed rgba(127,189,231,0.5); background: rgba(127,189,231,0.06); color: #fff; text-align: left; cursor: pointer; font: inherit; }
+.kside-ask:hover { background: rgba(127,189,231,0.12); }
+.kside-ask .anticon { font-size: 18px; color: var(--k-sky); }
+.kside-ask b { display: block; font-size: 13.5px; }
+.kside-ask small { display: block; font-size: 12px; color: rgba(255,255,255,0.7); }
 
 /* ---------- App shell: header ---------- */
 .khead { display: flex; align-items: center; gap: 18px; border-bottom: 1px solid var(--k-line); position: sticky; top: 0; z-index: 20; }
-.khead-search { max-width: 520px; flex: 1; }
-.khead-search .ant-input-affix-wrapper { border-radius: 999px; background: #f1f5fb; border-color: transparent; height: 42px; }
-.khead-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.khead-page { font-size: 15px; font-weight: 600; white-space: nowrap; }
+.khead-search { max-width: 360px; flex: 1; margin-left: auto; }
+.khead-search .ant-input-affix-wrapper { border-radius: 8px; background: #f4f6fb; border-color: var(--k-line); height: 38px; }
+.khead-actions { display: flex; align-items: center; gap: 4px; }
 .khead-actions .ant-btn { color: #334155; }
-.khead-user { display: flex; align-items: center; gap: 10px; padding-left: 14px; margin-left: 6px; border-left: 1px solid var(--k-line); cursor: pointer; line-height: 1.2; }
-.khead-user b { display: block; font-size: 14px; font-weight: 600; }
+.khead-user { display: flex; align-items: center; gap: 10px; padding: 0 0 0 14px; margin-left: 6px; background: none; border: 0; border-left: 1px solid var(--k-line); cursor: pointer; line-height: 1.2; font: inherit; color: inherit; text-align: left; }
+.khead-user b { display: block; font-size: 13.5px; font-weight: 600; }
 .khead-user small { color: var(--k-muted); font-size: 12px; }
-.kcontent { padding: 24px 28px 32px; }
+.kcontent { padding: 24px 28px 36px; }
+@media (max-width: 640px) { .khead-page { display: none; } .khead { gap: 8px; } .kcontent { padding: 16px; } }
 
 /* ---------- Page header (components/PageHeader.tsx) ---------- */
 .page-head { margin-bottom: 20px; }
@@ -54,27 +58,27 @@ a.mono, span.mono { white-space: nowrap; }
 .ant-card { box-shadow: var(--k-card-shadow); border-color: var(--k-line) !important; }
 .ant-card .ant-card-head { border-bottom: 0; min-height: 52px; }
 .ant-card .ant-card-head-title { font-weight: 700; }
-.kcard { background: #fff; border: 1px solid var(--k-line); border-radius: 14px; box-shadow: var(--k-card-shadow); }
+.kcard { background: #fff; border: 1px solid var(--k-line); border-radius: 12px; }
 .kcard-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px 8px; }
-.kcard-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.kcard-head h2 { margin: 0; font-size: 15px; font-weight: 650; }
 .kcard-head a { font-size: 13px; font-weight: 600; white-space: nowrap; }
 .kcard-body { padding: 8px 20px 18px; }
-.kdark { background: radial-gradient(120% 120% at 30% 0%, #102a63 0%, #0a1b44 55%, #071637 100%); color: #fff; border: 0; }
+.kdark { background: var(--k-navy); color: #fff; border: 0; }
 .kdark .kcard-head h2 { color: #fff; }
 .kdark .kcard-sub { color: rgba(255,255,255,0.72); font-size: 13px; padding: 0 20px; margin-top: -6px; }
 
-/* ---------- Stat cards ---------- */
-.kstat-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
-.kstat { display: flex; flex-wrap: wrap; row-gap: 10px; gap: 14px; padding: 18px 18px 16px; background: #fff; border: 1px solid var(--k-line); border-radius: 14px; box-shadow: var(--k-card-shadow); min-width: 0; }
-.kstat-icon { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 20px; flex: none; }
-.kstat-body { min-width: 0; flex: 1 1 112px; }
-.kstat-value { overflow-wrap: anywhere; }
-.kstat-label { font-size: 13.5px; color: #334155; font-weight: 500; }
-.kstat-value { font-size: 28px; font-weight: 700; line-height: 1.2; margin-top: 2px; letter-spacing: -0.01em; }
-.kstat-delta { font-size: 13px; font-weight: 600; margin-top: 4px; }
-.kstat-delta.is-good { color: #15803d; }
-.kstat-delta.is-bad { color: #c2410c; }
-.kstat-caption { font-size: 12px; color: var(--k-muted); margin-top: 2px; }
+/* ---------- Metric cards (components/StatCard.tsx) ---------- */
+.kstat-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kstat { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 14px; background: #fff; border: 1px solid var(--k-line); border-radius: 12px; min-width: 0; }
+.kstat::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); }
+.kstat-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.kstat-label { font-size: 13px; color: #334155; font-weight: 500; }
+.kstat-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font-size: 15px; flex: none; color: var(--accent); background: color-mix(in srgb, var(--accent) 11%, white); }
+.kstat-value { font-size: 30px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.kstat-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--k-muted); }
+.kstat-delta { display: inline-flex; gap: 3px; align-items: center; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+.kstat-delta.is-good { color: #15803d; background: #ecfdf3; }
+.kstat-delta.is-bad { color: #c2410c; background: #fff7ed; }
 
 /* ---------- Status pills (components/Indicator.tsx) ---------- */
 .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap; border: 1px solid transparent; }
@@ -108,3 +112,6 @@ a.mono, span.mono { white-space: nowrap; }
 .kpi-cell .ant-statistic-title { font-size: 13px; color: #64748b; }
 .kpi-cell .ant-statistic-content { font-size: 24px; font-weight: 700; }
 @media (max-width: 768px) { .kpi-cell { border-left: 0; border-top: 1px solid var(--k-border, #e7ebf3); } }
+.khead-user > span { display: flex; flex-direction: column; line-height: 1.25; }
+/* Segmented filters scroll sideways instead of widening the page on phones. */
+.ant-segmented { max-width: 100%; overflow-x: auto; }
