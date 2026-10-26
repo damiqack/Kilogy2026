@@ -56,3 +56,25 @@ export const TRACK_POINTS = [
   "Delay risk from weather, customs and carrier history",
   "Alerts when a shipment needs a decision",
 ];
+
+/** Footer link columns. Every link points at a page or section that exists in the prototype. */
+export const FOOTER_COLUMNS: { title: string; links: { label: string; to: string }[] }[] = [
+  { title: "Product", links: [
+    { label: "Get a quote", to: "/shipments/new" },
+    { label: "Live tracking", to: "/tracking" },
+    { label: "Dashboard", to: "/dashboard" },
+    { label: "Carriers", to: "/carriers" },
+  ] },
+  { title: "Learn", links: [
+    { label: "How it works", to: "#how" },
+    { label: "Quotes", to: "#quotes" },
+    { label: "Tracking", to: "#tracking" },
+  ] },
+  { title: "Developers", links: [
+    { label: "API keys", to: "/developers" },
+    { label: "API reference", to: "/developers?tab=reference" },
+    { label: "Architecture", to: "/developers?tab=architecture" },
+  ] },
+];
+
+export const FOOTER_LANES = "Montreal · Toronto · Vancouver → Lagos · Accra · Kinshasa · Nairobi";

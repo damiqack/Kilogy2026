@@ -10,7 +10,7 @@ import { COORDS } from "../../config/geo";
 import { CARRIERS } from "../../data/carriers";
 import { isDelayed, isDelivered, isInTransit } from "../../data/insights";
 import { useStore } from "../../data/store";
-import { CARGO_TYPES, DESTINATIONS, HERO, NAV, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, STEPS, TRACK_POINTS } from "./content";
+import { CARGO_TYPES, DESTINATIONS, FOOTER_COLUMNS, FOOTER_LANES, HERO, NAV, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, STEPS, TRACK_POINTS } from "./content";
 import "./landing.css";
 
 // Lanes drawn on the hero map: Kilogy's Canada–Africa focus plus a few connecting hubs.
@@ -148,10 +148,30 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="lp-wrap lp-foot">
-        <KilogyLogo height={24} />
-        <span>One platform. Every carrier. Every shipment.</span>
-        <span>© {new Date().getFullYear()} Kilogy · prototype</span>
+      <footer className="lp-foot">
+        <div className="lp-wrap lp-foot-top">
+          <div className="lp-foot-brand">
+            <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={34} /></Link>
+            <p>One platform. Every carrier. Every shipment.</p>
+            <p className="lp-foot-lanes"><span>Lanes we focus on</span>{FOOTER_LANES}</p>
+          </div>
+          {FOOTER_COLUMNS.map((col) => (
+            <nav key={col.title} aria-label={col.title}>
+              <h2>{col.title}</h2>
+              <ul>
+                {col.links.map((l) => (
+                  <li key={l.label}>{l.to.startsWith("#") ? <a href={l.to}>{l.label}</a> : <Link to={l.to}>{l.label}</Link>}</li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+        <div className="lp-wrap">
+          <div className="lp-foot-bottom">
+            <span>© {new Date().getFullYear()} Kilogy. All rights reserved.</span>
+            <span>Prototype with sample data. Prices and carriers shown are for demonstration.</span>
+          </div>
+        </div>
       </footer>
     </div>
   );
