@@ -1,14 +1,13 @@
-import { BellOutlined, MenuOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { BellOutlined, LogoutOutlined, MenuOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { KilogyLogo } from "../components/KilogyLogo";
-import { activeNavPath, DEMO_USER, NAV_GROUPS, NAV_ITEMS, SETTINGS_ITEM } from "../config/navigation";
+import { activeNavPath, NAV_GROUPS, NAV_ITEMS, PROFILE_ITEM, SETTINGS_ITEM } from "../config/navigation";
 import { useStore } from "../data/store";
+import { useCurrentUser } from "../data/user";
 
 const { Header, Sider, Content } = Layout;
-
-const initials = (name: string) => name.split(" ").map((p) => p[0]).slice(0, 2).join("");
 
 /** App shell: navy sidebar grouped by task, white header with the page name, light canvas. */
 export function AppLayout() {
@@ -18,8 +17,9 @@ export function AppLayout() {
   const compact = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { alerts } = useStore();
+  const { user, firstName, initials } = useCurrentUser();
   const active = activeNavPath(pathname);
-  const pageName = [...NAV_ITEMS, SETTINGS_ITEM].find((n) => n.path === active)?.label ?? "";
+  const pageName = [...NAV_ITEMS, PROFILE_ITEM, SETTINGS_ITEM].find((n) => n.path === active)?.label ?? "";
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
@@ -52,7 +52,7 @@ export function AppLayout() {
           <MessageOutlined />
           <span><b>Ask Kilogy</b><small>Rates, routes and shipment questions</small></span>
         </button>
-        <Menu {...menuProps} items={[{ key: SETTINGS_ITEM.path, icon: SETTINGS_ITEM.icon, label: SETTINGS_ITEM.label }]} />
+        <Menu {...menuProps} items={[PROFILE_ITEM, SETTINGS_ITEM].map((n) => ({ key: n.path, icon: n.icon, label: n.label }))} />
       </div>
     </>
   );
@@ -90,17 +90,18 @@ export function AppLayout() {
               trigger={["click"]}
               menu={{
                 items: [
-                  { key: "/settings", label: "Settings" },
+                  { key: "/profile", icon: <UserOutlined />, label: "My profile" },
+                  { key: "/settings", icon: <SettingOutlined />, label: "Settings" },
                   { key: "/developers", label: "Developers & API" },
                   { type: "divider" },
-                  { key: "/", label: "Sign out" },
+                  { key: "/", icon: <LogoutOutlined />, label: "Sign out" },
                 ],
                 onClick: ({ key }) => navigate(key),
               }}
             >
               <button type="button" className="khead-user" aria-label="Account menu">
-                <Avatar size={34} style={{ background: "#0b1f4d", fontWeight: 600, fontSize: 13 }}>{initials(DEMO_USER.name)}</Avatar>
-                {!compact && <span><b>{DEMO_USER.name.split(" ")[0]}</b><small>{DEMO_USER.role}</small></span>}
+                <Avatar size={34} src={user.avatar || undefined} style={{ background: "#0b1f4d", fontWeight: 600, fontSize: 13 }}>{initials}</Avatar>
+                {!compact && <span><b>{firstName}</b><small>{user.role}</small></span>}
               </button>
             </Dropdown>
           </div>

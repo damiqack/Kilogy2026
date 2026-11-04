@@ -10,13 +10,13 @@ import { CarrierMark, ModeIcon } from "../components/ModeIcon";
 import { StatCard } from "../components/StatCard";
 import { StatusTag } from "../components/StatusTag";
 import { WorldMap } from "../components/WorldMap";
-import { DEMO_USER } from "../config/navigation";
 import { REGION_COORDS } from "../config/geo";
 import {
   co2Saved, countBy, delta, isDelayed, isDelivered, isInTransit, primaryMode, recentActivity, regionOf,
   routePoints, statusColor, timeAgo, topRoutes, weekly,
 } from "../data/insights";
 import { useStore } from "../data/store";
+import { useCurrentUser } from "../data/user";
 import type { Mode, Shipment } from "../data/types";
 import { date } from "../lib/format";
 import "./dashboard.css";
@@ -49,6 +49,7 @@ function greeting() {
 
 export function DashboardPage() {
   const { shipments } = useStore();
+  const { firstName } = useCurrentUser();
   const navigate = useNavigate();
   const [metric, setMetric] = useState<keyof typeof METRICS>("Cost");
   const [range, setRange] = useState(30);
@@ -76,7 +77,7 @@ export function DashboardPage() {
     <div className="kdash">
       <div className="kdash-head">
         <div>
-          <h1 className="kdash-greet">{greeting()}, {DEMO_USER.name.split(" ")[0]}</h1>
+          <h1 className="kdash-greet">{greeting()}, {firstName}</h1>
           <p className="kdash-sub">
             {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} · {list.filter(isInTransit).length} shipments moving, {list.filter(isDelayed).length} need attention
           </p>

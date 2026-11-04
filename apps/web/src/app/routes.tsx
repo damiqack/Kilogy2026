@@ -11,6 +11,7 @@ import { LandingPage } from "../pages/landing/Landing";
 import { NewShipmentPage } from "../pages/NewShipment";
 import { NotFoundPage } from "../pages/NotFound";
 import { PaymentsPage } from "../pages/Payments";
+import { ProfilePage } from "../pages/Profile";
 import { QuoteDetailPage } from "../pages/QuoteDetail";
 import { QuotesPage } from "../pages/Quotes";
 import { SettingsPage } from "../pages/Settings";
@@ -40,6 +41,7 @@ export function AppRoutes() {
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="documents" element={<DocumentsPage />} />
         <Route path="payments" element={<PaymentsPage />} />
+        <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="developers" element={<DevelopersPage />} />
         <Route path="system" element={<Navigate to="/developers?tab=architecture" replace />} />

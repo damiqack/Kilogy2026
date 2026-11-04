@@ -3,6 +3,7 @@ import enUS from "antd/locale/en_US";
 import { useMemo, type ReactNode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { StoreProvider } from "../data/store";
+import { UserProvider } from "../data/user";
 import { buildTheme } from "../theme/theme";
 
 /**
@@ -14,9 +15,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ConfigProvider theme={theme} locale={enUS}>
       <AntApp>
-        <StoreProvider>
-          <BrowserRouter>{children}</BrowserRouter>
-        </StoreProvider>
+        <UserProvider>
+          <StoreProvider>
+            <BrowserRouter>{children}</BrowserRouter>
+          </StoreProvider>
+        </UserProvider>
       </AntApp>
     </ConfigProvider>
   );

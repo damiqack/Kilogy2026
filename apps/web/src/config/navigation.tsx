@@ -1,7 +1,7 @@
 import {
   AimOutlined, BankOutlined, BarChartOutlined, CalendarOutlined, CarOutlined, CodeSandboxOutlined,
   CreditCardOutlined, EnvironmentOutlined, FileSearchOutlined, FileTextOutlined, HomeOutlined,
-  SafetyCertificateOutlined, SettingOutlined,
+  SafetyCertificateOutlined, SettingOutlined, UserOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 
@@ -37,16 +37,29 @@ export const NAV_ITEMS: NavItem[] = [
   { path: "/analytics", label: "Analytics", icon: <BarChartOutlined />, group: "Business" },
 ];
 
-/** Pinned to the bottom of the sidebar, below the groups. */
+/** Pinned to the bottom of the sidebar, below the groups, together with Settings. */
+export const PROFILE_ITEM = { path: "/profile", label: "Profile", icon: <UserOutlined /> };
 export const SETTINGS_ITEM = { path: "/settings", label: "Settings", icon: <SettingOutlined /> };
 
 export const COMING_SOON = NAV_ITEMS.filter((n) => n.comingSoon);
 
 /** The nav item a URL belongs to, e.g. /shipments/123 → /shipments. */
 export function activeNavPath(pathname: string): string {
-  const match = [...NAV_ITEMS, SETTINGS_ITEM].filter((n) => pathname.startsWith(n.path)).sort((a, b) => b.path.length - a.path.length)[0];
+  const match = [...NAV_ITEMS, PROFILE_ITEM, SETTINGS_ITEM].filter((n) => pathname.startsWith(n.path)).sort((a, b) => b.path.length - a.path.length)[0];
   return match?.path ?? "/dashboard";
 }
 
-/** Signed-in user shown in the header and greeting. Replace when real login exists. */
-export const DEMO_USER = { name: "Yannick Nkayilu", role: "Administrator" };
+/**
+ * Default signed-in user. data/user.tsx layers the sign-in email and saved profile edits on top of
+ * this; replace it with the real account once auth exists.
+ */
+export const DEMO_USER = {
+  name: "Yannick Nkayilu",
+  email: "yannick.nkayilu@kilogy.example",
+  phone: "+1 514 555 0142",
+  title: "Operations Lead",
+  company: "Kilogy Demo Shipper Inc.",
+  role: "Administrator",
+  timezone: "America/Toronto",
+  language: "en",
+};
