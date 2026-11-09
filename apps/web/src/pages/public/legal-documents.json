@@ -1,0 +1,1364 @@
+[
+ {
+  "id": "privacy",
+  "title": "Privacy Policy",
+  "meta": [
+   {
+    "label": "Effective date",
+    "value": "[Publication date]"
+   },
+   {
+    "label": "Last updated",
+    "value": "[Last updated date]"
+   }
+  ],
+  "blocks": [
+   {
+    "type": "h",
+    "text": "1. Introduction"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "This Privacy Policy explains how [Full Legal Entity Name], operating the KILOGY platform (\"KILOGY\", \"we\", \"us\" or \"our\"), collects, uses, discloses, stores and protects personal information through our website, applications, quotation forms and related services."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We are committed to handling personal information responsibly and in accordance with applicable privacy laws."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "2. Who Is Responsible for Your Information?"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The organization responsible for personal information is:"
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Legal entity: [Full registered legal name]",
+     "Business address: [Registered business address]",
+     "Privacy contact: [Privacy email address]",
+     "Website: https://www.kilogy.co"
+    ]
+   },
+   {
+    "type": "note",
+    "text": "The legal entity operating KILOGY must be identified before this policy is published."
+   },
+   {
+    "type": "h",
+    "text": "3. Information We May Collect"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Depending on how you use KILOGY, we may collect:"
+    ]
+   },
+   {
+    "type": "h3",
+    "text": "A. Contact and Account Information"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Name and business name.",
+     "Email address and telephone number.",
+     "Business address and country.",
+     "Account credentials and user preferences.",
+     "Business role and authorized account information."
+    ]
+   },
+   {
+    "type": "h3",
+    "text": "B. Shipment and Logistics Information"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Origin and destination.",
+     "Shipment weight, dimensions and quantity.",
+     "Commodity descriptions and handling requirements.",
+     "Inventory, warehouse and delivery information.",
+     "Shipment references and tracking numbers.",
+     "Shipping instructions and delivery preferences.",
+     "Commercial invoices, packing lists and other relevant documents."
+    ]
+   },
+   {
+    "type": "h3",
+    "text": "C. Transaction Information"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Quotation requests and booking references.",
+     "Service selections and transaction history.",
+     "Billing details and payment status.",
+     "Relevant tax and invoicing information."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Payment card information should be handled by an appropriately selected payment provider wherever possible rather than stored directly by KILOGY."
+    ]
+   },
+   {
+    "type": "h3",
+    "text": "D. Technical Information"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "IP address and device information.",
+     "Browser and operating system.",
+     "Website usage and diagnostic logs.",
+     "Authentication events and security records.",
+     "Cookie and analytics information, where applicable."
+    ]
+   },
+   {
+    "type": "h3",
+    "text": "E. Communications"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may retain information submitted through contact forms, support requests, business correspondence and other communications."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Please do not submit sensitive personal information unless it is specifically required, appropriate and protected through an approved process."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "4. Why We Collect Information"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may use personal information to:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Respond to quotation and business inquiries.",
+     "Create and manage user accounts.",
+     "Coordinate requested logistics services.",
+     "Retrieve rates, booking details and tracking information.",
+     "Communicate with carriers and service providers.",
+     "Process transactions through supported payment partners.",
+     "Provide customer support.",
+     "Improve website functionality and platform performance.",
+     "Detect fraud, abuse and security incidents.",
+     "Meet legal, regulatory and contractual obligations.",
+     "Send marketing communications where permitted and, where required, with consent."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We will limit collection and use to purposes that are appropriate and permitted by applicable law."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "5. Legal Basis and Consent"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Where required by applicable law, we will obtain consent or identify another lawful basis before collecting, using or disclosing personal information."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "You may withdraw consent where legally permitted. Withdrawal may affect our ability to provide particular services."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "6. Disclosure to Third Parties"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may disclose relevant information to:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Freight carriers and freight forwarders.",
+     "Shipping lines and courier providers.",
+     "Warehouses and distribution partners.",
+     "Customs brokers and authorized trade service providers.",
+     "Payment processors and financial service providers.",
+     "Cloud hosting, analytics and software providers.",
+     "Professional advisers, insurers and auditors.",
+     "Government authorities when legally required.",
+     "Other parties with your authorization or where permitted by law."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We will seek to limit disclosures to information reasonably necessary for the relevant purpose."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "7. API Integrations and International Data Transfers"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY is designed to integrate with external logistics and business systems. When you request a service that involves a third-party provider, relevant information may be transmitted through that provider's API or other approved integration."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Depending on the shipment and provider, information may be processed in Canada or other countries."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Privacy protections and legal requirements may differ across jurisdictions. We will take reasonable and legally required measures to safeguard personal information when service providers process information on our behalf."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Third-party providers may also have their own privacy policies and contractual obligations."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "8. Artificial Intelligence and Automated Decision Support"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may use AI and analytics to assist with rate comparison, route recommendations, shipment risk analysis, operational forecasting and other logistics decisions."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Depending on the feature, processing may involve shipment characteristics, service information, operational history and performance data."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "AI-generated estimates and recommendations may be incomplete or inaccurate. Users should review material operational and commercial decisions before acting on them."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We will not represent an automated recommendation as a guaranteed outcome. Where applicable law requires disclosure, explanation, consent or human review for significant automated decisions, KILOGY will implement the relevant safeguards."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "9. Cookies and Analytics"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Our website may use essential cookies and similar technologies to support security, navigation and functionality."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "With appropriate notice and consent where required, we may also use analytics or preference technologies to understand website usage and improve the user experience."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users may manage available cookie preferences through the website's cookie settings and their browser. Disabling essential cookies may affect some features."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "10. Security Safeguards"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We intend to implement appropriate administrative, technical and organizational safeguards, which may include:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Access controls and role-based permissions.",
+     "Encryption where appropriate.",
+     "Secure authentication.",
+     "Monitoring and logging.",
+     "Vendor security reviews.",
+     "Backup and recovery procedures.",
+     "Incident response procedures."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "No system or transmission method can be guaranteed completely secure."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "11. Data Retention"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We retain personal information only for as long as reasonably necessary for the purposes described in this policy, including service delivery, legal obligations, dispute resolution, security and recordkeeping."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Retention periods may vary according to the type of information and applicable legal requirements."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "When information is no longer required, we will take appropriate steps to delete, anonymize or securely dispose of it, subject to legal retention obligations."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "12. Your Privacy Rights"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Depending on your location and the law that applies, you may have rights to:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Request access to personal information.",
+     "Request correction of inaccurate information.",
+     "Withdraw consent where applicable.",
+     "Request deletion or restriction where legally available.",
+     "Object to certain processing.",
+     "Obtain information about certain disclosures.",
+     "Submit a privacy complaint to the appropriate authority."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "To exercise your rights, contact [Privacy email address]. We may need to verify your identity and assess applicable legal exceptions before responding."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "13. Children's Privacy"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY is intended for business and general logistics use and is not directed to children. We do not knowingly collect children's personal information in circumstances where such collection is prohibited."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "14. Third-Party Websites"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Our website may link to third-party services. We are not responsible for the privacy practices of websites we do not operate. Review their policies before providing information."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "15. Changes to This Policy"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may update this Privacy Policy to reflect changes in our operations, technology or legal obligations. We will publish the revised version with an updated effective date and provide additional notice where required."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "16. Contact"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "For privacy questions, access requests or complaints:"
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Privacy Officer: [Name or title]",
+     "Email: [Privacy email address]",
+     "Mailing address: [Business address]"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "terms",
+  "title": "Terms and Conditions",
+  "meta": [
+   {
+    "label": "Effective date",
+    "value": "[Publication date]"
+   },
+   {
+    "label": "Last updated",
+    "value": "[Last updated date]"
+   }
+  ],
+  "blocks": [
+   {
+    "type": "h",
+    "text": "1. Agreement and Acceptance"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "These Terms and Conditions govern access to and use of the KILOGY website, applications and related services operated by [Full Legal Entity Name]."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "By accessing or using the relevant services, you agree to the applicable terms. If you do not agree, do not use the services."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Additional service-specific agreements may apply to registered accounts, business subscriptions, integrations, bookings and transactions. Where applicable, those agreements must be presented before the relevant commitment is made."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "2. What KILOGY Does"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY is being developed as an AI-powered, API-first logistics management and orchestration platform."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Depending on the features made available, KILOGY may enable users to:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Compare logistics options and request quotations.",
+     "View shipment, carrier and tracking information.",
+     "Manage orders, inventory and distribution workflows.",
+     "Connect external logistics and business systems.",
+     "Access analytics and AI-assisted recommendations.",
+     "Submit booking or service requests through supported integrations."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The precise functionality available to each user depends on the relevant product release, provider integration, service agreement and geographic market."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "3. Role of KILOGY"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Unless a separate written agreement expressly states otherwise, KILOGY acts as a technology platform and coordination interface."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY does not automatically act as the carrier, freight forwarder, customs broker, warehouse operator, insurer, payment institution or other regulated service provider for every transaction displayed on the platform."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The identity of the contracting service provider and the role of KILOGY must be made clear for each applicable service or transaction."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Where a third party provides transportation or another logistics service, that provider's applicable terms, service conditions and contractual responsibilities may apply."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "4. User Eligibility and Accounts"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "You must have the legal capacity and authority required to use the relevant services."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Business users must provide accurate information and ensure that individuals acting on their behalf are authorized."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "You are responsible for safeguarding your login credentials, maintaining appropriate account security and notifying us promptly of suspected unauthorized access."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may suspend or restrict access when reasonably necessary for security, legal compliance or enforcement of these terms."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "5. Quotations and Pricing"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Quotations and estimates may depend on:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Origin and destination.",
+     "Shipment weight, dimensions and commodity.",
+     "Transport mode and service level.",
+     "Fuel charges, capacity and market conditions.",
+     "Customs, duties, taxes and other applicable fees.",
+     "Surcharges, handling and delivery requirements.",
+     "Provider availability and the validity period."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Unless explicitly identified as a binding offer under applicable terms, a displayed estimate or quotation request is not a confirmed booking or guaranteed final price."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "A quote may change if shipment details are inaccurate or incomplete, provider rates change, additional services are required, or applicable charges are revised."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Before a transaction is confirmed, users must receive the applicable material pricing and service terms."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "6. Bookings and Transactions"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "A quotation, booking request or availability inquiry does not itself confirm that a shipment has been accepted."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "A booking is confirmed only through the applicable confirmation process and subject to the terms of the relevant provider or service agreement."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users are responsible for reviewing shipment details, addresses, commodity descriptions, package dimensions, weights, selected services and applicable charges before confirming a transaction."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "7. Shipment Information and Prohibited Goods"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must provide accurate, complete and lawful shipment information."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must not submit goods that are prohibited, restricted or otherwise unacceptable under applicable law or the relevant provider's conditions without the necessary authorization."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Dangerous goods, controlled products, perishable goods and other specially regulated commodities may require additional declarations, documentation, packaging or handling."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may refuse to facilitate requests that appear unlawful, unsafe or inconsistent with provider requirements."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "8. Customs, Duties and Trade Compliance"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "International shipments may be subject to customs procedures, import and export restrictions, sanctions, duties, taxes and documentation requirements."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Unless expressly agreed in writing, users remain responsible for providing accurate shipment and customs information and for meeting their applicable legal obligations."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The responsible importer, exporter, declarant, broker or other party must be identified according to the transaction and applicable law."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY does not guarantee customs clearance or the absence of duties, inspections, delays or penalties."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "9. Tracking and Estimated Delivery"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Tracking information and estimated delivery times depend on information received from carriers and other third-party systems."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Events may be delayed, incomplete or unavailable. Estimated arrival times are not guarantees unless an authorized provider expressly offers a binding commitment."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users should consult the responsible provider for authoritative shipment status and service commitments."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "10. AI Recommendations"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may generate recommendations regarding pricing, carriers, routing, capacity, sustainability, risk and operational performance."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "These recommendations are decision-support tools. They may be affected by incomplete data, changing conditions or model limitations."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users should verify critical information and retain appropriate human oversight for material decisions. KILOGY does not guarantee that an AI recommendation will produce the lowest cost, fastest delivery or best operational outcome."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "11. Payments, Cancellations and Refunds"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Payment methods, payment timing, cancellations, refunds, surcharges and chargebacks are governed by the terms disclosed for the relevant transaction and, where applicable, the provider's contract."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will identify the relevant payment recipient and service provider where required."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "No cancellation fee or non-refundable charge should be applied without an applicable contractual and legal basis."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Mandatory consumer rights and statutory remedies remain unaffected."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "12. Third-Party Services and Integrations"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The platform may connect to external carrier APIs, freight services, payment processors, warehouse systems and other third-party products."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Availability depends on the provider, technical compatibility, permissions, commercial agreements and service conditions."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY cannot guarantee uninterrupted operation of third-party services. Where an integration fails, information may be delayed or a transaction may require manual intervention."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must comply with applicable third-party terms when using those services."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "13. Acceptable Use"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must not:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Use KILOGY for unlawful activity or fraudulent shipments.",
+     "Submit false or misleading information.",
+     "Attempt unauthorized access to systems, accounts or APIs.",
+     "Interfere with platform security or availability.",
+     "Upload malware or malicious code.",
+     "Reverse-engineer or misuse protected systems except where legally permitted.",
+     "Circumvent access controls or usage restrictions.",
+     "Infringe intellectual property or other legal rights.",
+     "Use the platform to violate sanctions, export controls or shipping restrictions."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may investigate suspected misuse and take proportionate action, subject to applicable law."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "14. Intellectual Property"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY's branding, software, design, documentation and original platform materials are owned by or licensed to the applicable rights holder, subject to third-party rights."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users retain rights in information and materials they lawfully provide. They grant KILOGY the limited rights necessary to process and use those materials to provide the requested services and meet applicable legal obligations."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "No ownership of user data is transferred merely because it is processed through the platform."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Third-party logos, names and marks remain the property of their respective owners. Their appearance does not imply endorsement or partnership."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "15. Privacy and Security"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Personal information is handled in accordance with the KILOGY Privacy Policy and applicable law."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must not upload information they are unauthorized to disclose and must protect account credentials, API keys and confidential business information."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "16. Service Availability and Changes"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may update, modify or discontinue features, subject to applicable contracts and law."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We will make reasonable efforts to maintain service availability, but uninterrupted access cannot be guaranteed."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Maintenance, external service outages, cyber incidents, network failures and other circumstances may affect functionality."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "17. Disclaimers and Liability"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "To the extent permitted by law, KILOGY does not warrant that third-party information, estimated prices, transit times, tracking events or AI recommendations will always be complete, accurate or uninterrupted."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Nothing in these terms excludes or limits liability where such exclusion or limitation is prohibited by law."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Any applicable limitation of liability must be clearly drafted, reasonable for the relevant service and reviewed for enforceability in the jurisdictions served."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Separate transportation contracts may govern loss, damage, delay, cargo claims and carrier liability."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "18. Indemnity"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Where permitted by law, users may be responsible for losses and reasonable costs arising from their unlawful conduct, material breach of these terms, fraud or infringement of third-party rights."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Any indemnity must be interpreted subject to applicable consumer protections and mandatory legal rights."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "19. Suspension and Termination"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may restrict or terminate access for material breach, fraud, security threats, legal requirements or misuse of the platform."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Where appropriate and legally permitted, we will provide notice and an opportunity to remedy the issue."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Termination does not eliminate accrued payment obligations, applicable recordkeeping requirements or rights that survive under the relevant agreement."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "20. Governing Law and Disputes"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "These terms are governed by the laws of [confirmed province or territory and country], subject to applicable conflict-of-law rules and mandatory consumer protections."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Disputes will be addressed through good-faith discussions where appropriate. Nothing in these terms removes rights to seek relief from a competent court or regulator where the law permits."
+    ]
+   },
+   {
+    "type": "note",
+    "text": "The governing jurisdiction must be confirmed before publication."
+   },
+   {
+    "type": "h",
+    "text": "21. Changes to These Terms"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may revise these terms from time to time. The revised terms will be published with an updated effective date. Material changes will be communicated as required by applicable law or contract."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "22. Contact"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Legal entity: [Full Legal Entity Name]",
+     "Email: [Legal or business contact email]",
+     "Address: [Registered business address]"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cookies",
+  "title": "Cookie Policy",
+  "meta": [
+   {
+    "label": "Effective date",
+    "value": "[Publication date]"
+   }
+  ],
+  "blocks": [
+   {
+    "type": "h",
+    "text": "1. What Are Cookies?"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Cookies and similar technologies are small files or identifiers used by websites to support functionality, security, preferences and analytics."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "2. How KILOGY May Use Cookies"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Subject to the technologies actually deployed, KILOGY may use:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Essential cookies: Security, authentication and core website functionality.",
+     "Preference cookies: Language and interface preferences.",
+     "Analytics cookies: Website performance and usage measurement.",
+     "Marketing cookies: Campaign measurement or advertising, if implemented and permitted."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "3. Consent and Preferences"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Where required, non-essential cookies will be activated only after the appropriate consent is obtained."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users may change their preferences through the website's cookie controls or browser settings."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "4. Third-Party Technologies"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Analytics, hosting, support and other service providers may use their own technologies subject to the applicable configuration and agreements."
+    ]
+   },
+   {
+    "type": "note",
+    "text": "The actual providers must be listed once KILOGY's technology stack is finalized."
+   },
+   {
+    "type": "h",
+    "text": "5. Changes and Contact"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "We may update this policy when our use of cookies changes."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Questions: [Privacy email address]."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "acceptable-use",
+  "title": "Acceptable Use Policy",
+  "meta": [],
+  "blocks": [
+   {
+    "type": "h",
+    "text": "1. Purpose"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "This policy establishes acceptable standards for using KILOGY, including its website, software, APIs, dashboards and connected logistics workflows."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "2. Permitted Use"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users may use KILOGY for lawful logistics management, shipment coordination, business analysis, provider integration and other authorized purposes."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "3. Prohibited Activities"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users must not:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Facilitate unlawful shipments or fraudulent transactions.",
+     "Misrepresent the contents, value, origin or destination of goods.",
+     "Circumvent sanctions, customs restrictions or export controls.",
+     "Attempt unauthorized access to accounts, systems or data.",
+     "Abuse APIs, overload services or bypass rate limits.",
+     "Upload malicious code or exploit vulnerabilities.",
+     "Extract or misuse information contrary to applicable law or contractual restrictions.",
+     "Impersonate carriers, customers or other stakeholders.",
+     "Misuse AI features to facilitate fraud or other unlawful conduct."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "4. Security Reporting"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Suspected vulnerabilities, unauthorized access or security incidents should be reported promptly to [Security contact email]."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Do not access, modify or disclose data beyond the scope of authorization when investigating a suspected vulnerability."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "5. Enforcement"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may investigate violations and restrict access, preserve relevant evidence, notify affected parties or contact competent authorities where appropriate and legally permitted."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "data-processing",
+  "title": "Data Processing Addendum",
+  "meta": [
+   {
+    "label": "Status",
+    "value": "To be finalized before enterprise customer onboarding."
+   }
+  ],
+  "blocks": [
+   {
+    "type": "p",
+    "lines": [
+     "This Data Processing Addendum is intended for situations where KILOGY processes personal information on behalf of a business customer."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "1. Roles of the Parties"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The parties will document whether the customer acts as controller or equivalent decision-maker and whether KILOGY acts as processor or service provider for each applicable processing activity."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Roles must reflect actual activities and applicable law, not merely the labels in the contract."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "2. Processing Instructions"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will process personal information only according to documented instructions, the applicable service agreement and legal requirements."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "3. Confidentiality and Security"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Personnel authorized to process personal information must be subject to appropriate confidentiality obligations."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will implement security measures appropriate to the risks and the nature of the information processed."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "4. Subprocessors"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will identify relevant subprocessors and establish appropriate contractual safeguards. Notification, authorization and objection procedures will be agreed with the customer where required."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "5. Security Incidents"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will notify the customer of qualifying personal information breaches without undue delay, subject to applicable legal requirements and the agreed incident response process."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "6. Data Subject Requests"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY will provide reasonable assistance to the customer in responding to applicable access, correction, deletion and other rights requests."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "7. International Transfers"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The parties will implement required contractual, organizational and technical safeguards for international transfers or processing."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "8. Retention and Deletion"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Upon termination or expiry of the services, KILOGY will return or delete personal information as agreed, subject to applicable legal retention requirements."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "9. Audit and Documentation"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The parties will establish reasonable procedures for demonstrating compliance, providing relevant documentation and addressing substantiated security or privacy concerns."
+    ]
+   },
+   {
+    "type": "h",
+    "text": "10. Annexes"
+   },
+   {
+    "type": "p",
+    "lines": [
+     "The completed DPA should include:"
+    ]
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Description and purposes of processing.",
+     "Categories of data subjects and personal information.",
+     "Processing duration.",
+     "Security measures.",
+     "Subprocessor list.",
+     "International transfer details.",
+     "Incident notification process.",
+     "Retention and deletion requirements."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "integrations",
+  "title": "Third-Party Provider and Integration Notice",
+  "meta": [],
+  "blocks": [
+   {
+    "type": "p",
+    "lines": [
+     "KILOGY may connect with third-party logistics providers, carriers, freight platforms, warehouses, payment processors and other business systems."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "An integration may allow KILOGY to retrieve rates, submit requests, receive shipment events or exchange other authorized information."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Integration availability depends on API access, provider permissions, commercial agreements, supported functions and geographic coverage."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "A provider's appearance in a roadmap, demonstration or proposed integration list does not establish an active integration, endorsement or commercial partnership."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Users will be informed of the relevant provider and applicable transaction conditions when required."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Third-party services remain subject to their own applicable contractual terms."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "quotation-disclaimer",
+  "title": "Quotation and Booking Disclaimer",
+  "meta": [],
+  "blocks": [
+   {
+    "type": "p",
+    "lines": [
+     "A quotation request submitted through KILOGY is not a confirmed shipment booking."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Prices and estimates may depend on the accuracy of the information supplied, provider availability, market conditions, applicable surcharges, customs requirements and the selected service."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "A booking becomes effective only when the applicable provider or authorized party confirms acceptance under the relevant terms."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Before payment or booking confirmation, users should receive the material service information, applicable charges, cancellation conditions and the identity of the relevant contracting party."
+    ]
+   },
+   {
+    "type": "p",
+    "lines": [
+     "Nothing in this notice limits mandatory rights under applicable law."
+    ]
+   }
+  ]
+ }
+]

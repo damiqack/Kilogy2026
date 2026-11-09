@@ -1,7 +1,8 @@
 import { Alert, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form, Input, InputNumber, Row, Segmented, Select, Slider, Steps, Switch, Typography } from "antd";
 import { Indicator } from "../components/Indicator";
 import { useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { PackageSummary } from "../components/PackageSummary";
 import { PageHeader } from "../components/PageHeader";
 import { QuoteTable } from "../components/QuoteTable";
 import { RouteText } from "../components/RouteText";
@@ -11,7 +12,8 @@ import { inlineSuggestions, requestQuote } from "../data/ai";
 import { useStore } from "../data/store";
 import type { Location, Preferences, Quote, QuoteRequest, RankedOption, ServiceLevel } from "../data/types";
 import { date, kg } from "../lib/format";
-import { cad } from "../lib/money";
+import { cad, USD_TO_CAD } from "../lib/money";
+import { packageFacts } from "../lib/package";
 
 const PRESETS: Record<string, Preferences> = {
   Balanced: { cost: 35, speed: 30, carbon: 20, reliability: 15 },
@@ -29,7 +31,11 @@ function parseLoc(v: string | null, fallback: Location): Location {
 export function NewShipmentPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { saveQuote, book } = useStore();
+  // Started from the Quotes tab (/quotes/new): stay under Quotes until the booking is confirmed.
+  const fromQuotes = useLocation().pathname.startsWith("/quotes");
+  const { saveQuote, book, paymentMethods } = useStore();
+  const [payWith, setPayWith] = useState<string>();
+  const payMethodId = payWith ?? paymentMethods.find((m) => m.isDefault)?.id;
   const [step, setStep] = useState(0);
   const [req, setReq] = useState<QuoteRequest>(() => ({
     origin: parseLoc(params.get("from"), { country: "CA", city: "Montreal", postalCode: "H3A1A1" }),
@@ -64,7 +70,7 @@ export function NewShipmentPage() {
 
   function confirm() {
     if (!quote || !selected) return;
-    const s = book(quote, selected, { street, commodity });
+    const s = book(quote, selected, { street, commodity }, payMethodId);
     navigate(`/shipments/${s.id}`);
   }
 
@@ -100,7 +106,7 @@ export function NewShipmentPage() {
 
   return (
     <>
-      <PageHeader title="New shipment" crumbs={[{ title: "Shipments", path: "/shipments" }]} />
+      <PageHeader title={fromQuotes ? "New quote" : "New shipment"} crumbs={[fromQuotes ? { title: "Quotes", path: "/quotes" } : { title: "Shipments", path: "/shipments" }]} />
       <Steps current={step} size="small" style={{ marginBottom: 16 }}
         items={[{ title: "Addresses" }, { title: "Package" }, { title: "Compare quotes" }, { title: "Review and book" }]} />
 
@@ -119,6 +125,8 @@ export function NewShipmentPage() {
 
         {step === 1 && (
           <Card size="small">
+           <Row gutter={24}>
+            <Col xs={24} xl={16}>
             <Row gutter={12}>
               <Col xs={12} md={4}><Form.Item label="Weight (kg)" required htmlFor="pkg-weight"><InputNumber id="pkg-weight" min={0.1} step={0.5} value={req.package.weight_kg} onChange={(v) => set("package", { ...req.package, weight_kg: v ?? 0 })} style={{ width: "100%" }} /></Form.Item></Col>
               {(["l", "w", "h"] as const).map((d) => (
@@ -128,7 +136,19 @@ export function NewShipmentPage() {
                   </Form.Item>
                 </Col>
               ))}
-              <Col xs={24} md={8}><Form.Item label="Commodity" htmlFor="pkg-commodity"><Select id="pkg-commodity" value={commodity} options={COMMODITIES.map((c) => ({ value: c, label: c }))} onChange={setCommodity} /></Form.Item></Col>
+              <Col xs={24} md={8}><Form.Item label="Contents" htmlFor="pkg-commodity"><Select id="pkg-commodity" value={commodity} options={COMMODITIES.map((c) => ({ value: c, label: c }))} onChange={setCommodity} /></Form.Item></Col>
+              <Col xs={24} md={16}>
+                <Form.Item label="Description" htmlFor="pkg-desc" extra="What's inside, as it should read on the customs invoice.">
+                  <Input id="pkg-desc" maxLength={120} placeholder="e.g. 4 laptop chargers, new" value={req.package.description} onChange={(e) => set("package", { ...req.package, description: e.target.value })} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={8}>
+                <Form.Item label="Declared value (CAD)" htmlFor="pkg-value">
+                  <InputNumber id="pkg-value" min={0} step={50} style={{ width: "100%" }} prefix="$"
+                    value={req.package.value_usd ? Math.round(req.package.value_usd * USD_TO_CAD) : null}
+                    onChange={(v) => set("package", { ...req.package, value_usd: v ? v / USD_TO_CAD : undefined })} />
+                </Form.Item>
+              </Col>
               <Col xs={24} md={12}>
                 <Form.Item label="Service levels" required>
                   <Checkbox.Group value={req.service_type} onChange={(v) => set("service_type", v as ServiceLevel[])}
@@ -165,6 +185,11 @@ export function NewShipmentPage() {
               <Button onClick={() => setStep(0)}>Back</Button>
               <Button type="primary" loading={loading} disabled={!req.service_type.length} onClick={getQuotes}>Get quotes</Button>
             </Flex>
+            </Col>
+            <Col xs={24} xl={8}>
+              <div className="kpkg-sticky"><PackageSummary pkg={req.package} commodity={commodity} /></div>
+            </Col>
+           </Row>
           </Card>
         )}
       </Form>
@@ -175,6 +200,9 @@ export function NewShipmentPage() {
           title={`${quote.options.length} options · ${req.origin.city}, ${req.origin.country} → ${req.destination.city}, ${req.destination.country}`}
           extra={<Indicator tone={quote.source === "ai-engine" ? "success" : "neutral"}>{quote.source === "ai-engine" ? "Routing engine" : "Sample rates"}</Indicator>}
         >
+          <Flex align="center" gap={8} wrap style={{ marginBottom: 0 }}>
+            <div style={{ flex: 1, minWidth: 0 }}><PackageSummary compact pkg={req.package} commodity={commodity} /></div>
+          </Flex>
           <QuoteTable options={quote.options} onBook={(o) => { setSelected(o); setStep(3); }} />
           <Flex justify="space-between" style={{ marginTop: 12 }}>
             <Button onClick={() => setStep(1)}>Back</Button>
@@ -191,16 +219,28 @@ export function NewShipmentPage() {
               { key: "p", label: "Price", children: cad(selected.price_usd) },
               { key: "f", label: "From", children: [street.origin, req.origin.city, req.origin.country].filter(Boolean).join(", ") },
               { key: "t", label: "To", children: [street.destination, req.destination.city, req.destination.country].filter(Boolean).join(", ") },
-              { key: "pk", label: "Package", children: `${req.package.weight_kg} kg · ${dims.l}×${dims.w}×${dims.h} cm · ${commodity}` },
+              { key: "pk", label: "Package", children: `${req.package.weight_kg} kg · ${dims.l}×${dims.w}×${dims.h} cm · billed as ${packageFacts(req.package).chargeableKg} kg` },
+              { key: "ct", label: "Contents", children: [commodity, req.package.description].filter(Boolean).join(" · ") },
+              { key: "dv", label: "Declared value", children: req.package.value_usd ? cad(req.package.value_usd) : "Not declared" },
               { key: "e", label: "Predicted delivery", children: `${date(selected.risk.eta.earliest)} – ${date(selected.risk.eta.latest)}` },
               { key: "r", label: "Delay risk", children: <RiskTag level={selected.risk.level} score={selected.risk.score} /> },
               { key: "co2", label: "Emissions", children: kg(selected.co2_kg) },
               { key: "route", label: "Route", span: "filled", children: selected.route ? <RouteText legs={selected.route.legs} /> : "–" },
+              {
+                key: "pay", label: "Pay with", span: "filled",
+                children: paymentMethods.length ? (
+                  <Flex gap={12} align="center" wrap>
+                    <Select aria-label="Pay with" style={{ minWidth: 260 }} value={payMethodId} onChange={setPayWith}
+                      options={paymentMethods.map((m) => ({ value: m.id, label: `${m.label}${m.nickname ? ` · ${m.nickname}` : ""}${m.isDefault ? " (default)" : ""}` }))} />
+                    <Link to="/payments">Manage payment methods</Link>
+                  </Flex>
+                ) : <Link to="/payments">Add a payment method</Link>,
+              },
             ]}
           />
           <Flex justify="space-between" style={{ marginTop: 16 }}>
             <Button onClick={() => setStep(2)}>Back</Button>
-            <Button type="primary" onClick={confirm}>Confirm booking</Button>
+            <Button type="primary" disabled={!payMethodId} title={payMethodId ? undefined : "Add a payment method first"} onClick={confirm}>Confirm booking</Button>
           </Flex>
         </Card>
       )}

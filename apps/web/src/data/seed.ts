@@ -1,5 +1,5 @@
 import { hubName, serviceName } from "./carriers";
-import type { AiAlert, DocumentRecord, Location, Mode, Payment, RankedOption, ServiceLevel, Shipment, ShipmentStatus, TimelineStep } from "./types";
+import type { AiAlert, DocumentRecord, Location, Mode, Payment, RankedOption, ServiceLevel, Shipment, ShipmentStatus, TimelineStep, PaymentMethod } from "./types";
 
 // Sample data so every screen has something to show. All shipments and numbers are fictional.
 
@@ -180,6 +180,14 @@ export function seedAlerts(): AiAlert[] {
       title: "Switch non-urgent Canada → Ghana freight to ocean via Halifax → Tema.",
       detail: "About 95% less CO₂ and 40% cheaper, with 3 extra weeks in transit.",
     },
+  ];
+}
+
+export function seedPaymentMethods(): PaymentMethod[] {
+  const at = new Date(Date.now() - 40 * 864e5).toISOString();
+  return [
+    { id: "pm_seed_visa", kind: "card", label: "Visa •••• 4242", holder: "Kilogy Demo Shipper Inc.", brand: "Visa", last4: "4242", expiry: "08/28", isDefault: true, createdAt: at },
+    { id: "pm_seed_invoice", kind: "invoice", label: "Invoice (Net 30)", holder: "Kilogy Demo Shipper Inc.", isDefault: false, createdAt: at },
   ];
 }
 

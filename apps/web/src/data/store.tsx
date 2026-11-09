@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { hubName } from "./carriers";
-import { seedAlerts, seedDocuments, seedPayments, seedShipments, trackingId } from "./seed";
-import type { AiAlert, DocumentRecord, Payment, Quote, RankedOption, Shipment, TimelineStep } from "./types";
+import { seedAlerts, seedDocuments, seedPaymentMethods, seedPayments, seedShipments, trackingId } from "./seed";
+import type { AiAlert, DocumentRecord, Payment, PaymentMethod, Quote, RankedOption, Shipment, TimelineStep } from "./types";
 
 /**
  * Client-side store for the prototype. Stands in for the Shipment, Document and Payment services
@@ -11,13 +11,18 @@ interface State {
   shipments: Shipment[];
   documents: DocumentRecord[];
   payments: Payment[];
+  paymentMethods: PaymentMethod[];
   quotes: Quote[];
   alerts: AiAlert[];
 }
 
 interface Store extends State {
   saveQuote: (q: Quote) => void;
-  book: (quote: Quote, option: RankedOption, extra?: Pick<Shipment, "street" | "commodity">) => Shipment;
+  /** Book an option; charges the given saved payment method, or the default one. */
+  book: (quote: Quote, option: RankedOption, extra?: Pick<Shipment, "street" | "commodity">, paymentMethodId?: string) => Shipment;
+  addPaymentMethod: (m: Omit<PaymentMethod, "id" | "createdAt">) => PaymentMethod;
+  removePaymentMethod: (id: string) => void;
+  setDefaultPaymentMethod: (id: string) => void;
   dismissAlert: (id: string) => void;
   cancel: (id: string) => void;
   generateDocument: (shipmentId: string, type: DocumentRecord["type"]) => DocumentRecord;
@@ -41,7 +46,7 @@ function initial(): State {
 }
 
 function fresh(): State {
-  return { shipments: seedShipments(), documents: seedDocuments(), payments: seedPayments(), quotes: [], alerts: seedAlerts() };
+  return { shipments: seedShipments(), documents: seedDocuments(), payments: seedPayments(), paymentMethods: seedPaymentMethods(), quotes: [], alerts: seedAlerts() };
 }
 
 /** Planned milestones for a new booking, built from the chosen route's legs. */
@@ -80,7 +85,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const store = useMemo<Store>(() => ({
     ...state,
     saveQuote: (q) => setState((s) => ({ ...s, quotes: [q, ...s.quotes].slice(0, 20) })),
-    book: (quote, option, extra) => {
+    book: (quote, option, extra, paymentMethodId) => {
       const nowMs = Date.now();
       const now = new Date(nowMs).toISOString();
       const today = now.slice(0, 10);
@@ -99,7 +104,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         timeline: plannedTimeline(option, o.city ?? o.country, d.city ?? d.country, nowMs),
         ...extra,
       };
-      const payment: Payment = { id: rid("pay"), shipmentId: shipment.id, amount_usd: option.price_usd, status: "succeeded", method: "Visa •••• 4242", createdAt: now };
+      const payment: Payment = { id: rid("pay"), shipmentId: shipment.id, amount_usd: option.price_usd, status: "succeeded", createdAt: now,
+        method: (state.paymentMethods.find((m) => m.id === paymentMethodId) ?? state.paymentMethods.find((m) => m.isDefault))?.label ?? "Invoice (Net 30)" };
       const label: DocumentRecord = { id: rid("doc"), type: "label", shipmentId: shipment.id, filename: `label-${shipment.trackingId}.pdf`, createdAt: now };
       setState((s) => ({
         ...s,
@@ -109,6 +115,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }));
       return shipment;
     },
+    addPaymentMethod: (m) => {
+      const method: PaymentMethod = { ...m, id: rid("pm"), createdAt: new Date().toISOString() };
+      setState((s) => {
+        const makeDefault = method.isDefault || s.paymentMethods.length === 0;
+        const others = makeDefault ? s.paymentMethods.map((x) => ({ ...x, isDefault: false })) : s.paymentMethods;
+        return { ...s, paymentMethods: [...others, { ...method, isDefault: makeDefault }] };
+      });
+      return method;
+    },
+    removePaymentMethod: (id) => setState((s) => {
+      const left = s.paymentMethods.filter((m) => m.id !== id);
+      // Removing the default promotes the next method so there is always one to charge.
+      if (left.length && !left.some((m) => m.isDefault)) left[0] = { ...left[0], isDefault: true };
+      return { ...s, paymentMethods: left };
+    }),
+    setDefaultPaymentMethod: (id) => setState((s) => ({ ...s, paymentMethods: s.paymentMethods.map((m) => ({ ...m, isDefault: m.id === id })) })),
     dismissAlert: (id) => setState((s) => ({ ...s, alerts: s.alerts.filter((a) => a.id !== id) })),
     cancel: (id) => setState((s) => ({
       ...s,

@@ -1,0 +1,40 @@
+/* Integration Hub (pages/IntegrationHub.tsx). Classes start with khub-. */
+.khub-stats { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.khub-stats li { background: #fff; border: 1px solid #e5e9f2; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.khub-stats b { font-size: 24px; line-height: 1.1; color: #0b1f4d; }
+.khub-stats span { font-size: 13px; color: #475569; }
+.khub-views { margin-bottom: 12px; }
+.khub-name { display: flex; flex-direction: column; }
+.khub-name span { font-size: 12px; color: #556377; }
+.khub-caps { display: flex; flex-wrap: wrap; gap: 4px 0; max-width: 360px; }
+.khub-detail { margin: 4px 0 4px 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+.khub-detail dt { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 2px; }
+.khub-detail dd { margin: 0; }
+.khub-detail a { text-decoration: underline; }
+.khub-env { display: flex; flex-wrap: wrap; gap: 6px; }
+.khub-env code, .khub-steps code { font-size: 12px; background: #f1f5f9; border-radius: 4px; padding: 1px 6px; }
+.khub-yes { color: #15803d; font-size: 15px; }
+.khub-no { color: #94a3b8; }
+.khub-steps { padding-left: 20px; }
+.khub-steps li { margin-bottom: 8px; }
+.khub-code { background: #0b1f4d; color: #e2e8f0; border-radius: 8px; padding: 12px 14px; font-size: 12px; overflow-x: auto; }
+.khub-road { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.khub-phase .ant-card-body { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.khub-phase.is-done { border-color: #2563eb; background: #eff6ff; }
+.khub-phase p { margin: 0; }
+.khub-phase-head { display: flex; gap: 10px; align-items: center; }
+.khub-phase-head > .anticon { font-size: 22px; color: #1d4ed8; }
+.khub-phase-head b { display: block; font-size: 15px; }
+.khub-phase-head span { font-size: 13px; color: #475569; }
+.khub-phase-head .khub-num { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: #0b1f4d; color: #fff; font-size: 14px; font-weight: 700; }
+.khub-gate { font-size: 13px; color: #334155; }
+.khub-plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.khub-plist li { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13.5px; }
+.khub-outcome { margin-top: auto !important; padding-top: 8px; border-top: 1px solid #e5e9f2; font-size: 13px; color: #475569; }
+.kfilters .ant-select-placeholder { color: #556377 !important; }
+@media (max-width: 1100px) {
+  .khub-stats, .khub-road { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .khub-stats, .khub-road, .khub-detail { grid-template-columns: minmax(0, 1fr); }
+}

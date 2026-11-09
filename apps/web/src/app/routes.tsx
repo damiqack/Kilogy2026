@@ -17,23 +17,38 @@ import { SettingsPage } from "../pages/Settings";
 import { ShipmentDetailPage } from "../pages/ShipmentDetail";
 import { ShipmentsPage } from "../pages/Shipments";
 import { COMING_SOON } from "../config/navigation";
+import { RequireAuth } from "../data/auth";
+import { ProfilePage } from "../pages/Profile";
+import { ReportsPage } from "../pages/Reports";
+import { IntegrationHubPage } from "../pages/IntegrationHub";
+import { SignInPage } from "../pages/SignIn";
+import { AboutPage } from "../pages/public/About";
+import { ContactPage } from "../pages/public/Contact";
+import { LegalPage } from "../pages/public/Legal";
 
 export function AppRoutes() {
   return (
     <Routes>
       {/* Public homepage (no app shell) */}
       <Route index element={<LandingPage />} />
+      <Route path="about" element={<AboutPage />} />
+      <Route path="contact" element={<ContactPage />} />
+      <Route path="legal" element={<LegalPage />} />
+      {/* Staff sign-in (administrators and developers only) */}
+      <Route path="login" element={<SignInPage />} />
+      <Route path="sign-in" element={<Navigate to="/login" replace />} />
 
-      {/* Signed-in app */}
+      {/* App. Pages are open in the prototype; wrap an element in <RequireAuth> to make it staff-only. */}
       <Route element={<AppLayout />}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="shipments" element={<ShipmentsPage />} />
         <Route path="shipments/new" element={<NewShipmentPage />} />
         <Route path="shipments/:id" element={<ShipmentDetailPage />} />
         <Route path="quotes" element={<QuotesPage />} />
-        <Route path="quotes/new" element={<Navigate to="/shipments/new" replace />} />
+        <Route path="quotes/new" element={<NewShipmentPage />} />
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
         <Route path="carriers" element={<CarriersPage />} />
+        <Route path="integrations" element={<RequireAuth><IntegrationHubPage /></RequireAuth>} />
         <Route path="tracking" element={<ControlTowerPage />} />
         {COMING_SOON.map((n) => <Route key={n.path} path={n.path.slice(1)} element={<ComingSoonPage />} />)}
         <Route path="assistant" element={<ComingSoonPage />} />
@@ -42,6 +57,8 @@ export function AppRoutes() {
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="developers" element={<DevelopersPage />} />
+        <Route path="profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+        <Route path="reports" element={<RequireAuth roles={["admin"]}><ReportsPage /></RequireAuth>} />
         <Route path="system" element={<Navigate to="/developers?tab=architecture" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

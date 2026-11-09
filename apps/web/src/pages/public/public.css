@@ -1,0 +1,108 @@
+/* About, Contact and Legal pages (pages/public). Shares the homepage's header and footer (landing.css). */
+.pub { background: #fff; color: #0f172a; min-height: 100vh; }
+.pub-bar { background: var(--k-navy); }
+.pub-hero { position: relative; overflow: hidden; color: #fff; background: var(--k-navy); padding: 56px 0 64px; }
+.pub-hero.has-photo { background-size: cover; background-position: center 55%; }
+.pub-hero.has-photo::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,31,77,0.97) 0%, rgba(11,31,77,0.85) 50%, rgba(11,31,77,0.55) 100%); }
+.pub-hero > * { position: relative; }
+.pub-hero h1 { margin: 10px 0 14px; max-width: 760px; font-size: 44px; line-height: 1.1; font-weight: 750; letter-spacing: -0.03em; color: #fff; }
+.pub-hero p { margin: 0; max-width: 640px; font-size: 18px; line-height: 1.55; color: rgba(255,255,255,0.86); }
+.pub-section { padding-top: 64px; }
+.pub-section > h2, .pub-h2 { margin: 0 0 14px; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.pub-lead { margin: 0 0 24px; max-width: 760px; font-size: 16.5px; line-height: 1.6; color: #475569; }
+.kph { background: #fef3c7; color: #78350f; padding: 0 4px; border-radius: 4px; font-weight: 500; }
+.pub-draft { display: flex; gap: 12px; align-items: flex-start; margin-top: 28px; padding: 14px 16px; border-radius: 10px; border: 1px solid #fcd34d; background: #fffbeb; color: #78350f; font-size: 14px; line-height: 1.5; }
+.pub-draft .anticon { margin-top: 3px; }
+
+/* About */
+.ab-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ab-card { padding: 26px 28px; border-radius: 14px; background: #f6f8fc; border: 1px solid #e5eaf2; }
+.ab-card h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #1d4ed8; }
+.ab-card p { margin: 0; font-size: 18px; line-height: 1.5; color: #0f172a; }
+.ab-challenge { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.ab-challenge ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ab-challenge li { display: flex; gap: 10px; align-items: baseline; font-size: 15.5px; color: #334155; }
+.ab-challenge li .anticon { color: #ea580c; }
+.ab-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.ab-grid li { padding: 20px; border-radius: 12px; border: 1px solid #e5eaf2; background: #fff; }
+.ab-grid .ico { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: #eef4ff; color: #1d4ed8; font-size: 18px; margin-bottom: 12px; }
+.ab-grid h3 { margin: 0 0 6px; font-size: 16px; }
+.ab-grid p { margin: 0; font-size: 14px; line-height: 1.55; color: #475569; }
+.ab-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; counter-reset: step; }
+.ab-flow li { position: relative; padding: 16px 14px; border-radius: 12px; background: var(--k-navy); color: #fff; font-size: 14px; line-height: 1.45; counter-increment: step; }
+.ab-flow li::before { content: counter(step, decimal-leading-zero); display: block; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #7fbde7; margin-bottom: 6px; }
+.ab-flow-tag { margin: 0 0 18px; font-size: 18px; font-weight: 600; color: #1d4ed8; }
+.ab-note { margin: 14px 0 0; font-size: 13.5px; color: #556377; }
+.ab-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.ab-chips li { padding: 8px 14px; border-radius: 999px; border: 1px solid #cbd5e1; font-size: 14.5px; color: #1e293b; background: #fff; }
+.ab-principles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border: 1px solid #e5eaf2; border-radius: 14px; overflow: hidden; }
+.ab-principles li { padding: 22px 20px; border-left: 1px solid #e5eaf2; }
+.ab-principles li:first-child { border-left: 0; }
+.ab-principles b { display: block; font-size: 16px; margin-bottom: 6px; color: var(--k-navy); }
+.ab-principles span { font-size: 14px; line-height: 1.55; color: #475569; }
+.ab-ambition { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+.ab-ambition img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 14px; }
+.ab-ambition p { margin: 0 0 14px; font-size: 16px; line-height: 1.6; color: #334155; }
+
+/* Contact */
+.ct-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; padding-top: 48px; }
+.ct-form h2 { margin: 28px 0 12px; font-size: 17px; }
+.ct-form h2:first-of-type { margin-top: 0; }
+.ct-aside { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 16px; }
+.ct-box { padding: 20px; border-radius: 12px; border: 1px solid #e5eaf2; background: #f8fafc; }
+.ct-box h3 { margin: 0 0 12px; font-size: 15px; }
+.ct-box dl { margin: 0; display: grid; gap: 4px 0; font-size: 14px; }
+.ct-box dt { color: #556377; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 10px; }
+.ct-box dt:first-child { margin-top: 0; }
+.ct-box dd { margin: 0; }
+.ct-box p { margin: 0 0 12px; font-size: 14px; color: #475569; line-height: 1.5; }
+.ct-done { max-width: 640px; padding: 32px; border-radius: 14px; border: 1px solid #bbf7d0; background: #f0fdf4; }
+.ct-done h2 { margin: 0 0 10px; font-size: 22px; }
+.ct-done p { margin: 0 0 12px; font-size: 15.5px; line-height: 1.55; color: #14532d; }
+.ct-ref { display: inline-block; margin-top: 4px; padding: 6px 12px; border-radius: 8px; background: #fff; border: 1px solid #bbf7d0; font-family: "IBM Plex Mono", monospace; }
+
+/* Legal */
+.lg-grid { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; align-items: start; padding-top: 40px; }
+.lg-toc { position: sticky; top: 24px; }
+.lg-toc b { display: block; margin-bottom: 10px; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: #556377; }
+.lg-toc ul { list-style: none; margin: 0; padding: 0; border-left: 2px solid #e5eaf2; }
+.lg-toc a { display: block; padding: 7px 0 7px 14px; margin-left: -2px; border-left: 2px solid transparent; color: #334155; font-size: 14.5px; }
+.lg-toc a:hover, .lg-toc a.is-on { color: #1d4ed8; border-left-color: #1d4ed8; }
+.lg-doc { padding-bottom: 40px; margin-bottom: 40px; border-bottom: 1px solid #e5eaf2; scroll-margin-top: 20px; max-width: 780px; }
+.lg-doc:last-child { border-bottom: 0; }
+.lg-doc > h2 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.02em; }
+.lg-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 20px; font-size: 13.5px; color: #556377; }
+.lg-doc h3 { margin: 26px 0 8px; font-size: 18px; }
+.lg-doc h4 { margin: 18px 0 6px; font-size: 15.5px; }
+.lg-doc p, .lg-doc li { font-size: 15.5px; line-height: 1.65; color: #334155; }
+.lg-doc p { margin: 0 0 12px; }
+.lg-doc ul { margin: 0 0 14px; padding-left: 22px; }
+.lg-doc li { margin-bottom: 4px; }
+.lg-note { margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #f59e0b; background: #fffbeb; font-size: 14px; color: #78350f; }
+.lg-top { font-size: 13.5px; font-weight: 600; }
+
+@media (max-width: 1000px) {
+  .ab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ab-flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ab-principles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ab-principles li { border-left: 0; border-top: 1px solid #e5eaf2; }
+  .ab-principles li:nth-child(even) { border-left: 1px solid #e5eaf2; }
+  .ab-principles li:nth-child(-n+2) { border-top: 0; }
+  .ab-ambition, .ab-challenge, .ct-grid, .lg-grid { grid-template-columns: minmax(0, 1fr); }
+  .ct-aside, .lg-toc { position: static; }
+  .lg-toc ul { display: flex; flex-wrap: wrap; gap: 4px 0; border-left: 0; }
+  .lg-toc a { border-left: 0; padding: 4px 12px 4px 0; }
+}
+@media (max-width: 640px) {
+  .pub-hero { padding: 36px 0 44px; }
+  .pub-hero h1 { font-size: 32px; }
+  .pub-hero p { font-size: 16px; }
+  .ab-pair, .ab-grid { grid-template-columns: minmax(0, 1fr); }
+  .ab-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ab-principles { grid-template-columns: minmax(0, 1fr); }
+  .ab-principles li { border-left: 0 !important; border-top: 1px solid #e5eaf2 !important; }
+  .ab-principles li:first-child { border-top: 0 !important; }
+}
+
+/* Links inside running text are underlined so they stand out without relying on colour. */
+.pub-draft a, .ct-form .ant-checkbox-wrapper a, .lg-doc p a, .ct-box a { text-decoration: underline; }

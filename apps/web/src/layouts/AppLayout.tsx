@@ -1,74 +1,84 @@
-import {
-  BellOutlined, GlobalOutlined, MenuOutlined, QuestionCircleOutlined, SearchOutlined, StarFilled,
-} from "@ant-design/icons";
-import { Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
+import { BellOutlined, LoginOutlined, MenuOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { App, Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { KilogyLogo } from "../components/KilogyLogo";
-import { activeNavPath, DEMO_USER, NAV_ITEMS } from "../config/navigation";
+import { activeNavPath, NAV_GROUPS, NAV_ITEMS, SETTINGS_ITEM } from "../config/navigation";
+import { initials, ROLE_LABEL, useAuth } from "../data/auth";
 import { useStore } from "../data/store";
 
 const { Header, Sider, Content } = Layout;
 
-const initials = (name: string) => name.split(" ").map((p) => p[0]).slice(0, 2).join("");
-
-/** App shell from Kilogy's dashboard mockup: navy sidebar, white header, grey canvas. */
+/** App shell: navy sidebar grouped by task, white header with the page name, light canvas. */
 export function AppLayout() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const { user, signOut } = useAuth();
+  const { message } = App.useApp();
   const screens = Grid.useBreakpoint();
   const compact = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { alerts } = useStore();
+  const active = activeNavPath(pathname);
+  const OTHER_PAGES: Record<string, string> = { "/profile": "Your profile", "/developers": "Developers & API", "/assistant": "Ask Kilogy" };
+  const pageName = [...NAV_ITEMS, SETTINGS_ITEM].find((n) => n.path === active)?.label
+    ?? Object.entries(OTHER_PAGES).find(([p]) => pathname.startsWith(p))?.[1] ?? "";
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
-  const menu = (
-    <Menu
-      className="kside-menu"
-      theme="dark"
-      mode="inline"
-      selectedKeys={[activeNavPath(pathname)]}
-      onClick={({ key }) => navigate(key)}
-      items={NAV_ITEMS.map((n) => ({
-        key: n.path,
-        icon: n.icon,
-        label: n.comingSoon ? <>{n.label}<span className="kside-soon">Soon</span></> : n.label,
-      }))}
-    />
-  );
+  const menuProps = {
+    className: "kside-menu",
+    theme: "dark" as const,
+    mode: "inline" as const,
+    selectedKeys: [active],
+    onClick: ({ key }: { key: string }) => navigate(key),
+  };
 
   const sidebar = (
     <>
-      <Link to="/" className="kside-logo" aria-label="Kilogy home page"><KilogyLogo onDark height={40} /></Link>
-      {menu}
-      <div className="kside-assist">
-        <h3><span className="ico"><StarFilled /></span>AI Logistics Assistant</h3>
-        <p>Ask anything about your shipments, rates, or logistics operations.</p>
-        <Button type="primary" onClick={() => navigate("/assistant")}>Open Assistant →</Button>
+      <Link to="/" className="kside-logo" aria-label="Kilogy home page"><KilogyLogo onDark height={34} /></Link>
+      <Menu
+        {...menuProps}
+        items={NAV_GROUPS.map((g) => ({
+          type: "group" as const,
+          key: g,
+          label: g,
+          children: NAV_ITEMS.filter((n) => n.group === g).map((n) => ({
+            key: n.path,
+            icon: n.icon,
+            label: n.comingSoon ? <>{n.label}<span className="kside-soon">Soon</span></> : n.label,
+          })),
+        }))}
+      />
+      <div className="kside-foot">
+        <button type="button" className="kside-ask" onClick={() => navigate("/assistant")}>
+          <MessageOutlined />
+          <span><b>Ask Kilogy</b><small>Rates, routes and shipment questions</small></span>
+        </button>
+        <Menu {...menuProps} items={[{ key: SETTINGS_ITEM.path, icon: SETTINGS_ITEM.icon, label: SETTINGS_ITEM.label }]} />
       </div>
-      <div className="kside-tag">One platform. Every carrier.<br />Every shipment.</div>
     </>
   );
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {compact ? (
-        <Drawer placement="left" open={drawerOpen} onClose={() => setDrawerOpen(false)} size={280}
+        <Drawer placement="left" open={drawerOpen} onClose={() => setDrawerOpen(false)} size={264}
           styles={{ body: { padding: 0, background: "#0b1f4d", display: "flex", flexDirection: "column" }, header: { display: "none" } }}>
           {sidebar}
         </Drawer>
       ) : (
-        <Sider width={272} className="kside">{sidebar}</Sider>
+        <Sider width={248} className="kside">{sidebar}</Sider>
       )}
 
       <Layout>
         <Header className="khead">
           {compact && <Button type="text" icon={<MenuOutlined />} aria-label="Open navigation" onClick={() => setDrawerOpen(true)} />}
+          <span className="khead-page">{pageName}</span>
           <Input.Search
             className="khead-search"
             prefix={<SearchOutlined />}
-            placeholder="Search by shipment ID, tracking number, or customer..."
+            placeholder="Find a shipment or tracking number"
             aria-label="Search shipments"
             allowClear
             enterButton={false}
@@ -76,32 +86,42 @@ export function AppLayout() {
           />
           <div className="khead-actions">
             <Badge count={alerts.length} size="small" offset={[-4, 4]}>
-              <Button type="text" shape="circle" size="large" icon={<BellOutlined />} aria-label={`Notifications (${alerts.length})`} onClick={() => navigate("/dashboard")} />
+              <Button type="text" shape="circle" icon={<BellOutlined />} aria-label={`Notifications (${alerts.length})`} onClick={() => navigate("/tracking")} />
             </Badge>
-            <Button type="text" shape="circle" size="large" icon={<GlobalOutlined />} aria-label="Language and region" />
-            <Button type="text" shape="circle" size="large" icon={<QuestionCircleOutlined />} aria-label="Help" onClick={() => navigate("/developers")} />
-            <Dropdown
-              trigger={["click"]}
-              menu={{
-                items: [
-                  { key: "/settings", label: "Settings" },
-                  { key: "/developers", label: "Developers & API" },
-                  { type: "divider" },
-                  { key: "/", label: "Sign out" },
-                ],
-                onClick: ({ key }) => navigate(key),
-              }}
-            >
-              <button type="button" className="khead-user" style={{ background: "none", border: 0, borderLeft: "1px solid var(--k-line)" }} aria-label="Account menu">
-                <Avatar size={40} style={{ background: "#1d4ed8", fontWeight: 600 }}>{initials(DEMO_USER.name)}</Avatar>
-                {!compact && <span style={{ textAlign: "left" }}><b>{DEMO_USER.name}</b><small>{DEMO_USER.role}</small></span>}
-              </button>
-            </Dropdown>
+            <Button type="text" shape="circle" icon={<QuestionCircleOutlined />} aria-label="Help" onClick={() => navigate("/developers")} />
+            {user ? (
+              <Dropdown
+                trigger={["click"]}
+                menu={{
+                  items: [
+                    { key: "info", type: "group", label: user.email },
+                    { key: "/profile", label: "Your profile" },
+                    { key: "/settings", label: "Settings" },
+                    { key: "/developers", label: "Developers & API" },
+                    { type: "divider" },
+                    { key: "signout", label: "Sign out", danger: true },
+                  ],
+                  onClick: ({ key }) => {
+                    if (key === "signout") { signOut(); message.info("Signed out"); navigate("/"); }
+                    else navigate(key);
+                  },
+                }}
+              >
+                <button type="button" className="khead-user" aria-label={`Account menu for ${user.name}`}>
+                  <Avatar size={34} style={{ background: user.role === "admin" ? "#0b1f4d" : "#0d9488", fontWeight: 600, fontSize: 13 }}>{initials(user.name)}</Avatar>
+                  {!compact && <span><b>{user.name.split(" ")[0]}</b><small>{ROLE_LABEL[user.role]}</small></span>}
+                </button>
+              </Dropdown>
+            ) : (
+              <Button className="khead-signin" aria-label="Staff sign in" icon={<LoginOutlined />} onClick={() => navigate(`/login?next=${encodeURIComponent(pathname + search)}`)}>
+                {compact ? "" : "Staff sign in"}
+              </Button>
+            )}
           </div>
         </Header>
 
         <Content className="kcontent">
-          <div style={{ maxWidth: 1600, margin: "0 auto" }}>
+          <div style={{ maxWidth: 1560, margin: "0 auto" }}>
             <Outlet />
           </div>
         </Content>

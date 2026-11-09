@@ -8,9 +8,10 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.test.json",
     "test": "vitest run",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "tsx scripts/demo.ts",
+    "hub": "tsx src/hubServer.ts"
   },
   "engines": {
     "node": ">=20"

@@ -1,16 +1,29 @@
+import inventory from "../../assets/photos/slide-inventory.webp";
+import lastMile from "../../assets/photos/slide-last-mile.webp";
+import multimodal from "../../assets/photos/slide-multimodal.webp";
+import ocean from "../../assets/photos/slide-ocean.webp";
+import port from "../../assets/photos/slide-port.webp";
+import warehouse from "../../assets/photos/slide-warehouse.webp";
+import type { Slide } from "../../components/PhotoCarousel";
+
 /**
- * Homepage copy, taken from Kilogy's homepage mockup. Edit text here; layout lives in
- * Landing.tsx and landing.css.
- *
- * Marketing figures (countries, offices, partner names) come from Kilogy's mockup and must be
- * confirmed by Kilogy before the page is public.
+ * Homepage copy. Edit text here; layout lives in Landing.tsx and landing.css.
+ * Keep claims to what the prototype does today; add coverage or partner figures only once Kilogy confirms them.
  */
 
-export const NAV = ["Solutions", "Platform", "Integrations", "Resources", "Company", "Pricing"];
+export const NAV = [
+  { label: "How it works", href: "#how" },
+  { label: "Quotes", href: "#quotes" },
+  { label: "Tracking", href: "#tracking" },
+];
+
+/** Bottom-left line of the site footer, in place of a copyright notice. */
+export const FOOTER_BYLINE = "Kilogy empowered by Kimptu Power Inc.";
 
 export const HERO = {
-  title: ["The AI-Powered", "Global ", "Logistics", "Operating System"],
-  body: "Connect. Orchestrate. Optimize. Every shipment, every carrier, every location — in one intelligent platform.",
+  eyebrow: "Logistics operating system",
+  title: "Ship across borders without juggling carriers.",
+  body: "Kilogy compares air, ocean and road options in one quote, books the one you pick, and keeps you posted until it lands.",
 };
 
 export const ORIGINS = [
@@ -28,29 +41,77 @@ export const DESTINATIONS = [
   { value: "SN:Dakar", label: "Dakar, Senegal" },
   { value: "ZA:Johannesburg", label: "Johannesburg, South Africa" },
 ];
-export const CARGO_TYPES = ["General Cargo", "Consumer Electronics", "Documents", "Apparel & Textiles", "Auto Parts", "Medical Supplies"];
+export const CARGO_TYPES = ["General cargo", "Electronics", "Documents", "Apparel", "Auto parts", "Medical supplies"];
 
-export const FEATURES = [
-  { title: "Multi-Modal Solutions", body: "Ocean, Air, Road & Last-Mile" },
-  { title: "AI Optimization", body: "Smart routing, pricing & risk" },
-  { title: "Global Coverage", body: "186+ countries, 2600+ offices" },
-  { title: "Real-Time Visibility", body: "Track every shipment live" },
-  { title: "Secure & Compliant", body: "Data security & global compliance" },
-  { title: "Unified Platform", body: "One system. All logistics." },
+export const STEPS = [
+  { title: "Quote", body: "Enter a lane and a package once. Kilogy asks every connected carrier and ranks the answers by price, speed and reliability." },
+  { title: "Book", body: "Pick an option and book it in one step. Labels, documents and payment stay attached to the shipment." },
+  { title: "Track", body: "Follow every leg on one timeline, with delay risk flagged before it turns into a missed delivery." },
 ];
 
-/** Sample rows for the "Smart Rate Comparison" card (illustrative, from the mockup). */
-export const RATE_SAMPLE: { name: string; modes: ("air" | "ocean")[]; transit: string; price: string; reliability: string }[] = [
-  { name: "DHL Express", modes: ["air"], transit: "5–7 days", price: "$1,245", reliability: "92%" },
-  { name: "Maersk Ocean", modes: ["ocean"], transit: "22–28 days", price: "$685", reliability: "95%" },
-  { name: "Air + Ocean", modes: ["air", "ocean"], transit: "12–15 days", price: "$950", reliability: "94%" },
+/** Sample rows for the quote preview (illustrative). */
+export const RATE_SAMPLE: { name: string; modes: ("air" | "ocean")[]; transit: string; price: string; reliability: string; tag?: string }[] = [
+  { name: "Express air", modes: ["air"], transit: "5–7 days", price: "$1,245", reliability: "92%", tag: "Fastest" },
+  { name: "Air + ocean", modes: ["air", "ocean"], transit: "12–15 days", price: "$950", reliability: "94%", tag: "Best value" },
+  { name: "Ocean LCL", modes: ["ocean"], transit: "22–28 days", price: "$685", reliability: "95%", tag: "Cheapest" },
 ];
 
-export const PARTNERS = ["DHL", "MAERSK", "Hapag-Lloyd", "ZIM", "FedEx", "UPS", "aramex"];
+export const QUOTE_POINTS = [
+  "Air, ocean and road options side by side",
+  "Each option shows price, transit time and on-time record",
+  "The AI engine explains why it ranked an option first",
+];
+export const TRACK_POINTS = [
+  "One timeline across every carrier on the route",
+  "Delay risk from weather, customs and carrier history",
+  "Alerts when a shipment needs a decision",
+];
 
-export const BAND = [
-  { title: "API-Powered Integration", body: "Connect with 100+ logistics providers via our unified API hub." },
-  { title: "AI Decision Engine", body: "Get the best routes, rates & reliability with AI-powered insights." },
-  { title: "End-to-End Visibility", body: "From booking to delivery, see everything in real time." },
-  { title: "Automate & Scale", body: "Automate workflows, reduce costs, and scale globally." },
+/** Footer link columns. Every link points at a page or section that exists in the prototype. */
+export const FOOTER_COLUMNS: { title: string; links: { label: string; to: string }[] }[] = [
+  { title: "Product", links: [
+    { label: "Get a quote", to: "/shipments/new" },
+    { label: "Live tracking", to: "/tracking" },
+    { label: "Carriers", to: "/carriers" },
+  ] },
+  { title: "Learn", links: [
+    { label: "How it works", to: "/#how" },
+    { label: "Quotes", to: "/#quotes" },
+    { label: "Tracking", to: "/#tracking" },
+  ] },
+  { title: "Company", links: [
+    { label: "About us", to: "/about" },
+    { label: "Contact us", to: "/contact" },
+    { label: "Legal", to: "/legal" },
+  ] },
+];
+
+/** Shortcuts in the footer's bottom row. */
+export const LEGAL_LINKS = [
+  { label: "Privacy", to: "/legal#privacy" },
+  { label: "Terms", to: "/legal#terms" },
+  { label: "Cookies", to: "/legal#cookies" },
+];
+
+export const FOOTER_LANES = "Montreal · Toronto · Vancouver → Lagos · Accra · Kinshasa · Nairobi";
+
+export const NETWORK = {
+  title: "Carriers in the Kilogy network",
+  note: "Integrations in testing and planned. A carrier shown here is not an endorsement or partnership.",
+};
+
+/** Network carousel. Photos live in src/assets/photos; replace them with licensed or Kilogy-owned photos before launch. */
+export const SLIDES: Slide[] = [
+  { src: multimodal, title: "Air, ocean and road in one quote", body: "Kilogy compares every mode for your lane and ranks the options by price, speed and CO₂.",
+    alt: "Container ship, truck and cargo plane at a port at night" },
+  { src: ocean, title: "Ocean freight", body: "The lower-cost, lower-emission choice for shipments that can wait a few weeks.",
+    alt: "Loaded container ship at sea with a plane overhead" },
+  { src: port, title: "Port handoffs", body: "Follow containers through the port and see customs holds before they cause a delay.",
+    alt: "Stacked shipping containers under port cranes" },
+  { src: warehouse, title: "Warehousing", body: "Pickup, storage and dispatch on the same shipment record.", tag: "Coming soon",
+    alt: "Two workers walking down a warehouse aisle carrying a box" },
+  { src: inventory, title: "Consolidation", body: "Group cartons into fewer, fuller shipments to cut cost per kilogram.", tag: "Coming soon",
+    alt: "Pallets of cardboard cartons stacked in a warehouse" },
+  { src: lastMile, title: "Last-mile delivery", body: "Hand off to local partners and confirm delivery at the door.",
+    alt: "Courier carrying two boxes to a delivery van" },
 ];

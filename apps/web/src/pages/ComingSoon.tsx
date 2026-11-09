@@ -4,7 +4,7 @@ import { NAV_ITEMS } from "../config/navigation";
 
 const EXTRA: Record<string, string> = { "/assistant": "AI Logistics Assistant" };
 
-/** Placeholder for menu items in Kilogy's mockups that are not built yet (see config/navigation.tsx). */
+/** Placeholder for menu items that are not built yet (see config/navigation.tsx). */
 export function ComingSoonPage() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
