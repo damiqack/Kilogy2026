@@ -39,6 +39,9 @@ a.mono, span.mono { white-space: nowrap; }
 .khead-page { font-size: 15px; font-weight: 600; white-space: nowrap; }
 .khead-search { max-width: 360px; flex: 1; margin-left: auto; }
 .khead-search .ant-input-affix-wrapper { border-radius: 8px; background: #f4f6fb; border-color: var(--k-line); height: 38px; }
+/* The search button sits flush with the field: same height, fill and border. */
+.khead-search .ant-input-search-btn { height: 38px; width: 40px; background: #f4f6fb; border-color: var(--k-line); color: #334155; }
+.khead-search .ant-input-search-btn:hover { background: #e9edf5; }
 .khead-actions { display: flex; align-items: center; gap: 4px; }
 .khead-actions .ant-btn { color: #334155; }
 .khead-user { display: flex; align-items: center; gap: 10px; padding: 0 0 0 14px; margin-left: 6px; background: none; border: 0; border-left: 1px solid var(--k-line); cursor: pointer; line-height: 1.2; font: inherit; color: inherit; text-align: left; }
