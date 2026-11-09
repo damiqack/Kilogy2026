@@ -46,7 +46,6 @@ export function LandingPage() {
           <p>{HERO.body}</p>
           <div className="lp-hero-ctas">
             <Button type="primary" size="large" onClick={() => navigate("/shipments/new")}>Start a quote <ArrowRightOutlined /></Button>
-            <Button ghost size="large" onClick={() => navigate("/dashboard")}>Open the dashboard</Button>
           </div>
         </div>
       </section>
