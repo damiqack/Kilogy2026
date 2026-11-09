@@ -1,0 +1,30 @@
+/* Profile page (pages/Profile.tsx). */
+.kprof-card .ant-card-body { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 24px 24px; }
+.kprof-card h2 { margin: 14px 0 2px; font-size: 20px; }
+.kprof-title { margin: 0 0 10px; color: var(--k-muted); }
+.kprof-card dl { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 12px; margin: 20px 0; padding-top: 18px; border-top: 1px solid var(--k-line); text-align: left; font-size: 13.5px; }
+.kprof-card dt { color: var(--k-muted); }
+.kprof-card dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+.kprof-av { font-weight: 700; background: var(--k-navy) !important; }
+.kprof-av.is-developer { background: #0d9488 !important; }
+.kprof-role { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: #fff; background: var(--k-navy); }
+.kprof-role.is-developer { background: #0f766e; }
+.kprof-form { max-width: 760px; }
+.kprof-stack { display: flex; flex-direction: column; gap: 28px; max-width: 760px; }
+.kprof-stack h3 { display: flex; gap: 8px; align-items: center; margin: 0 0 10px; font-size: 15px; }
+.kprof-stack p { margin: 0; color: #475569; }
+.kprof-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.kprof-switches { list-style: none; margin: 0; padding: 0; max-width: 760px; }
+.kprof-switches li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f1f4f9; }
+.kprof-switches li:last-child { border-bottom: 0; }
+.kprof-switches b { display: block; font-size: 14px; }
+.kprof-switches span { font-size: 13px; color: var(--k-muted); }
+.kprof-perms { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
+.kprof-perms li { display: flex; gap: 8px; align-items: center; font-size: 13.5px; }
+.kprof-perms .anticon { color: #16a34a; }
+.kprof-perms li.is-off { color: var(--k-muted); }
+.kprof-perms li.is-off .anticon { color: #94a3b8; }
+.kprof-note { margin-top: 12px !important; font-size: 13px; }
+.kprof-person { display: inline-flex; align-items: center; gap: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (max-width: 640px) { .kprof-perms { grid-template-columns: minmax(0, 1fr); } .kprof-row { flex-direction: column; align-items: flex-start; } }
