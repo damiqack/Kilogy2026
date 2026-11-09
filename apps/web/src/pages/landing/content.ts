@@ -19,6 +19,7 @@ export const NAV = [
 
 export const HERO = {
   eyebrow: "Logistics operating system",
+  byline: "Kilogy empowered by Kimptu Power Inc.",
   title: "Ship across borders without juggling carriers.",
   body: "Kilogy compares air, ocean and road options in one quote, books the one you pick, and keeps you posted until it lands.",
 };
