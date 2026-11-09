@@ -1,7 +1,7 @@
 import {
   AimOutlined, BankOutlined, BarChartOutlined, CalendarOutlined, CarOutlined, CodeSandboxOutlined,
   CreditCardOutlined, EnvironmentOutlined, FileSearchOutlined, FileTextOutlined, HomeOutlined,
-  SafetyCertificateOutlined, SettingOutlined,
+  ReconciliationOutlined, SafetyCertificateOutlined, SettingOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 
@@ -35,6 +35,7 @@ export const NAV_ITEMS: NavItem[] = [
   { path: "/ai-optimization", label: "Route Optimizer", icon: <AimOutlined />, comingSoon: true, group: "Network" },
   { path: "/payments", label: "Payments", icon: <CreditCardOutlined />, group: "Business" },
   { path: "/analytics", label: "Analytics", icon: <BarChartOutlined />, group: "Business" },
+  { path: "/reports", label: "Reports", icon: <ReconciliationOutlined />, group: "Business" },
 ];
 
 /** Pinned to the bottom of the sidebar, below the groups. */

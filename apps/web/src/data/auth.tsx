@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Button, Result } from "antd";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 /**
  * Staff sign-in for the prototype. Only Kilogy administrators and developers sign in;
@@ -99,6 +100,8 @@ interface AuthValue {
   user: StaffUser | null;
   signedInAt: string | null;
   history: SignInRecord[];
+  /** Sign-ins for every staff account, keyed by user id (used by admin reports). */
+  allHistory: Record<string, SignInRecord[]>;
   signIn: (email: string, password: string, remember: boolean) => Promise<{ ok: true } | { ok: false; error: string }>;
   signOut: () => void;
   updateProfile: (patch: Partial<StaffUser>) => void;
@@ -154,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [current]);
 
   const value: AuthValue = {
-    user, signedInAt: current?.signedInAt ?? null, history: user ? historyAll[user.id] ?? [] : [],
+    user, signedInAt: current?.signedInAt ?? null, history: user ? historyAll[user.id] ?? [] : [], allHistory: historyAll,
     signIn, signOut, updateProfile, changePassword, team,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -171,7 +174,13 @@ export function RequireAuth({ children, roles }: { children: ReactNode; roles?: 
   const { user } = useAuth();
   const { pathname, search } = useLocation();
   if (!user) return <Navigate to={`/login?next=${encodeURIComponent(pathname + search)}`} replace />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/profile" replace />;
+  if (roles && !roles.includes(user.role)) {
+    return (
+      <Result status="403" title={`${roles.map((r) => ROLE_LABEL[r]).join(" or ")} access only`}
+        subTitle={`You're signed in as a ${ROLE_LABEL[user.role].toLowerCase()}. Ask an administrator if you need this page.`}
+        extra={<Link to="/dashboard"><Button type="primary">Back to dashboard</Button></Link>} />
+    );
+  }
   return <>{children}</>;
 }
 

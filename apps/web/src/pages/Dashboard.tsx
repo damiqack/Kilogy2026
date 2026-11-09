@@ -94,7 +94,7 @@ export function DashboardPage() {
         <Link to="/tracking"><EnvironmentOutlined />Track a shipment</Link>
         <Link to="/quotes"><SwapOutlined />Compare rates</Link>
         <Link to="/carriers"><CarOutlined />Carriers</Link>
-        <Link to="/analytics"><BarChartOutlined />Reports</Link>
+        <Link to="/reports"><BarChartOutlined />Reports</Link>
       </nav>
 
       <div className="kstat-grid">

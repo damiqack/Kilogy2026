@@ -19,6 +19,7 @@ import { ShipmentsPage } from "../pages/Shipments";
 import { COMING_SOON } from "../config/navigation";
 import { RequireAuth } from "../data/auth";
 import { ProfilePage } from "../pages/Profile";
+import { ReportsPage } from "../pages/Reports";
 import { SignInPage } from "../pages/SignIn";
 import { AboutPage } from "../pages/public/About";
 import { ContactPage } from "../pages/public/Contact";
@@ -55,6 +56,7 @@ export function AppRoutes() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="developers" element={<DevelopersPage />} />
         <Route path="profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+        <Route path="reports" element={<RequireAuth roles={["admin"]}><ReportsPage /></RequireAuth>} />
         <Route path="system" element={<Navigate to="/developers?tab=architecture" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
