@@ -115,3 +115,17 @@ a.mono, span.mono { white-space: nowrap; }
 .khead-user > span { display: flex; flex-direction: column; line-height: 1.25; }
 /* Segmented filters scroll sideways instead of widening the page on phones. */
 .ant-segmented { max-width: 100%; overflow-x: auto; }
+
+/* ---------- Table filters (components/FilterBar.tsx) ---------- */
+.kfilters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.kfilters-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.kfilters-controls .ant-select { min-width: 170px; }
+.kfilters-controls .kfilters-search { width: 280px; }
+.kfilters-summary { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--k-muted); min-height: 24px; }
+.kfilters-summary b { color: var(--k-ink); }
+.kfilters-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 0; color: #334155; }
+@media (max-width: 640px) {
+  .kfilters-controls > *, .kfilters-controls .ant-select, .kfilters-controls .kfilters-search { width: 100% !important; min-width: 0; }
+}
+/* Placeholders double as the filter labels ("All carriers"), so they need full text contrast. */
+.kfilters .ant-select-placeholder, .kfilters input::placeholder { color: #556377 !important; opacity: 1; }
