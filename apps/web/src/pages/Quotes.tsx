@@ -11,7 +11,7 @@ export function QuotesPage() {
   const navigate = useNavigate();
   return (
     <>
-      <PageHeader title="Quotes" subtitle="Quotes are valid for 24 hours." extra={<Button type="primary" onClick={() => navigate("/shipments/new")}>New quote</Button>} />
+      <PageHeader title="Quotes" subtitle="Quotes are valid for 24 hours." extra={<Button type="primary" onClick={() => navigate("/quotes/new")}>New quote</Button>} />
       <Card size="small">
         <Table<Quote>
           rowKey="id"

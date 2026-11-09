@@ -45,7 +45,7 @@ export function AppRoutes() {
         <Route path="shipments/new" element={<NewShipmentPage />} />
         <Route path="shipments/:id" element={<ShipmentDetailPage />} />
         <Route path="quotes" element={<QuotesPage />} />
-        <Route path="quotes/new" element={<Navigate to="/shipments/new" replace />} />
+        <Route path="quotes/new" element={<NewShipmentPage />} />
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
         <Route path="carriers" element={<CarriersPage />} />
         <Route path="integrations" element={<RequireAuth><IntegrationHubPage /></RequireAuth>} />

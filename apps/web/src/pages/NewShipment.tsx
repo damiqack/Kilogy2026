@@ -1,7 +1,7 @@
 import { Alert, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form, Input, InputNumber, Row, Segmented, Select, Slider, Steps, Switch, Typography } from "antd";
 import { Indicator } from "../components/Indicator";
 import { useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { PackageSummary } from "../components/PackageSummary";
 import { PageHeader } from "../components/PageHeader";
 import { QuoteTable } from "../components/QuoteTable";
@@ -31,6 +31,8 @@ function parseLoc(v: string | null, fallback: Location): Location {
 export function NewShipmentPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  // Started from the Quotes tab (/quotes/new): stay under Quotes until the booking is confirmed.
+  const fromQuotes = useLocation().pathname.startsWith("/quotes");
   const { saveQuote, book, paymentMethods } = useStore();
   const [payWith, setPayWith] = useState<string>();
   const payMethodId = payWith ?? paymentMethods.find((m) => m.isDefault)?.id;
@@ -104,7 +106,7 @@ export function NewShipmentPage() {
 
   return (
     <>
-      <PageHeader title="New shipment" crumbs={[{ title: "Shipments", path: "/shipments" }]} />
+      <PageHeader title={fromQuotes ? "New quote" : "New shipment"} crumbs={[fromQuotes ? { title: "Quotes", path: "/quotes" } : { title: "Shipments", path: "/shipments" }]} />
       <Steps current={step} size="small" style={{ marginBottom: 16 }}
         items={[{ title: "Addresses" }, { title: "Package" }, { title: "Compare quotes" }, { title: "Review and book" }]} />
 
