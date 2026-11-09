@@ -20,12 +20,18 @@ import { COMING_SOON } from "../config/navigation";
 import { RequireAuth } from "../data/auth";
 import { ProfilePage } from "../pages/Profile";
 import { SignInPage } from "../pages/SignIn";
+import { AboutPage } from "../pages/public/About";
+import { ContactPage } from "../pages/public/Contact";
+import { LegalPage } from "../pages/public/Legal";
 
 export function AppRoutes() {
   return (
     <Routes>
       {/* Public homepage (no app shell) */}
       <Route index element={<LandingPage />} />
+      <Route path="about" element={<AboutPage />} />
+      <Route path="contact" element={<ContactPage />} />
+      <Route path="legal" element={<LegalPage />} />
       {/* Staff sign-in (administrators and developers only) */}
       <Route path="login" element={<SignInPage />} />
       <Route path="sign-in" element={<Navigate to="/login" replace />} />

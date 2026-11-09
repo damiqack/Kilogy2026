@@ -72,17 +72,29 @@ export const FOOTER_COLUMNS: { title: string; links: { label: string; to: string
     { label: "Carriers", to: "/carriers" },
   ] },
   { title: "Learn", links: [
-    { label: "How it works", to: "#how" },
-    { label: "Quotes", to: "#quotes" },
-    { label: "Tracking", to: "#tracking" },
+    { label: "How it works", to: "/#how" },
+    { label: "Quotes", to: "/#quotes" },
+    { label: "Tracking", to: "/#tracking" },
   ] },
+  { title: "Company", links: [
+    { label: "About us", to: "/about" },
+    { label: "Contact us", to: "/contact" },
+    { label: "Legal", to: "/legal" },
+  ] },
+];
+
+/** Shortcuts in the footer's bottom row. */
+export const LEGAL_LINKS = [
+  { label: "Privacy", to: "/legal#privacy" },
+  { label: "Terms", to: "/legal#terms" },
+  { label: "Cookies", to: "/legal#cookies" },
 ];
 
 export const FOOTER_LANES = "Montreal · Toronto · Vancouver → Lagos · Accra · Kinshasa · Nairobi";
 
 export const NETWORK = {
   title: "Carriers in the Kilogy network",
-  note: "Integrations in testing and planned. Live connections roll out as each carrier approves access.",
+  note: "Integrations in testing and planned. A carrier shown here is not an endorsement or partnership.",
 };
 
 /** Network carousel. Photos live in src/assets/photos; replace them with licensed or Kilogy-owned photos before launch. */

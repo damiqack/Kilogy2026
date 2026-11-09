@@ -3,16 +3,16 @@ import { Button, DatePicker, Input, Select } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { KilogyLogo } from "../../components/KilogyLogo";
 import cta from "../../assets/photos/cta-network.webp";
 import hero from "../../assets/photos/hero-network.webp";
 import { CarrierLogos } from "../../components/CarrierLogos";
 import { ModeIcon } from "../../components/ModeIcon";
 import { PhotoCarousel } from "../../components/PhotoCarousel";
+import { PublicFooter, PublicHeader, useScrollOnNavigate } from "../../components/PublicChrome";
 import { CARRIERS } from "../../data/carriers";
 import { isDelayed, isDelivered, isInTransit } from "../../data/insights";
 import { useStore } from "../../data/store";
-import { CARGO_TYPES, DESTINATIONS, FOOTER_COLUMNS, FOOTER_LANES, HERO, NAV, NETWORK, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, SLIDES, STEPS, TRACK_POINTS } from "./content";
+import { CARGO_TYPES, DESTINATIONS, HERO, NETWORK, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, SLIDES, STEPS, TRACK_POINTS } from "./content";
 import "./landing.css";
 import { STEP_ART } from "./StepArt";
 
@@ -20,6 +20,7 @@ import { STEP_ART } from "./StepArt";
 export function LandingPage() {
   const navigate = useNavigate();
   const { shipments } = useStore();
+  useScrollOnNavigate();
   const [from, setFrom] = useState(ORIGINS[0].value);
   const [to, setTo] = useState(DESTINATIONS[0].value);
   const [cargo, setCargo] = useState(CARGO_TYPES[0]);
@@ -36,15 +37,7 @@ export function LandingPage() {
       <section className="lp-hero">
         <div className="lp-hero-photo" style={{ backgroundImage: `url(${hero})` }} aria-hidden />
 
-        <header className="lp-nav lp-wrap">
-          <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={38} /></Link>
-          <nav aria-label="Main">
-            {NAV.map((n) => (n.href.startsWith("/") ? <Link key={n.label} to={n.href}>{n.label}</Link> : <a key={n.label} href={n.href}>{n.label}</a>))}
-          </nav>
-          <div className="lp-nav-actions">
-            <Button type="primary" onClick={() => navigate("/shipments/new")}>Get a quote</Button>
-          </div>
-        </header>
+        <PublicHeader overHero />
 
         <div className="lp-wrap lp-hero-copy">
           <span className="lp-eyebrow">{HERO.eyebrow}</span>
@@ -69,7 +62,7 @@ export function LandingPage() {
       </div>
 
       <section className="lp-wrap lp-logos" aria-label={NETWORK.title}>
-        <div className="lp-logos-head"><b>{NETWORK.title}</b><span>{NETWORK.note}</span></div>
+        <div className="lp-logos-head"><b>{NETWORK.title}</b><span>{NETWORK.note} <Link to="/legal#integrations">Integration notice</Link></span></div>
         <CarrierLogos />
       </section>
 
@@ -155,31 +148,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="lp-foot">
-        <div className="lp-wrap lp-foot-top">
-          <div className="lp-foot-brand">
-            <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={34} /></Link>
-            <p>One platform. Every carrier. Every shipment.</p>
-            <p className="lp-foot-lanes"><span>Lanes we focus on</span>{FOOTER_LANES}</p>
-          </div>
-          {FOOTER_COLUMNS.map((col) => (
-            <nav key={col.title} aria-label={col.title}>
-              <h2>{col.title}</h2>
-              <ul>
-                {col.links.map((l) => (
-                  <li key={l.label}>{l.to.startsWith("#") ? <a href={l.to}>{l.label}</a> : <Link to={l.to}>{l.label}</Link>}</li>
-                ))}
-              </ul>
-            </nav>
-          ))}
-        </div>
-        <div className="lp-wrap">
-          <div className="lp-foot-bottom">
-            <span>© {new Date().getFullYear()} Kilogy. All rights reserved.</span>
-            <span>Prototype with sample data. Prices and carriers shown are for demonstration.</span>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
