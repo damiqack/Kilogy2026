@@ -1,12 +1,11 @@
 import {
-  BarChartOutlined, CalendarOutlined, CheckCircleFilled, ClockCircleOutlined, CodeSandboxOutlined,
-  CarOutlined, EnvironmentOutlined, FileTextOutlined, SwapOutlined, ArrowRightOutlined, WarningFilled,
+  BarChartOutlined, CheckCircleFilled, ClockCircleOutlined, CodeSandboxOutlined,
+  CarOutlined, EnvironmentOutlined, FileTextOutlined, PlusOutlined, SwapOutlined,
 } from "@ant-design/icons";
 import { Button, Segmented, Select, Table, type TableColumnsType } from "antd";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LineChart, Donut, type Slice } from "../components/Charts";
-import { KilogyLogo } from "../components/KilogyLogo";
+import { LineChart, type Slice } from "../components/Charts";
 import { CarrierMark, ModeIcon } from "../components/ModeIcon";
 import { StatCard } from "../components/StatCard";
 import { StatusTag } from "../components/StatusTag";
@@ -22,7 +21,9 @@ import type { Mode, Shipment } from "../data/types";
 import { date } from "../lib/format";
 import "./dashboard.css";
 
-const CARRIER_PALETTE = ["#2563eb", "#f59e0b", "#7c3aed", "#10b981", "#ef4444", "#0ea5e9", "#94a3b8"];
+const CARRIER_PALETTE = ["#0b1f4d", "#2563eb", "#7fbde7", "#0d9488", "#f59e0b", "#a855f7", "#94a3b8"];
+/** Status colors are tuned for the dark map; these darker shades read better on the light one. */
+const LIGHT: Record<string, string> = { "#60a5fa": "#2563eb", "#22c55e": "#16a34a", "#f97316": "#ea580c" };
 const MODES: { mode: Mode; label: string }[] = [
   { mode: "ocean", label: "Ocean" }, { mode: "air", label: "Air" }, { mode: "road", label: "Road" }, { mode: "rail", label: "Rail" },
 ];
@@ -61,12 +62,12 @@ export function DashboardPage() {
   const now = new Date();
 
   const columns: TableColumnsType<Shipment> = [
-    { title: "ID", dataIndex: "trackingId", render: (v: string, s) => <Link to={`/shipments/${s.id}`} className="mono">{v}</Link> },
-    { title: "Origin → Destination", key: "r", render: (_, s) => `${s.origin.city ?? s.origin.country} → ${s.destination.city ?? s.destination.country}` },
+    { title: "Tracking #", dataIndex: "trackingId", render: (v: string, s) => <Link to={`/shipments/${s.id}`} className="mono">{v}</Link> },
+    { title: "Lane", key: "r", render: (_, s) => `${s.origin.city ?? s.origin.country} → ${s.destination.city ?? s.destination.country}` },
     { title: "Carrier", key: "c", render: (_, s) => <CarrierMark id={s.selected.carrier_id} name={s.selected.carrier_name} /> },
     { title: "Status", dataIndex: "status", render: (v) => <StatusTag status={v} /> },
     { title: "ETA", key: "eta", render: (_, s) => date(s.deliveredAt ?? s.selected.risk.eta.latest) },
-    { title: "Actions", key: "a", render: (_, s) => <Button size="small" onClick={() => navigate(`/shipments/${s.id}`)}>{isDelivered(s) ? "View" : "Track"}</Button> },
+    { title: "", key: "a", align: "right", render: (_, s) => <Link to={`/shipments/${s.id}`}>{isDelivered(s) ? "Details" : "Track"} →</Link> },
   ];
 
   const m = METRICS[metric];
@@ -76,128 +77,117 @@ export function DashboardPage() {
       <div className="kdash-head">
         <div>
           <h1 className="kdash-greet">{greeting()}, {DEMO_USER.name.split(" ")[0]}</h1>
-          <p className="kdash-sub">Here's what's happening with your global logistics operations today.</p>
+          <p className="kdash-sub">
+            {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} · {list.filter(isInTransit).length} shipments moving, {list.filter(isDelayed).length} need attention
+          </p>
         </div>
-        <div className="kdash-date">
-          <CalendarOutlined style={{ fontSize: 18, marginTop: 2 }} />
-          <span>{now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}<br />{now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
+        <div className="kdash-tools">
+          <Segmented aria-label="Date range" value={range} onChange={(v) => setRange(v as number)}
+            options={[{ value: 7, label: "7 days" }, { value: 30, label: "30 days" }, { value: 90, label: "90 days" }]} />
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate("/shipments/new")}>New shipment</Button>
         </div>
       </div>
 
-      <aside className="kdash-right">
-        <Select aria-label="Date range" value={range} onChange={setRange} size="large"
-          options={[{ value: 7, label: "Last 7 days" }, { value: 30, label: "Last 30 days" }, { value: 90, label: "Last 90 days" }]} />
+      <nav className="kshortcuts" aria-label="Shortcuts">
+        <Link to="/shipments/new"><FileTextOutlined />Get a quote</Link>
+        <Link to="/tracking"><EnvironmentOutlined />Track a shipment</Link>
+        <Link to="/quotes"><SwapOutlined />Compare rates</Link>
+        <Link to="/carriers"><CarOutlined />Carriers</Link>
+        <Link to="/analytics"><BarChartOutlined />Reports</Link>
+      </nav>
 
-        <section className="kcard">
-          <div className="kcard-head"><h2>Recent Activity</h2><Link to="/shipments">View All →</Link></div>
-          <ul className="klist kcard-body">
-            {recentActivity(shipments).map(({ s, t }) => (
-              <li key={s.id + t.title + t.time}>
-                <span className="kicon-round" style={{ color: t.state === "issue" ? "#ea580c" : "#16a34a", background: t.state === "issue" ? "#fff7ed" : "#ecfdf3" }}>
-                  {t.state === "issue" ? <WarningFilled /> : <CheckCircleFilled />}
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13.5 }}>Shipment <Link to={`/shipments/${s.id}`} className="mono">{s.trackingId}</Link></div>
-                  <div className="ktiny">{t.title} ({t.location})</div>
-                </div>
-                <span className="ktiny" style={{ whiteSpace: "nowrap" }}>{timeAgo(t.time)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+      <div className="kstat-grid">
+        <StatCard label="Shipments" value={list.length} icon={<CodeSandboxOutlined />} color="#0b1f4d" delta={delta(shipments, () => true, range)} caption={`vs prior ${range} days`} />
+        <StatCard label="In transit" value={list.filter(isInTransit).length} icon={<CarOutlined />} color="#2563eb" delta={delta(shipments, isInTransit, range)} caption={`vs prior ${range} days`} />
+        <StatCard label="Delayed" value={list.filter(isDelayed).length} icon={<ClockCircleOutlined />} color="#ea580c" invert delta={delta(shipments, isDelayed, range)} caption={`vs prior ${range} days`} />
+        <StatCard label="Delivered" value={list.filter(isDelivered).length} icon={<CheckCircleFilled />} color="#16a34a" delta={delta(shipments, isDelivered, range)} caption={`vs prior ${range} days`} />
+        <StatCard label="CO₂ avoided" value={saved >= 1000 ? `${(saved / 1000).toFixed(1)} t` : `${Math.round(saved)} kg`} icon={<LeafIcon />} color="#0d9488" caption="compared with shipping all by air" />
+      </div>
 
+      <div className="kdash-row">
         <section className="kcard">
-          <div className="kcard-head"><h2>Quick Actions</h2></div>
-          <div className="kcard-body kquick">
-            <Link to="/shipments/new"><CalendarOutlined />Create Booking</Link>
-            <Link to="/shipments/new"><FileTextOutlined />Request Quote</Link>
-            <Link to="/tracking"><EnvironmentOutlined />Track Shipment</Link>
-            <Link to="/quotes"><SwapOutlined />Compare Rates</Link>
-            <Link to="/carriers"><CarOutlined />Manage Carriers</Link>
-            <Link to="/analytics"><BarChartOutlined />View Reports</Link>
+          <div className="kcard-head">
+            <h2>Shipment map</h2>
+            <div className="klegend-light" aria-label="Legend"><span><i style={{ background: "#2563eb" }} />Moving</span><span><i style={{ background: "#16a34a" }} />Delivered</span><span><i style={{ background: "#ea580c" }} />Delayed</span></div>
           </div>
-        </section>
-
-        <section className="kpromo">
-          <span className="kpromo-logo"><KilogyLogo onDark height={22} /></span>
-          <h3>Smarter Logistics.<br />Greater Possibilities.</h3>
-          <p>KILOGY connects all your logistics providers, powers your operations with AI, and gives you complete visibility from origin to final delivery.</p>
-          <Button type="primary" onClick={() => navigate("/shipments/new")}>Optimize Your Supply Chain <ArrowRightOutlined /></Button>
-        </section>
-      </aside>
-
-      <div className="kstat-grid kdash-kpis">
-        <StatCard label="Total Shipments" value={list.length} icon={<CodeSandboxOutlined />} color="#2563eb" delta={delta(shipments, () => true, range)} caption={`vs. previous ${range} days`} />
-        <StatCard label="In Transit" value={list.filter(isInTransit).length} icon={<CarOutlined />} color="#2563eb" delta={delta(shipments, isInTransit, range)} caption={`vs. previous ${range} days`} />
-        <StatCard label="Delayed" value={list.filter(isDelayed).length} icon={<ClockCircleOutlined />} color="#dc2626" invert delta={delta(shipments, isDelayed, range)} caption={`vs. previous ${range} days`} />
-        <StatCard label="Delivered" value={list.filter(isDelivered).length} icon={<CheckCircleFilled />} color="#16a34a" delta={delta(shipments, isDelivered, range)} caption={`vs. previous ${range} days`} />
-        <StatCard label="CO₂ Saved" value={saved >= 1000 ? `${(saved / 1000).toFixed(1)} t` : `${Math.round(saved)} kg`} icon={<LeafIcon />} color="#16a34a" caption="vs. all-air routing" />
-      </div>
-
-      <section className="kcard kdark kdash-map">
-        <div className="kcard-head">
-          <h2>Global Shipment Overview</h2>
-          <div className="klegend" aria-label="Legend"><span><i style={{ background: "#60a5fa" }} />In Transit</span><span><i style={{ background: "#22c55e" }} />Delivered</span><span><i style={{ background: "#f97316" }} />Delayed</span></div>
-        </div>
-        <div className="kcard-sub">Live tracking across all carriers and providers</div>
-        <div className="kmap-wrap">
-          <div className="kmap-canvas">
+          <div className="kmap-light">
             <WorldMap
+              variant="light"
               label="Map of shipment routes"
               arcs={list.flatMap((s) => {
                 const p = routePoints(s);
-                return p.slice(1).map((to, i) => ({ from: p[i], to, color: statusColor(s), dashed: primaryMode(s) === "ocean" }));
+                return p.slice(1).map((to, i) => ({ from: p[i], to, color: LIGHT[statusColor(s)] ?? statusColor(s), dashed: primaryMode(s) === "ocean", width: 1.8 }));
               })}
-              points={list.flatMap((s) => routePoints(s).slice(-1).map((at) => ({ at, color: statusColor(s) })))}
+              points={list.flatMap((s) => routePoints(s).slice(-1).map((at) => ({ at, color: LIGHT[statusColor(s)] ?? statusColor(s), r: 4.5 })))}
             >
               {(project) => byRegion.filter(([r]) => REGION_COORDS[r]).map(([r, n]) => {
                 const [x, y] = project(REGION_COORDS[r]);
                 return (
                   <g key={r} transform={`translate(${x},${y})`}>
-                    <rect x="-8" y="-20" width="132" height="40" rx="10" fill="rgba(11,31,77,0.88)" stroke="rgba(147,197,253,0.5)" />
-                    <circle cx="10" cy="0" r="9" fill="#2563eb" stroke="#bfdbfe" strokeWidth="2" />
-                    <text x="26" y="-3" fontSize="13" fontWeight="600" fill="#fff">{r}</text>
-                    <text x="26" y="13" fontSize="11.5" fill="rgba(255,255,255,0.8)">{n} shipment{n === 1 ? "" : "s"}</text>
+                    <circle r="22" fill="#0b1f4d" opacity="0.9" />
+                    <text textAnchor="middle" y="5" fontSize="15" fontWeight="700" fill="#fff">{n}</text>
+                    <text textAnchor="middle" y="40" fontSize="13" fontWeight="600" fill="#0b1f4d">{r}</text>
                   </g>
                 );
               })}
             </WorldMap>
           </div>
-          <div className="kmap-modes">
+          <div className="kmode-strip">
             {MODES.filter((x) => x.mode !== "rail" || byMode.get("rail")).map(({ mode, label }) => {
               const n = byMode.get(mode) ?? 0;
+              const pct = list.length ? Math.round((100 * n) / list.length) : 0;
               return (
-                <div key={mode} className="kmap-mode">
-                  <ModeIcon mode={mode} size={26} />
-                  <div><b>{label}</b><span>{n} ({list.length ? Math.round((100 * n) / list.length) : 0}%)</span></div>
+                <div key={mode}>
+                  <ModeIcon mode={mode} size={18} />
+                  <span>{label}</span>
+                  <b>{n}</b>
+                  <span className="kmode-bar" aria-hidden><i style={{ width: `${pct}%` }} /></span>
+                  <span className="ktiny">{pct}%</span>
                 </div>
               );
             })}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div className="kdash-mid" style={{ gridRow: "span 2" }}>
         <section className="kcard">
-          <div className="kcard-head"><h2>Shipments by Carrier</h2><Link to="/carriers">View All →</Link></div>
-          <div className="kcard-body kcarriers">
-            <Donut slices={slices} centerValue={String(list.length)} centerLabel="Total Shipments" />
-            <ul>
+          <div className="kcard-head"><h2>Latest updates</h2><Link to="/shipments">All shipments</Link></div>
+          <ol className="kfeed kcard-body">
+            {recentActivity(shipments).map(({ s, t }) => (
+              <li key={s.id + t.title + t.time} className={t.state === "issue" ? "is-issue" : ""}>
+                <div>
+                  <div className="kfeed-title">{t.title}<span className="ktiny"> · {t.location}</span></div>
+                  <Link to={`/shipments/${s.id}`} className="mono">{s.trackingId}</Link>
+                </div>
+                <time className="ktiny">{timeAgo(t.time)}</time>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+
+      <div className="kdash-trio">
+        <section className="kcard">
+          <div className="kcard-head"><h2>Carrier mix</h2><Link to="/carriers">Carriers</Link></div>
+          <div className="kcard-body">
+            <div className="kmix" role="img" aria-label={slices.map((s) => `${s.label} ${s.value}`).join(", ")}>
+              {slices.map((s) => <i key={s.label} style={{ flex: s.value, background: s.color }} />)}
+            </div>
+            <ul className="kmix-list">
               {slices.map((s) => (
-                <li key={s.label}><i style={{ background: s.color }} /><span>{s.label}</span><span>{s.value} ({Math.round((100 * s.value) / Math.max(1, list.length))}%)</span></li>
+                <li key={s.label}><i style={{ background: s.color }} /><span>{s.label}</span><b>{s.value}</b><span className="ktiny">{Math.round((100 * s.value) / Math.max(1, list.length))}%</span></li>
               ))}
             </ul>
           </div>
         </section>
 
         <section className="kcard">
-          <div className="kcard-head"><h2>Top Routes</h2><Link to="/analytics">View All →</Link></div>
+          <div className="kcard-head"><h2>Busiest lanes</h2><Link to="/analytics">Analytics</Link></div>
           <div className="kcard-body">
             <table className="kroutes">
-              <thead><tr><th>Route</th><th>Shipments</th><th>Avg. Transit Time</th></tr></thead>
+              <thead><tr><th>Lane</th><th>Shipments</th><th>Avg. days</th></tr></thead>
               <tbody>
                 {topRoutes(list).slice(0, 5).map((r) => (
-                  <tr key={r.route}><td><EnvironmentOutlined style={{ marginRight: 8 }} />{r.route}</td><td>{r.count}</td><td>{Math.round(r.avgDays)} days</td></tr>
+                  <tr key={r.route}><td>{r.route}</td><td>{r.count}</td><td>{Math.round(r.avgDays)}</td></tr>
                 ))}
               </tbody>
             </table>
@@ -205,17 +195,20 @@ export function DashboardPage() {
         </section>
 
         <section className="kcard">
-          <div className="kcard-head"><h2>Performance Metrics</h2><Link to="/analytics">View Details →</Link></div>
+          <div className="kcard-head">
+            <h2>Trend</h2>
+            <Select size="small" aria-label="Trend metric" value={metric} onChange={setMetric} style={{ width: 130 }}
+              options={Object.keys(METRICS).map((k) => ({ value: k, label: k }))} />
+          </div>
           <div className="kcard-body">
-            <Segmented block value={metric} onChange={(v) => setMetric(v as keyof typeof METRICS)} options={Object.keys(METRICS)} style={{ marginBottom: 12 }} />
-            <LineChart format={m.fmt} series={[{ label: metric === "Cost" ? "Total cost (CAD)" : metric, color: "#2563eb", points: weekly(list, m.value, m.agg) }]} />
+            <LineChart height={170} format={m.fmt} series={[{ label: metric === "Cost" ? "Total cost (CAD)" : metric, color: "#0b1f4d", points: weekly(list, m.value, m.agg) }]} />
             <div className="ktiny">Weekly, by booking date</div>
           </div>
         </section>
       </div>
 
-      <section className="kcard" style={{ gridColumn: 1 }}>
-        <div className="kcard-head"><h2>Recent Shipments</h2><Link to="/shipments">View All →</Link></div>
+      <section className="kcard">
+        <div className="kcard-head"><h2>Recent shipments</h2><Link to="/shipments">See all</Link></div>
         <div className="kcard-body">
           <Table<Shipment> rowKey="id" size="small" columns={columns} dataSource={list.slice(0, 6)} pagination={false} scroll={{ x: 640 }} />
         </div>

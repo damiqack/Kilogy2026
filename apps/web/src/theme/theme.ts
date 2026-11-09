@@ -1,8 +1,8 @@
 import { theme as antdTheme, type ThemeConfig } from "antd";
 
 /**
- * Ant Design theme for the Kilogy app, matched to Kilogy's UI mockups (Oct 2026):
- * navy sidebar, light grey canvas, white rounded cards, Inter type, blue primary.
+ * Ant Design theme for the Kilogy app: Kilogy's navy and blue brand colors, a light canvas,
+ * flat white cards with thin borders, and Inter type.
  * Colors used outside antd components live in global.css as CSS variables (--k-*).
  */
 export const brand = {
@@ -37,25 +37,28 @@ export function buildTheme(): ThemeConfig {
       colorTextBase: brand.ink,
       colorBgLayout: brand.canvas,
       colorBorderSecondary: "#e7ebf3",
-      borderRadius: 10,
-      borderRadiusLG: 14,
+      borderRadius: 8,
+      borderRadiusLG: 12,
       // Secondary text darkened from antd's default so it meets WCAG AA (4.5:1) on white.
       colorTextSecondary: "rgba(15,23,42,0.66)",
       colorTextTertiary: "rgba(15,23,42,0.6)",
       colorTextDescription: "rgba(15,23,42,0.6)",
     },
     components: {
-      Layout: { siderBg: brand.navy, headerBg: "#ffffff", headerHeight: 68, headerPadding: "0 28px", bodyBg: brand.canvas },
+      Layout: { siderBg: brand.navy, headerBg: "#ffffff", headerHeight: 60, headerPadding: "0 24px", bodyBg: brand.canvas },
       Menu: {
         darkItemBg: "transparent",
         darkSubMenuItemBg: "transparent",
-        darkItemSelectedBg: "#1d4ed8",
+        darkItemSelectedBg: "rgba(127,189,231,0.16)",
+        darkItemSelectedColor: "#ffffff",
+        darkGroupTitleColor: "rgba(255,255,255,0.5)",
         darkItemColor: "rgba(255,255,255,0.82)",
         darkItemHoverBg: "rgba(255,255,255,0.08)",
-        itemHeight: 46,
-        itemMarginBlock: 4,
-        iconSize: 18,
-        itemBorderRadius: 10,
+        itemHeight: 40,
+        itemMarginBlock: 2,
+        iconSize: 16,
+        itemBorderRadius: 8,
+        groupTitleFontSize: 11,
       },
       Card: { headerFontSize: 16, paddingLG: 20 },
       Table: { headerBg: "#f8fafc", headerColor: "rgba(15,23,42,0.7)", cellPaddingBlockSM: 10, rowHoverBg: "#f5f8ff" },
