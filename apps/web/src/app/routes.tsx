@@ -17,6 +17,8 @@ import { SettingsPage } from "../pages/Settings";
 import { ShipmentDetailPage } from "../pages/ShipmentDetail";
 import { ShipmentsPage } from "../pages/Shipments";
 import { COMING_SOON } from "../config/navigation";
+import { RequireAuth } from "../data/auth";
+import { ProfilePage } from "../pages/Profile";
 import { SignInPage } from "../pages/SignIn";
 
 export function AppRoutes() {
@@ -24,9 +26,11 @@ export function AppRoutes() {
     <Routes>
       {/* Public homepage (no app shell) */}
       <Route index element={<LandingPage />} />
+      {/* Staff sign-in (administrators and developers only) */}
       <Route path="login" element={<SignInPage />} />
+      <Route path="sign-in" element={<Navigate to="/login" replace />} />
 
-      {/* Signed-in app */}
+      {/* App. Pages are open in the prototype; wrap an element in <RequireAuth> to make it staff-only. */}
       <Route element={<AppLayout />}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="shipments" element={<ShipmentsPage />} />
@@ -44,6 +48,7 @@ export function AppRoutes() {
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="developers" element={<DevelopersPage />} />
+        <Route path="profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
         <Route path="system" element={<Navigate to="/developers?tab=architecture" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

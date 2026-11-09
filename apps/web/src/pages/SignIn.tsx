@@ -1,120 +1,100 @@
-import { Alert, Button, Checkbox, Form, Input, Typography } from "antd";
+import { LockOutlined } from "@ant-design/icons";
+import { Alert, Button, Checkbox, Form, Input } from "antd";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import hero from "../assets/photos/hero-network.webp";
+import { KilogyLogo } from "../components/KilogyLogo";
+import { DEMO_ACCOUNTS, ROLE_LABEL, useAuth } from "../data/auth";
 import "./sign-in.css";
 
+const EMAIL_KEY = "kilogy.demo.email";
+const savedEmail = () => {
+  try {
+    return localStorage.getItem(EMAIL_KEY) ?? "";
+  } catch {
+    return "";
+  }
+};
+
 /**
- * Public sign-in page. Prototype: accepts any non-empty email/password
- * and routes into the dashboard. Real auth (API keys / JWT) comes later.
+ * Staff sign-in at /login, for Kilogy administrators and developers only.
+ * Shippers don't need an account: they quote from the homepage.
+ * Sign-in is checked against the prototype's demo accounts (see data/auth.tsx).
  */
 export function SignInPage() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const { user, signIn } = useAuth();
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const next = params.get("next")?.startsWith("/") ? params.get("next")! : "/dashboard";
+
+  if (user) return <Navigate to={next} replace />;
 
   async function onFinish(values: { email: string; password: string; remember?: boolean }) {
     setError(null);
     setLoading(true);
-    try {
-      // Prototype: no backend auth yet — any credentials open the app.
-      await new Promise((r) => setTimeout(r, 400));
-      if (values.remember) {
-        try {
-          localStorage.setItem("kilogy.demo.email", values.email);
-        } catch {
-          /* ignore */
-        }
-      }
-      navigate("/dashboard");
-    } catch {
-      setError("Sign-in failed. Try again.");
-    } finally {
-      setLoading(false);
+    const result = await signIn(values.email, values.password, !!values.remember);
+    setLoading(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
     }
+    try {
+      if (values.remember) localStorage.setItem(EMAIL_KEY, values.email);
+      else localStorage.removeItem(EMAIL_KEY);
+    } catch {
+      /* ignore */
+    }
+    navigate(next, { replace: true });
   }
 
   return (
     <div className="si">
-      <header className="si-nav">
-        <div className="si-wrap si-nav-inner">
-          <Link to="/" className="si-wordmark">
-            KILOGY
-          </Link>
-          <Link to="/" className="si-back">
-            ← Back to home
-          </Link>
+      <aside className="si-art" style={{ backgroundImage: `url(${hero})` }}>
+        <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={36} /></Link>
+        <div>
+          <h2>Kilogy staff access</h2>
+          <p>Sign in to manage carriers, shipments, API keys and the routing engine.</p>
         </div>
-      </header>
+      </aside>
 
       <main className="si-main">
         <div className="si-card">
-          <p className="si-eyebrow">Account</p>
-          <Typography.Title level={2} className="si-title">
-            Sign in
-          </Typography.Title>
-          <Typography.Paragraph type="secondary" className="si-lead">
-            Access your dashboard, quotes, and shipments.
-          </Typography.Paragraph>
+          <Link to="/" className="si-back">← Back to home</Link>
+          <span className="si-eyebrow"><LockOutlined /> Administrators and developers</span>
+          <h1>Sign in</h1>
+          <p className="si-lead">Use your Kilogy staff account.</p>
 
-          {error && (
-            <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} />
-          )}
+          {error && <Alert type="error" showIcon title={error} style={{ marginBottom: 16 }} />}
 
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            onFinish={onFinish}
-            initialValues={{
-              email: (() => {
-                try {
-                  return localStorage.getItem("kilogy.demo.email") ?? "";
-                } catch {
-                  return "";
-                }
-              })(),
-              remember: true,
-            }}
-          >
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { required: true, message: "Enter your email" },
-                { type: "email", message: "Enter a valid email" },
-              ]}
-            >
-              <Input size="large" placeholder="you@company.com" autoComplete="email" />
+          <Form form={form} layout="vertical" requiredMark={false} onFinish={onFinish} initialValues={{ email: savedEmail(), remember: true }}>
+            <Form.Item label="Work email" name="email" rules={[{ required: true, message: "Enter your email" }, { type: "email", message: "Enter a valid email" }]}>
+              <Input size="large" placeholder="you@kilogy.com" autoComplete="username" />
             </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: "Enter your password" }]}
-            >
-              <Input.Password
-                size="large"
-                placeholder="••••••••"
-                autoComplete="current-password"
-              />
+            <Form.Item label="Password" name="password" rules={[{ required: true, message: "Enter your password" }]}>
+              <Input.Password size="large" autoComplete="current-password" />
             </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked" style={{ marginBottom: 8 }}>
-              <Checkbox>Remember email</Checkbox>
+            <Form.Item name="remember" valuePropName="checked" style={{ marginBottom: 12 }}>
+              <Checkbox>Keep me signed in on this device</Checkbox>
             </Form.Item>
-
-            <Button type="primary" htmlType="submit" size="large" block loading={loading}>
-              Sign in
-            </Button>
+            <Button type="primary" htmlType="submit" size="large" block loading={loading}>Sign in</Button>
           </Form>
 
-          <p className="si-hint">
-            Prototype: any email and password will open the dashboard.
-          </p>
+          <div className="si-demo">
+            <b>Prototype demo accounts</b>
+            <span>Password for both: <code>kilogy-demo</code></span>
+            <div className="si-demo-btns">
+              {DEMO_ACCOUNTS.map((a) => (
+                <Button key={a.id} size="small" onClick={() => { form.setFieldsValue({ email: a.email, password: "kilogy-demo" }); setError(null); }}>
+                  Use {ROLE_LABEL[a.role].toLowerCase()} account
+                </Button>
+              ))}
+            </div>
+          </div>
 
-          <p className="si-footer-link">
-            New here?{" "}
-            <Link to="/shipments/new">Get a quote without signing in</Link>
-          </p>
+          <p className="si-footer-link">Shipping with Kilogy? <Link to="/shipments/new">Get a quote without signing in</Link></p>
         </div>
       </main>
     </div>

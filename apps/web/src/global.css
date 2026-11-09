@@ -129,3 +129,4 @@ a.mono, span.mono { white-space: nowrap; }
 }
 /* Placeholders double as the filter labels ("All carriers"), so they need full text contrast. */
 .kfilters .ant-select-placeholder, .kfilters input::placeholder { color: #556377 !important; opacity: 1; }
+.khead-signin { margin-left: 8px; font-weight: 600; }

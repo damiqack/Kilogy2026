@@ -45,8 +45,5 @@ export const COMING_SOON = NAV_ITEMS.filter((n) => n.comingSoon);
 /** The nav item a URL belongs to, e.g. /shipments/123 → /shipments. */
 export function activeNavPath(pathname: string): string {
   const match = [...NAV_ITEMS, SETTINGS_ITEM].filter((n) => pathname.startsWith(n.path)).sort((a, b) => b.path.length - a.path.length)[0];
-  return match?.path ?? "/dashboard";
+  return match?.path ?? "";
 }
-
-/** Signed-in user shown in the header and greeting. Replace when real login exists. */
-export const DEMO_USER = { name: "Yannick Nkayilu", role: "Administrator" };

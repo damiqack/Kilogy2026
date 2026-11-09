@@ -1,25 +1,28 @@
-import { BellOutlined, MenuOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
+import { BellOutlined, LoginOutlined, MenuOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { App, Avatar, Badge, Button, Drawer, Dropdown, Grid, Input, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { KilogyLogo } from "../components/KilogyLogo";
-import { activeNavPath, DEMO_USER, NAV_GROUPS, NAV_ITEMS, SETTINGS_ITEM } from "../config/navigation";
+import { activeNavPath, NAV_GROUPS, NAV_ITEMS, SETTINGS_ITEM } from "../config/navigation";
+import { initials, ROLE_LABEL, useAuth } from "../data/auth";
 import { useStore } from "../data/store";
 
 const { Header, Sider, Content } = Layout;
 
-const initials = (name: string) => name.split(" ").map((p) => p[0]).slice(0, 2).join("");
-
 /** App shell: navy sidebar grouped by task, white header with the page name, light canvas. */
 export function AppLayout() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const { user, signOut } = useAuth();
+  const { message } = App.useApp();
   const screens = Grid.useBreakpoint();
   const compact = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { alerts } = useStore();
   const active = activeNavPath(pathname);
-  const pageName = [...NAV_ITEMS, SETTINGS_ITEM].find((n) => n.path === active)?.label ?? "";
+  const OTHER_PAGES: Record<string, string> = { "/profile": "Your profile", "/developers": "Developers & API", "/assistant": "Ask Kilogy" };
+  const pageName = [...NAV_ITEMS, SETTINGS_ITEM].find((n) => n.path === active)?.label
+    ?? Object.entries(OTHER_PAGES).find(([p]) => pathname.startsWith(p))?.[1] ?? "";
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
@@ -86,23 +89,34 @@ export function AppLayout() {
               <Button type="text" shape="circle" icon={<BellOutlined />} aria-label={`Notifications (${alerts.length})`} onClick={() => navigate("/tracking")} />
             </Badge>
             <Button type="text" shape="circle" icon={<QuestionCircleOutlined />} aria-label="Help" onClick={() => navigate("/developers")} />
-            <Dropdown
-              trigger={["click"]}
-              menu={{
-                items: [
-                  { key: "/settings", label: "Settings" },
-                  { key: "/developers", label: "Developers & API" },
-                  { type: "divider" },
-                  { key: "/", label: "Sign out" },
-                ],
-                onClick: ({ key }) => navigate(key),
-              }}
-            >
-              <button type="button" className="khead-user" aria-label="Account menu">
-                <Avatar size={34} style={{ background: "#0b1f4d", fontWeight: 600, fontSize: 13 }}>{initials(DEMO_USER.name)}</Avatar>
-                {!compact && <span><b>{DEMO_USER.name.split(" ")[0]}</b><small>{DEMO_USER.role}</small></span>}
-              </button>
-            </Dropdown>
+            {user ? (
+              <Dropdown
+                trigger={["click"]}
+                menu={{
+                  items: [
+                    { key: "info", type: "group", label: user.email },
+                    { key: "/profile", label: "Your profile" },
+                    { key: "/settings", label: "Settings" },
+                    { key: "/developers", label: "Developers & API" },
+                    { type: "divider" },
+                    { key: "signout", label: "Sign out", danger: true },
+                  ],
+                  onClick: ({ key }) => {
+                    if (key === "signout") { signOut(); message.info("Signed out"); navigate("/"); }
+                    else navigate(key);
+                  },
+                }}
+              >
+                <button type="button" className="khead-user" aria-label={`Account menu for ${user.name}`}>
+                  <Avatar size={34} style={{ background: user.role === "admin" ? "#0b1f4d" : "#0d9488", fontWeight: 600, fontSize: 13 }}>{initials(user.name)}</Avatar>
+                  {!compact && <span><b>{user.name.split(" ")[0]}</b><small>{ROLE_LABEL[user.role]}</small></span>}
+                </button>
+              </Dropdown>
+            ) : (
+              <Button className="khead-signin" aria-label="Staff sign in" icon={<LoginOutlined />} onClick={() => navigate(`/login?next=${encodeURIComponent(pathname + search)}`)}>
+                {compact ? "" : "Staff sign in"}
+              </Button>
+            )}
           </div>
         </Header>
 

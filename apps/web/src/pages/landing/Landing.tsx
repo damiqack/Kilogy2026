@@ -42,7 +42,6 @@ export function LandingPage() {
             {NAV.map((n) => (n.href.startsWith("/") ? <Link key={n.label} to={n.href}>{n.label}</Link> : <a key={n.label} href={n.href}>{n.label}</a>))}
           </nav>
           <div className="lp-nav-actions">
-            <Link to="/login" className="lp-signin">Sign in</Link>
             <Button type="primary" onClick={() => navigate("/shipments/new")}>Get a quote</Button>
           </div>
         </header>
