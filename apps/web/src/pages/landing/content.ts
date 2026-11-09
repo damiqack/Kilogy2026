@@ -15,7 +15,6 @@ export const NAV = [
   { label: "How it works", href: "#how" },
   { label: "Quotes", href: "#quotes" },
   { label: "Tracking", href: "#tracking" },
-  { label: "Developers", href: "/developers" },
 ];
 
 export const HERO = {
@@ -70,18 +69,12 @@ export const FOOTER_COLUMNS: { title: string; links: { label: string; to: string
   { title: "Product", links: [
     { label: "Get a quote", to: "/shipments/new" },
     { label: "Live tracking", to: "/tracking" },
-    { label: "Dashboard", to: "/dashboard" },
     { label: "Carriers", to: "/carriers" },
   ] },
   { title: "Learn", links: [
     { label: "How it works", to: "#how" },
     { label: "Quotes", to: "#quotes" },
     { label: "Tracking", to: "#tracking" },
-  ] },
-  { title: "Developers", links: [
-    { label: "API keys", to: "/developers" },
-    { label: "API reference", to: "/developers?tab=reference" },
-    { label: "Architecture", to: "/developers?tab=architecture" },
   ] },
 ];
 
