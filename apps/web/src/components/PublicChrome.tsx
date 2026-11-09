@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FOOTER_COLUMNS, FOOTER_LANES, LEGAL_LINKS, NAV } from "../pages/landing/content";
+import { FOOTER_BYLINE, FOOTER_COLUMNS, FOOTER_LANES, LEGAL_LINKS, NAV } from "../pages/landing/content";
 import { KilogyLogo } from "./KilogyLogo";
 
 /** Scrolls to the top on page change, or to the #section in the URL when there is one. */
@@ -54,7 +54,7 @@ export function PublicFooter() {
       </div>
       <div className="lp-wrap">
         <div className="lp-foot-bottom">
-          <span>© {new Date().getFullYear()} Kilogy. All rights reserved.</span>
+          <span>{FOOTER_BYLINE}</span>
           <nav aria-label="Legal" className="lp-foot-legal">
             {LEGAL_LINKS.map((l) => <Link key={l.label} to={l.to}>{l.label}</Link>)}
           </nav>

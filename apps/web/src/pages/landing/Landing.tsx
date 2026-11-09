@@ -41,7 +41,6 @@ export function LandingPage() {
 
         <div className="lp-wrap lp-hero-copy">
           <span className="lp-eyebrow">{HERO.eyebrow}</span>
-          <p className="lp-byline">{HERO.byline}</p>
           <h1>{HERO.title}</h1>
           <p>{HERO.body}</p>
           <div className="lp-hero-ctas">
