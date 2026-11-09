@@ -20,6 +20,7 @@ import { COMING_SOON } from "../config/navigation";
 import { RequireAuth } from "../data/auth";
 import { ProfilePage } from "../pages/Profile";
 import { ReportsPage } from "../pages/Reports";
+import { IntegrationHubPage } from "../pages/IntegrationHub";
 import { SignInPage } from "../pages/SignIn";
 import { AboutPage } from "../pages/public/About";
 import { ContactPage } from "../pages/public/Contact";
@@ -47,6 +48,7 @@ export function AppRoutes() {
         <Route path="quotes/new" element={<Navigate to="/shipments/new" replace />} />
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
         <Route path="carriers" element={<CarriersPage />} />
+        <Route path="integrations" element={<RequireAuth><IntegrationHubPage /></RequireAuth>} />
         <Route path="tracking" element={<ControlTowerPage />} />
         {COMING_SOON.map((n) => <Route key={n.path} path={n.path.slice(1)} element={<ComingSoonPage />} />)}
         <Route path="assistant" element={<ComingSoonPage />} />

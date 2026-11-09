@@ -1,5 +1,5 @@
 import {
-  AimOutlined, BankOutlined, BarChartOutlined, CalendarOutlined, CarOutlined, CodeSandboxOutlined,
+  AimOutlined, ApiOutlined, BankOutlined, BarChartOutlined, CalendarOutlined, CarOutlined, CodeSandboxOutlined,
   CreditCardOutlined, EnvironmentOutlined, FileSearchOutlined, FileTextOutlined, HomeOutlined,
   ReconciliationOutlined, SafetyCertificateOutlined, SettingOutlined,
 } from "@ant-design/icons";
@@ -31,6 +31,7 @@ export const NAV_ITEMS: NavItem[] = [
   { path: "/documents", label: "Documents", icon: <FileTextOutlined />, group: "Shipping" },
   { path: "/customs", label: "Customs", icon: <SafetyCertificateOutlined />, comingSoon: true, group: "Shipping" },
   { path: "/carriers", label: "Carriers", icon: <CarOutlined />, group: "Network" },
+  { path: "/integrations", label: "Integration Hub", icon: <ApiOutlined />, group: "Network" },
   { path: "/warehouses", label: "Warehouses", icon: <BankOutlined />, comingSoon: true, group: "Network" },
   { path: "/ai-optimization", label: "Route Optimizer", icon: <AimOutlined />, comingSoon: true, group: "Network" },
   { path: "/payments", label: "Payments", icon: <CreditCardOutlined />, group: "Business" },

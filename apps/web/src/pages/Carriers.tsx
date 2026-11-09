@@ -1,5 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Card, Input, Segmented, Select, Table } from "antd";
+import { useNavigate } from "react-router-dom";
 import { FilterBar, NoMatches } from "../components/FilterBar";
 import { Indicator } from "../components/Indicator";
 import { PageHeader } from "../components/PageHeader";
@@ -24,6 +25,7 @@ const ON_TIME_OPTIONS = [
 
 export function CarriersPage() {
   const f = useUrlFilters(FILTER_KEYS);
+  const navigate = useNavigate();
   const status = STATUSES.includes(f.get("status") as Carrier["status"]) ? f.get("status") : "all";
   const q = f.get("q").trim().toLowerCase();
   const modes = f.getList("mode");
@@ -40,7 +42,7 @@ export function CarriersPage() {
 
   return (
     <>
-      <PageHeader title="Carriers" subtitle="Integrations through the carrier gateway." extra={<Button>Request integration</Button>} />
+      <PageHeader title="Carriers" subtitle="Integrations through the carrier gateway." extra={<Button onClick={() => navigate("/integrations")}>Integration Hub</Button>} />
       <Card size="small">
         <FilterBar shown={rows.length} total={CARRIERS.length} noun="carriers" onClear={f.clear} canClear={f.activeCount > 0}>
           <Segmented
