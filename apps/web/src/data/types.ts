@@ -128,6 +128,29 @@ export interface DocumentRecord {
   createdAt: string;
 }
 
+/**
+ * A saved way to pay. Only display details are kept (brand, last 4 digits, expiry):
+ * full card and account numbers are never stored. In production the payment processor
+ * tokenizes the details and we keep its token instead.
+ */
+export interface PaymentMethod {
+  id: string;
+  kind: "card" | "bank" | "invoice";
+  /** Shown everywhere the method is listed, e.g. "Visa •••• 4242" */
+  label: string;
+  holder: string;
+  brand?: "Visa" | "Mastercard" | "Amex";
+  last4?: string;
+  /** Card expiry as MM/YY */
+  expiry?: string;
+  /** Bank institution number (Canada), e.g. "001" */
+  institution?: string;
+  accountType?: "chequing" | "savings";
+  nickname?: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+
 export interface Payment {
   id: string;
   shipmentId: string;

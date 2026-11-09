@@ -1,7 +1,7 @@
 import { Alert, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form, Input, InputNumber, Row, Segmented, Select, Slider, Steps, Switch, Typography } from "antd";
 import { Indicator } from "../components/Indicator";
 import { useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { QuoteTable } from "../components/QuoteTable";
 import { RouteText } from "../components/RouteText";
@@ -29,7 +29,9 @@ function parseLoc(v: string | null, fallback: Location): Location {
 export function NewShipmentPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { saveQuote, book } = useStore();
+  const { saveQuote, book, paymentMethods } = useStore();
+  const [payWith, setPayWith] = useState<string>();
+  const payMethodId = payWith ?? paymentMethods.find((m) => m.isDefault)?.id;
   const [step, setStep] = useState(0);
   const [req, setReq] = useState<QuoteRequest>(() => ({
     origin: parseLoc(params.get("from"), { country: "CA", city: "Montreal", postalCode: "H3A1A1" }),
@@ -64,7 +66,7 @@ export function NewShipmentPage() {
 
   function confirm() {
     if (!quote || !selected) return;
-    const s = book(quote, selected, { street, commodity });
+    const s = book(quote, selected, { street, commodity }, payMethodId);
     navigate(`/shipments/${s.id}`);
   }
 
@@ -196,11 +198,21 @@ export function NewShipmentPage() {
               { key: "r", label: "Delay risk", children: <RiskTag level={selected.risk.level} score={selected.risk.score} /> },
               { key: "co2", label: "Emissions", children: kg(selected.co2_kg) },
               { key: "route", label: "Route", span: "filled", children: selected.route ? <RouteText legs={selected.route.legs} /> : "–" },
+              {
+                key: "pay", label: "Pay with", span: "filled",
+                children: paymentMethods.length ? (
+                  <Flex gap={12} align="center" wrap>
+                    <Select aria-label="Pay with" style={{ minWidth: 260 }} value={payMethodId} onChange={setPayWith}
+                      options={paymentMethods.map((m) => ({ value: m.id, label: `${m.label}${m.nickname ? ` · ${m.nickname}` : ""}${m.isDefault ? " (default)" : ""}` }))} />
+                    <Link to="/payments">Manage payment methods</Link>
+                  </Flex>
+                ) : <Link to="/payments">Add a payment method</Link>,
+              },
             ]}
           />
           <Flex justify="space-between" style={{ marginTop: 16 }}>
             <Button onClick={() => setStep(2)}>Back</Button>
-            <Button type="primary" onClick={confirm}>Confirm booking</Button>
+            <Button type="primary" disabled={!payMethodId} title={payMethodId ? undefined : "Add a payment method first"} onClick={confirm}>Confirm booking</Button>
           </Flex>
         </Card>
       )}
