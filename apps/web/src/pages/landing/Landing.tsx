@@ -4,21 +4,17 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { KilogyLogo } from "../../components/KilogyLogo";
+import cta from "../../assets/photos/cta-network.webp";
+import hero from "../../assets/photos/hero-network.webp";
+import { CarrierLogos } from "../../components/CarrierLogos";
 import { ModeIcon } from "../../components/ModeIcon";
-import { WorldMap } from "../../components/WorldMap";
-import { COORDS } from "../../config/geo";
+import { PhotoCarousel } from "../../components/PhotoCarousel";
 import { CARRIERS } from "../../data/carriers";
 import { isDelayed, isDelivered, isInTransit } from "../../data/insights";
 import { useStore } from "../../data/store";
-import { CARGO_TYPES, DESTINATIONS, FOOTER_COLUMNS, FOOTER_LANES, HERO, NAV, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, STEPS, TRACK_POINTS } from "./content";
+import { CARGO_TYPES, DESTINATIONS, FOOTER_COLUMNS, FOOTER_LANES, HERO, NAV, NETWORK, ORIGINS, QUOTE_POINTS, RATE_SAMPLE, SLIDES, STEPS, TRACK_POINTS } from "./content";
 import "./landing.css";
-
-// Lanes drawn on the hero map: Kilogy's Canada–Africa focus plus a few connecting hubs.
-const HUBS = ["Montreal", "Toronto", "Vancouver", "London", "Rotterdam", "Dubai", "Lagos", "Accra", "Kinshasa", "Nairobi", "Johannesburg", "Dakar"];
-const LANES: [string, string][] = [
-  ["Montreal", "Kinshasa"], ["Montreal", "Lagos"], ["Toronto", "Accra"], ["Toronto", "London"], ["London", "Lagos"],
-  ["Rotterdam", "Dakar"], ["Dubai", "Nairobi"], ["Vancouver", "Johannesburg"], ["Montreal", "Rotterdam"], ["Dubai", "Johannesburg"],
-];
+import { STEP_ART } from "./StepArt";
 
 /** Public homepage at "/". */
 export function LandingPage() {
@@ -38,11 +34,7 @@ export function LandingPage() {
   return (
     <div className="lp">
       <section className="lp-hero">
-        <div className="lp-hero-map" aria-hidden>
-          <WorldMap variant="glow" label="Shipping lanes"
-            arcs={LANES.map(([a, b]) => ({ from: COORDS[a], to: COORDS[b] }))}
-            points={HUBS.map((h) => ({ at: COORDS[h], color: "#e0f2fe", r: 3 }))} />
-        </div>
+        <div className="lp-hero-photo" style={{ backgroundImage: `url(${hero})` }} aria-hidden />
 
         <header className="lp-nav lp-wrap">
           <Link to="/" aria-label="Kilogy home page"><KilogyLogo onDark height={38} /></Link>
@@ -77,13 +69,29 @@ export function LandingPage() {
         </form>
       </div>
 
+      <section className="lp-wrap lp-logos" aria-label={NETWORK.title}>
+        <div className="lp-logos-head"><b>{NETWORK.title}</b><span>{NETWORK.note}</span></div>
+        <CarrierLogos />
+      </section>
+
       <section className="lp-wrap lp-section" id="how">
         <h2 className="lp-h2">From quote to doorstep in three steps</h2>
         <ol className="lp-steps">
           {STEPS.map((s, i) => (
-            <li key={s.title}><span className="lp-step-n">{String(i + 1).padStart(2, "0")}</span><h3>{s.title}</h3><p>{s.body}</p></li>
+            <li key={s.title}>{(() => { const Art = STEP_ART[i]; return <div className="lp-step-art"><Art /></div>; })()}<span className="lp-step-n">{String(i + 1).padStart(2, "0")}</span><h3>{s.title}</h3><p>{s.body}</p></li>
           ))}
         </ol>
+      </section>
+
+      <section className="lp-wrap lp-section" id="network">
+        <div className="lp-section-head">
+          <div>
+            <span className="lp-eyebrow is-dark">Network</span>
+            <h2 className="lp-h2">Every leg of the journey, in one place</h2>
+          </div>
+          <p>From the port to the warehouse to the front door, Kilogy keeps each handoff on the same shipment record.</p>
+        </div>
+        <PhotoCarousel label="Kilogy across the supply chain" slides={SLIDES} />
       </section>
 
       <section className="lp-wrap lp-split" id="quotes">
@@ -139,7 +147,7 @@ export function LandingPage() {
       </section>
 
       <section className="lp-wrap">
-        <div className="lp-cta">
+        <div className="lp-cta" style={{ backgroundImage: `linear-gradient(90deg, rgba(11,31,77,0.96) 0%, rgba(11,31,77,0.85) 45%, rgba(11,31,77,0.35) 100%), url(${cta})` }}>
           <div>
             <h2>Moving goods between Canada and Africa?</h2>
             <p>Run a quote on a real lane and see how Kilogy ranks the options.</p>

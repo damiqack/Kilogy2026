@@ -1,3 +1,11 @@
+import inventory from "../../assets/photos/slide-inventory.webp";
+import lastMile from "../../assets/photos/slide-last-mile.webp";
+import multimodal from "../../assets/photos/slide-multimodal.webp";
+import ocean from "../../assets/photos/slide-ocean.webp";
+import port from "../../assets/photos/slide-port.webp";
+import warehouse from "../../assets/photos/slide-warehouse.webp";
+import type { Slide } from "../../components/PhotoCarousel";
+
 /**
  * Homepage copy. Edit text here; layout lives in Landing.tsx and landing.css.
  * Keep claims to what the prototype does today; add coverage or partner figures only once Kilogy confirms them.
@@ -78,3 +86,24 @@ export const FOOTER_COLUMNS: { title: string; links: { label: string; to: string
 ];
 
 export const FOOTER_LANES = "Montreal · Toronto · Vancouver → Lagos · Accra · Kinshasa · Nairobi";
+
+export const NETWORK = {
+  title: "Carriers in the Kilogy network",
+  note: "Integrations in testing and planned. Live connections roll out as each carrier approves access.",
+};
+
+/** Network carousel. Photos live in src/assets/photos; replace them with licensed or Kilogy-owned photos before launch. */
+export const SLIDES: Slide[] = [
+  { src: multimodal, title: "Air, ocean and road in one quote", body: "Kilogy compares every mode for your lane and ranks the options by price, speed and CO₂.",
+    alt: "Container ship, truck and cargo plane at a port at night" },
+  { src: ocean, title: "Ocean freight", body: "The lower-cost, lower-emission choice for shipments that can wait a few weeks.",
+    alt: "Loaded container ship at sea with a plane overhead" },
+  { src: port, title: "Port handoffs", body: "Follow containers through the port and see customs holds before they cause a delay.",
+    alt: "Stacked shipping containers under port cranes" },
+  { src: warehouse, title: "Warehousing", body: "Pickup, storage and dispatch on the same shipment record.", tag: "Coming soon",
+    alt: "Two workers walking down a warehouse aisle carrying a box" },
+  { src: inventory, title: "Consolidation", body: "Group cartons into fewer, fuller shipments to cut cost per kilogram.", tag: "Coming soon",
+    alt: "Pallets of cardboard cartons stacked in a warehouse" },
+  { src: lastMile, title: "Last-mile delivery", body: "Hand off to local partners and confirm delivery at the door.",
+    alt: "Courier carrying two boxes to a delivery van" },
+];
