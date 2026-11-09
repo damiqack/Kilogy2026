@@ -140,14 +140,11 @@ export function inlineSuggestions(req: Pick<QuoteRequest, "origin" | "destinatio
   const tips: string[] = [];
   const { origin, destination } = req;
   const pkg = req.package;
-  const actual = pkg.weight_kg || 0;
   const chargeable = chargeableKg(pkg);
   if (origin.country === "CA" && AFRICA.has(destination.country)) {
     tips.push("Based on package dimensions, consider multi-modal air + road via the Ethiopian Airlines cargo hub in Addis Ababa (ADD). It is usually the lowest-cost air option into Africa.");
   }
-  if (chargeable > actual * 1.3 && chargeable > 2) {
-    tips.push(`Billed as ${chargeable.toFixed(1)} kg dimensional weight (actual ${actual} kg). A smaller box could lower the price.`);
-  }
+  // Billing by size (volumetric weight) is explained in the package summary panel.
   if (chargeable >= 70 && origin.country !== destination.country) {
     tips.push("At this weight, ocean LCL via Halifax can cut cost by about 60% and CO₂ by about 95%, with 3–4 extra weeks in transit.");
   }

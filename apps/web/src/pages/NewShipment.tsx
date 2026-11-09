@@ -2,6 +2,7 @@ import { Alert, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form,
 import { Indicator } from "../components/Indicator";
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { PackageSummary } from "../components/PackageSummary";
 import { PageHeader } from "../components/PageHeader";
 import { QuoteTable } from "../components/QuoteTable";
 import { RouteText } from "../components/RouteText";
@@ -11,7 +12,8 @@ import { inlineSuggestions, requestQuote } from "../data/ai";
 import { useStore } from "../data/store";
 import type { Location, Preferences, Quote, QuoteRequest, RankedOption, ServiceLevel } from "../data/types";
 import { date, kg } from "../lib/format";
-import { cad } from "../lib/money";
+import { cad, USD_TO_CAD } from "../lib/money";
+import { packageFacts } from "../lib/package";
 
 const PRESETS: Record<string, Preferences> = {
   Balanced: { cost: 35, speed: 30, carbon: 20, reliability: 15 },
@@ -121,6 +123,8 @@ export function NewShipmentPage() {
 
         {step === 1 && (
           <Card size="small">
+           <Row gutter={24}>
+            <Col xs={24} xl={16}>
             <Row gutter={12}>
               <Col xs={12} md={4}><Form.Item label="Weight (kg)" required htmlFor="pkg-weight"><InputNumber id="pkg-weight" min={0.1} step={0.5} value={req.package.weight_kg} onChange={(v) => set("package", { ...req.package, weight_kg: v ?? 0 })} style={{ width: "100%" }} /></Form.Item></Col>
               {(["l", "w", "h"] as const).map((d) => (
@@ -130,7 +134,19 @@ export function NewShipmentPage() {
                   </Form.Item>
                 </Col>
               ))}
-              <Col xs={24} md={8}><Form.Item label="Commodity" htmlFor="pkg-commodity"><Select id="pkg-commodity" value={commodity} options={COMMODITIES.map((c) => ({ value: c, label: c }))} onChange={setCommodity} /></Form.Item></Col>
+              <Col xs={24} md={8}><Form.Item label="Contents" htmlFor="pkg-commodity"><Select id="pkg-commodity" value={commodity} options={COMMODITIES.map((c) => ({ value: c, label: c }))} onChange={setCommodity} /></Form.Item></Col>
+              <Col xs={24} md={16}>
+                <Form.Item label="Description" htmlFor="pkg-desc" extra="What's inside, as it should read on the customs invoice.">
+                  <Input id="pkg-desc" maxLength={120} placeholder="e.g. 4 laptop chargers, new" value={req.package.description} onChange={(e) => set("package", { ...req.package, description: e.target.value })} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={8}>
+                <Form.Item label="Declared value (CAD)" htmlFor="pkg-value">
+                  <InputNumber id="pkg-value" min={0} step={50} style={{ width: "100%" }} prefix="$"
+                    value={req.package.value_usd ? Math.round(req.package.value_usd * USD_TO_CAD) : null}
+                    onChange={(v) => set("package", { ...req.package, value_usd: v ? v / USD_TO_CAD : undefined })} />
+                </Form.Item>
+              </Col>
               <Col xs={24} md={12}>
                 <Form.Item label="Service levels" required>
                   <Checkbox.Group value={req.service_type} onChange={(v) => set("service_type", v as ServiceLevel[])}
@@ -167,6 +183,11 @@ export function NewShipmentPage() {
               <Button onClick={() => setStep(0)}>Back</Button>
               <Button type="primary" loading={loading} disabled={!req.service_type.length} onClick={getQuotes}>Get quotes</Button>
             </Flex>
+            </Col>
+            <Col xs={24} xl={8}>
+              <div className="kpkg-sticky"><PackageSummary pkg={req.package} commodity={commodity} /></div>
+            </Col>
+           </Row>
           </Card>
         )}
       </Form>
@@ -177,6 +198,9 @@ export function NewShipmentPage() {
           title={`${quote.options.length} options · ${req.origin.city}, ${req.origin.country} → ${req.destination.city}, ${req.destination.country}`}
           extra={<Indicator tone={quote.source === "ai-engine" ? "success" : "neutral"}>{quote.source === "ai-engine" ? "Routing engine" : "Sample rates"}</Indicator>}
         >
+          <Flex align="center" gap={8} wrap style={{ marginBottom: 0 }}>
+            <div style={{ flex: 1, minWidth: 0 }}><PackageSummary compact pkg={req.package} commodity={commodity} /></div>
+          </Flex>
           <QuoteTable options={quote.options} onBook={(o) => { setSelected(o); setStep(3); }} />
           <Flex justify="space-between" style={{ marginTop: 12 }}>
             <Button onClick={() => setStep(1)}>Back</Button>
@@ -193,7 +217,9 @@ export function NewShipmentPage() {
               { key: "p", label: "Price", children: cad(selected.price_usd) },
               { key: "f", label: "From", children: [street.origin, req.origin.city, req.origin.country].filter(Boolean).join(", ") },
               { key: "t", label: "To", children: [street.destination, req.destination.city, req.destination.country].filter(Boolean).join(", ") },
-              { key: "pk", label: "Package", children: `${req.package.weight_kg} kg · ${dims.l}×${dims.w}×${dims.h} cm · ${commodity}` },
+              { key: "pk", label: "Package", children: `${req.package.weight_kg} kg · ${dims.l}×${dims.w}×${dims.h} cm · billed as ${packageFacts(req.package).chargeableKg} kg` },
+              { key: "ct", label: "Contents", children: [commodity, req.package.description].filter(Boolean).join(" · ") },
+              { key: "dv", label: "Declared value", children: req.package.value_usd ? cad(req.package.value_usd) : "Not declared" },
               { key: "e", label: "Predicted delivery", children: `${date(selected.risk.eta.earliest)} – ${date(selected.risk.eta.latest)}` },
               { key: "r", label: "Delay risk", children: <RiskTag level={selected.risk.level} score={selected.risk.score} /> },
               { key: "co2", label: "Emissions", children: kg(selected.co2_kg) },
