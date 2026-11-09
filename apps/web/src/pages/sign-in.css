@@ -1,0 +1,24 @@
+/* Staff sign-in page (pages/SignIn.tsx). Uses the app's brand variables from global.css. */
+.si { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(420px, 560px); background: #fff; }
+.si-art { position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 36px 48px 48px; color: #fff;
+  background-color: var(--k-navy); background-size: cover; background-position: 65% center; }
+.si-art::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,31,77,0.75) 0%, rgba(11,31,77,0.35) 45%, rgba(11,31,77,0.92) 100%); }
+.si-art > * { position: relative; }
+.si-art h2 { margin: 0 0 8px; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+.si-art p { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.55; color: rgba(255,255,255,0.88); }
+.si-main { display: flex; align-items: center; justify-content: center; padding: 40px 32px; }
+.si-card { width: 100%; max-width: 400px; }
+.si-back { display: block; width: fit-content; margin-bottom: 28px; font-size: 14px; font-weight: 500; }
+.si-eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #1d4ed8; }
+.si-card h1 { margin: 8px 0 4px; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.si-lead { margin: 0 0 22px; color: var(--k-muted); }
+.si-demo { margin-top: 22px; padding: 14px 16px; border-radius: 10px; border: 1px dashed #cbd5e1; background: #f8fafc; font-size: 13px; color: #334155; display: flex; flex-direction: column; gap: 4px; }
+.si-demo code { font-size: 12.5px; background: #e2e8f0; padding: 1px 5px; border-radius: 4px; }
+.si-demo-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.si-footer-link { margin: 20px 0 0; font-size: 14px; color: var(--k-muted); }
+@media (max-width: 900px) {
+  .si { grid-template-columns: minmax(0, 1fr); }
+  .si-art { min-height: 200px; padding: 24px 20px; }
+  .si-art h2 { font-size: 24px; }
+  .si-main { padding: 28px 16px 40px; }
+}

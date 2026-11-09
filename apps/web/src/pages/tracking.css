@@ -1,53 +1,58 @@
-/* Tracking / Logistics Control Tower (pages/ControlTower.tsx), matched to Kilogy's mockup. */
-.ktower { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 20px; align-items: start; }
-.ktower-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.ktower-side { display: flex; flex-direction: column; gap: 20px; }
-.ktiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.ktile { display: flex; flex-wrap: wrap; row-gap: 10px; gap: 14px; align-items: center; padding: 16px 18px; background: #fff; border: 1px solid var(--k-line); border-radius: 14px; box-shadow: var(--k-card-shadow); color: var(--k-ink); }
-.ktile:hover { border-color: #93c5fd; }
-.ktile-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-size: 20px; flex: none; }
-.ktile b { display: block; font-size: 15px; }
-.ktile > div { flex: 1 1 112px; min-width: 0; }
-.ktile div span { font-size: 13px; color: var(--k-muted); }
-.ktag-med.ant-tag { color: #9a3412; background: #ffedd5; border-color: #fdba74; font-weight: 600; }
-.ktag-high.ant-tag { color: #991b1b; background: #fee2e2; border-color: #fca5a5; font-weight: 600; }
+/* Tracking / live operations (pages/ControlTower.tsx). */
+.ktower { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+.ktower-title, .ktower-kpis { grid-column: 1 / -1; }
 .ktower-title { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-.ktower-title h1 { margin: 0; font-size: 24px; font-weight: 700; }
-.ktower-title p { margin: 4px 0 0; color: #475569; }
-.ktower-filters { display: flex; gap: 10px; flex-wrap: wrap; }
-.ktower-map { position: relative; height: 430px; padding: 0; overflow: hidden; }
-.ktower-map h2 { position: absolute; top: 18px; left: 20px; margin: 0; font-size: 16px; color: #fff; z-index: 1; }
-.ktower-legend { position: absolute; top: 52px; left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.88); z-index: 1; }
-.ktower-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; }
-.ktower-pop { position: absolute; left: 16px; bottom: 16px; width: 270px; background: #fff; border-radius: 12px; padding: 14px 16px; color: var(--k-ink); box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-size: 13px; z-index: 1; }
+.ktower-title h1 { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.ktower-title p { margin: 4px 0 0; color: var(--k-muted); }
+.ktower-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ktower .kstat-grid { margin: 0; }
+.ktower-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.ktower-side { display: flex; flex-direction: column; gap: 16px; }
+
+.ktower-map { position: relative; height: 420px; overflow: hidden; }
+.ktower-legend { position: absolute; left: 16px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 8px 12px; border-radius: 8px; background: rgba(7,22,55,0.75); font-size: 12.5px; color: rgba(255,255,255,0.9); }
+.ktower-legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.ktower-legend .dash { color: rgba(255,255,255,0.7); }
+.ktower-pop { position: absolute; top: 14px; right: 14px; width: 250px; background: #fff; border-radius: 10px; padding: 12px 14px; color: var(--k-ink); font-size: 13px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
 .ktower-pop .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
-.ktower-pop p { margin: 0 0 4px; color: #334155; }
-.ktower-full { position: absolute; right: 16px; bottom: 16px; z-index: 1; }
-.kreco { padding: 16px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; margin-bottom: 8px; }
-.kreco-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; color: #c2410c; font-weight: 600; font-size: 14px; }
-.kreco p { margin: 0 0 6px; font-size: 13.5px; color: #1e293b; line-height: 1.5; }
-.kproviders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.kprovider { position: relative; display: grid; place-items: center; text-align: center; min-height: 58px; padding: 8px; border: 1px solid var(--k-line); border-radius: 10px; font-size: 13px; font-weight: 700; }
-.kprovider .on { position: absolute; right: 8px; bottom: 8px; width: 8px; height: 8px; border-radius: 50%; }
-.kweather { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.kweather > div { padding: 12px; border-radius: 12px; background: #f6f8fc; font-size: 13px; }
-.kweather b { display: block; font-size: 22px; margin: 4px 0; }
-.kband { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) 1.3fr; gap: 20px; align-items: center; padding: 22px 26px; border-radius: 14px; color: #fff; background: linear-gradient(90deg, #0b1f4d, #13307a); }
-.kband > div { display: flex; gap: 12px; align-items: flex-start; }
-.kband .ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.1); font-size: 19px; flex: none; }
-.kband b { display: block; font-size: 14.5px; }
-.kband span { font-size: 12.5px; color: rgba(255,255,255,0.78); line-height: 1.45; }
-.kband-brand { flex-direction: column; align-items: flex-end !important; text-align: right; font-size: 13px; }
-@media (max-width: 1700px) { .kband { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 1400px) {
+.ktower-pop dl { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 8px; margin: 0 0 10px; }
+.ktower-pop dt { color: var(--k-muted); }
+.ktower-pop dd { margin: 0; }
+.ktower-more { display: inline-block; margin-top: 12px; font-weight: 600; font-size: 13.5px; }
+
+.kcount { min-width: 24px; padding: 0 8px; border-radius: 999px; background: #fff7ed; color: #c2410c; font-weight: 700; font-size: 12.5px; text-align: center; }
+.kalerts { list-style: none; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.kalerts li { padding: 10px 12px 12px; border-radius: 8px; border: 1px solid var(--k-line); border-left: 3px solid #f59e0b; }
+.kalerts li.is-high { border-left-color: #dc2626; }
+.kalerts li.is-ok { border-left-color: #16a34a; }
+.kalerts-head { display: flex; gap: 8px; align-items: baseline; font-size: 13.5px; }
+.kalerts-head .anticon { color: #c2410c; }
+.kalerts li.is-ok .kalerts-head .anticon { color: #16a34a; }
+.kalerts p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: #334155; }
+.kalerts p.kalerts-rec { color: var(--k-navy); font-weight: 600; margin-bottom: 8px; }
+
+.kweather { list-style: none; margin: 0; }
+.kweather li { display: grid; grid-template-columns: minmax(0, 1fr) 90px 40px; gap: 10px; align-items: center; padding: 7px 0; font-size: 13.5px; }
+.kweather li.ktiny { display: block; padding-top: 4px; }
+.kweather b { text-align: right; font-variant-numeric: tabular-nums; }
+.kweather-bar { height: 6px; border-radius: 3px; background: #eef2f8; overflow: hidden; }
+.kweather-bar i { display: block; height: 100%; border-radius: 3px; }
+
+.kproviders { list-style: none; margin: 0; }
+.kproviders li { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f4f9; font-size: 13.5px; }
+.kproviders li:last-child { border-bottom: 0; }
+.kproviders .on, .kproviders .off { font-size: 12px; font-weight: 600; }
+.kproviders .on { color: #15803d; }
+.kproviders .off { color: var(--k-muted); }
+.kproviders .on::before, .kproviders .off::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; background: currentColor; }
+
+@media (max-width: 1300px) {
   .ktower { grid-template-columns: minmax(0, 1fr); }
-  .ktower-side { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .kband { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ktower-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+  .ktower .kstat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 900px) {
-  .ktiles { grid-template-columns: 1fr 1fr; }
-  .ktower-side, .kband { grid-template-columns: minmax(0, 1fr); }
-  .kband-brand { align-items: flex-start !important; text-align: left; }
+@media (max-width: 760px) {
+  .ktower .kstat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ktower-map { height: 300px; }
   .ktower-pop { display: none; }
 }
