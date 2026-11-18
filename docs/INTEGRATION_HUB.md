@@ -53,7 +53,7 @@ Code: `services/api/src/hub`.
 - `define.ts` — `defineProvider()`: a working sandbox for every declared capability, replaced by live calls once the provider's credentials are set.
 - `dcsa.ts`, `normalize.ts` — shared live DCSA Track & Trace client (API key header or OAuth 2.0) and event mapping.
 - `router.ts` — HTTP routes under `/v1/hub`: `GET /providers`, `POST /rates`, `POST /bookings`, `POST /bookings/:provider/:ref/cancel`, `GET /tracking/:provider/:ref`, `GET /schedules/:provider`, `GET /documents/:provider/:ref/:type`, `POST /pickups`, `POST /webhooks/:provider`.
-- `providers/` — the 15 connectors. Run on its own with `npm run hub` (port 4110); tests in `services/api/test/hub.test.ts`.
+- `providers/` — the 15 connectors. Served by the API server at `http://localhost:4100/v1/hub` (`npm run dev` in `services/api`); tests in `services/api/tests/hub.test.ts`.
 
 ### Adding a partner
 

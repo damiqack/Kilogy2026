@@ -35,6 +35,7 @@ Both services are still published on `localhost:4200` and `localhost:4100` for t
 | POST | `/v1/quotes` | Get rates from every carrier, rank them with the AI engine, save and return the quote |
 | GET | `/v1/quotes/:id` | Fetch a saved quote (status becomes `expired` after 24 h) |
 | GET | `/v1/quotes` | List quotes, newest first |
+| — | `/v1/hub/*` | KILOGY API Integration Hub: rates, bookings, tracking, schedules, documents, pickups and webhooks across 15 providers (see `docs/INTEGRATION_HUB.md`) |
 
 Example:
 
@@ -60,6 +61,7 @@ src/
 ├── app.ts               Express app, middleware, error handler (createApp is used by tests)
 ├── config.ts            Ports, URLs, secrets from .env
 ├── routes/quotes.ts     /v1/quotes endpoints + request validation (zod)
+├── hub/                 Integration Hub: connector contract, registry, 15 provider connectors, /v1/hub routes
 ├── services/aiEngine.ts Client for the AI engine's POST /v1/decide
 ├── carriers/
 │   ├── types.ts         ICarrierAdapter: the interface every carrier implements

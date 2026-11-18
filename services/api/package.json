@@ -10,8 +10,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.test.json",
     "test": "vitest run",
-    "demo": "tsx scripts/demo.ts",
-    "hub": "tsx src/hubServer.ts"
+    "demo": "tsx scripts/demo.ts"
   },
   "engines": {
     "node": ">=20"

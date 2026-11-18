@@ -12,6 +12,8 @@ export const config = {
   devApiKey: process.env.DEV_API_KEY ?? "kg_test_dev_key_123",
   quoteCacheTtlSeconds: Number(process.env.QUOTE_CACHE_TTL_SECONDS ?? 900),
   quoteValiditySeconds: 60 * 60 * 24,
+  /** Browser origins allowed to call the API (comma-separated in CORS_ORIGINS). */
+  corsOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://127.0.0.1:5173").split(",").map((s) => s.trim()).filter(Boolean),
 };
 
 export type Tier = "free" | "pro" | "enterprise";
