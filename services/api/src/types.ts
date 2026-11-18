@@ -28,6 +28,7 @@ export interface RankedOption {
   carrier_id: string;
   carrier_name: string;
   service: ServiceLevel;
+  service_name?: string;
   price_usd: number;
   currency: string;
   transit_days: number;
@@ -41,6 +42,13 @@ export interface RankedOption {
   pricing: { carrier_cost_usd: number; margin_pct: number };
 }
 
+export interface Preferences {
+  cost?: number;
+  speed?: number;
+  carbon?: number;
+  reliability?: number;
+}
+
 export interface Quote extends Tenanted {
   origin: Location;
   destination: Location;
@@ -51,6 +59,7 @@ export interface Quote extends Tenanted {
   status: "open" | "booked" | "expired";
   shipmentId?: string;
   ai_optimized: boolean;
+  preferences: Preferences;
 }
 
 export type ShipmentStatus =
